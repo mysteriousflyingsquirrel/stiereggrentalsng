@@ -5,6 +5,9 @@ import { useSearchParams } from 'next/navigation'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 import SectionTitle from '@/components/SectionTitle'
 
+// Force dynamic rendering since we use useSearchParams
+export const dynamic = 'force-dynamic'
+
 function ImpressumPageContent() {
   const searchParams = useSearchParams()
   const locale = getLocaleFromSearchParams(searchParams)

@@ -10,6 +10,9 @@ import Badge from '@/components/Badge'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import Link from 'next/link'
 
+// Force dynamic rendering since we use useSearchParams
+export const dynamic = 'force-dynamic'
+
 function ApartmentDetailPageContent() {
   const params = useParams()
   const searchParams = useSearchParams()

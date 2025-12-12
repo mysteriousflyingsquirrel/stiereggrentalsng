@@ -10,6 +10,9 @@ import MapView from '@/components/MapView'
 import Image from 'next/image'
 import { HiOutlineViewGrid, HiOutlineMap } from 'react-icons/hi'
 
+// Force dynamic rendering since we use useSearchParams
+export const dynamic = 'force-dynamic'
+
 function HomePageContent() {
   const searchParams = useSearchParams()
   const locale = getLocaleFromSearchParams(searchParams)

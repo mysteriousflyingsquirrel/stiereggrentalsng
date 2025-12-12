@@ -49,22 +49,34 @@ export default function ApartmentCard({
 
         {showCalendar && (
           <div className="mb-4">
-            <AvailabilityCalendar slug={apartment.slug} months={2} locale={locale} />
+            <AvailabilityCalendar
+              slug={apartment.slug}
+              months={1}
+              locale={locale}
+              showMonthSelector={true}
+            />
           </div>
         )}
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {apartment.bookingLinks.map((link, index) => (
-            <Button
-              key={index}
-              href={link.url}
-              variant="primary"
-              external
-              className="text-sm px-4 py-2"
-            >
-              {link.label}
-            </Button>
-          ))}
+          {[...apartment.bookingLinks]
+            .sort((a, b) => {
+              // Always put "Direct Booking" first
+              if (a.label === 'Direct Booking') return -1
+              if (b.label === 'Direct Booking') return 1
+              return 0
+            })
+            .map((link, index) => (
+              <Button
+                key={index}
+                href={link.url}
+                variant={link.label === 'Direct Booking' ? 'gold' : 'primary'}
+                external
+                className="text-sm px-4 py-2"
+              >
+                {link.label}
+              </Button>
+            ))}
         </div>
 
         <Link

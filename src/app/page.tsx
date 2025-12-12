@@ -7,8 +7,8 @@ import { getLocaleFromSearchParams } from '@/lib/locale'
 import SectionTitle from '@/components/SectionTitle'
 import ApartmentCard from '@/components/ApartmentCard'
 import MapView from '@/components/MapView'
-import Button from '@/components/Button'
 import Image from 'next/image'
+import { HiOutlineViewGrid, HiOutlineMap } from 'react-icons/hi'
 
 function HomePageContent() {
   const searchParams = useSearchParams()
@@ -25,7 +25,7 @@ function HomePageContent() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/banner.jpg"
@@ -39,21 +39,14 @@ function HomePageContent() {
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             {locale === 'de'
-              ? 'Luxuriöse Ferienwohnungen in Grindelwald'
-              : 'Luxury Holiday Apartments in Grindelwald'}
+              ? 'Stieregg Rentals'
+              : 'Stieregg Rentals'}
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
             {locale === 'de'
-              ? 'Erleben Sie unvergessliche Momente in den Schweizer Alpen'
-              : 'Experience unforgettable moments in the Swiss Alps'}
+              ? 'Ihre perfekte Ferienwohnung in Grindelwald'
+              : 'Your perfect holiday apartment in Grindelwald'}
           </p>
-          <Button
-            href={getLocalizedPath('/#apartments')}
-            variant="primary"
-            className="text-lg px-8 py-4"
-          >
-            {locale === 'de' ? 'Jetzt buchen' : 'Book now'}
-          </Button>
         </div>
       </section>
 
@@ -73,12 +66,7 @@ function HomePageContent() {
               }`}
             >
               <div className="flex items-center gap-2">
-                <Image
-                  src="/icons/grid.png"
-                  alt="Grid view"
-                  width={20}
-                  height={20}
-                />
+                <HiOutlineViewGrid className="w-5 h-5" />
                 <span className="hidden sm:inline">
                   {locale === 'de' ? 'Raster' : 'Grid'}
                 </span>
@@ -93,12 +81,7 @@ function HomePageContent() {
               }`}
             >
               <div className="flex items-center gap-2">
-                <Image
-                  src="/icons/map.png"
-                  alt="Map view"
-                  width={20}
-                  height={20}
-                />
+                <HiOutlineMap className="w-5 h-5" />
                 <span className="hidden sm:inline">
                   {locale === 'de' ? 'Karte' : 'Map'}
                 </span>

@@ -5,6 +5,16 @@
 /* Leaflet CSS - required for map to work */
 @import 'leaflet/dist/leaflet.css';
 
+/* Fix for Leaflet default marker icons */
+.leaflet-default-icon-path {
+  display: none;
+}
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
 /* Custom styles */
 @layer base {
   body {

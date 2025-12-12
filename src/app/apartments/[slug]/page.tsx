@@ -41,17 +41,24 @@ function ApartmentDetailPageContent() {
       {/* Sticky Book Button for Mobile */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40 p-4">
         <div className="flex gap-2">
-          {apartment.bookingLinks.map((link, index) => (
-            <Button
-              key={index}
-              href={link.url}
-              variant="primary"
-              external
-              className="flex-1 text-sm py-3"
-            >
-              {link.label}
-            </Button>
-          ))}
+          {[...apartment.bookingLinks]
+            .sort((a, b) => {
+              // Always put "Direct Booking" first
+              if (a.label === 'Direct Booking') return -1
+              if (b.label === 'Direct Booking') return 1
+              return 0
+            })
+            .map((link, index) => (
+              <Button
+                key={index}
+                href={link.url}
+                variant={link.label === 'Direct Booking' ? 'gold' : 'primary'}
+                external
+                className="flex-1 text-sm py-3"
+              >
+                {link.label}
+              </Button>
+            ))}
         </div>
       </div>
 
@@ -177,17 +184,24 @@ function ApartmentDetailPageContent() {
           {locale === 'de' ? 'Buchung' : 'Booking'}
         </h2>
         <div className="flex flex-wrap gap-4">
-          {apartment.bookingLinks.map((link, index) => (
-            <Button
-              key={index}
-              href={link.url}
-              variant="primary"
-              external
-              className="text-lg px-8 py-4"
-            >
-              {link.label}
-            </Button>
-          ))}
+          {[...apartment.bookingLinks]
+            .sort((a, b) => {
+              // Always put "Direct Booking" first
+              if (a.label === 'Direct Booking') return -1
+              if (b.label === 'Direct Booking') return 1
+              return 0
+            })
+            .map((link, index) => (
+              <Button
+                key={index}
+                href={link.url}
+                variant={link.label === 'Direct Booking' ? 'gold' : 'primary'}
+                external
+                className="text-lg px-8 py-4"
+              >
+                {link.label}
+              </Button>
+            ))}
         </div>
       </div>
     </div>

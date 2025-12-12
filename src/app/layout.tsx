@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Stieregg Rentals - Luxury Holiday Apartments in Grindelwald',
   description: 'Luxury holiday apartments in Grindelwald, Switzerland',
+  icons: {
+    icon: '/icons/transparent_dark.svg',
+    shortcut: '/icons/transparent_dark.svg',
+    apple: '/icons/transparent_dark.svg',
+  },
 }
 
 export default function RootLayout({

@@ -35,52 +35,113 @@ export default function HeaderClient() {
     { href: '/privacy', label: { de: 'Datenschutz', en: 'Privacy' } },
   ]
 
+  const isHomePage = pathname === '/'
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header
+      className={`${
+        isHomePage
+          ? 'absolute top-0 left-0 right-0 bg-transparent z-50'
+          : 'bg-white shadow-md sticky top-0 z-50'
+      }`}
+    >
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href={getLocalizedPath('/')} className="flex items-center gap-2">
-            <Image
-              src="/icons/logo_white_dark.svg"
-              alt="Stieregg Rentals"
-              width={120}
-              height={40}
-              className="h-8 w-auto"
-            />
-            <span className="text-xl font-bold text-gray-900 hidden sm:inline">
-              Stieregg Rentals
-            </span>
+          <Link href={getLocalizedPath('/')} className="flex items-center group">
+            <div
+              className={`relative transition-all duration-300 ${
+                isHomePage
+                  ? 'bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-md rounded-2xl p-4 shadow-2xl ring-2 ring-white/60 ring-offset-2 ring-offset-transparent hover:ring-accent hover:ring-4 hover:shadow-accent/30 hover:scale-105'
+                  : 'bg-gradient-to-br from-gray-50 to-white rounded-xl p-3 shadow-md hover:shadow-lg hover:ring-2 hover:ring-accent transition-all'
+              }`}
+            >
+              {isHomePage && (
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              )}
+              <Image
+                src="/icons/transparent_dark.svg"
+                alt="Stieregg Rentals"
+                width={180}
+                height={60}
+                className={`relative h-12 md:h-16 w-auto transition-transform duration-300 ${
+                  isHomePage ? 'group-hover:scale-105' : ''
+                }`}
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={getLocalizedPath(link.href)}
-                className="text-gray-700 hover:text-accent transition-colors font-medium"
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  isHomePage
+                    ? 'text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20'
+                    : 'text-gray-700 hover:text-accent hover:bg-gray-100'
+                }`}
               >
                 {link.label[locale]}
               </Link>
             ))}
-            <button
-              onClick={toggleLocale}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+            <div
+              className={`flex items-center gap-1 rounded-lg ${
+                isHomePage
+                  ? 'bg-white/10 backdrop-blur-sm border border-white/20 p-1'
+                  : 'bg-gray-100 border border-gray-300 p-1'
+              }`}
             >
-              <Image
-                src={locale === 'de' ? '/icons/de.png' : '/icons/en.png'}
-                alt={locale === 'de' ? 'Deutsch' : 'English'}
-                width={20}
-                height={20}
-              />
-              <span className="text-sm font-medium">{locale.toUpperCase()}</span>
-            </button>
+              <button
+                onClick={toggleLocale}
+                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 ${
+                  locale === 'de'
+                    ? isHomePage
+                      ? 'bg-white/90 text-gray-900'
+                      : 'bg-white text-gray-900 shadow-sm'
+                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                }`}
+                aria-label="Toggle to English"
+              >
+                <Image
+                  src="/icons/de.png"
+                  alt="Deutsch"
+                  width={16}
+                  height={16}
+                />
+                <span className="text-sm font-medium">DE</span>
+              </button>
+              <button
+                onClick={toggleLocale}
+                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 ${
+                  locale === 'en'
+                    ? isHomePage
+                      ? 'bg-white/90 text-gray-900'
+                      : 'bg-white text-gray-900 shadow-sm'
+                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                }`}
+                aria-label="Toggle to Deutsch"
+              >
+                <Image
+                  src="/icons/en.png"
+                  alt="English"
+                  width={16}
+                  height={16}
+                />
+                <span className="text-sm font-medium">EN</span>
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+            className={`md:hidden p-2 rounded-lg transition-all ${
+              isHomePage
+                ? 'text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20'
+                : 'hover:bg-gray-100'
+            }`}
             aria-label="Toggle menu"
           >
             <svg
@@ -110,29 +171,73 @@ export default function HeaderClient() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t pt-4">
+          <div
+            className={`md:hidden mt-4 pb-4 rounded-lg ${
+              isHomePage
+                ? 'bg-white/95 backdrop-blur-md border border-white/20 pt-4'
+                : 'border-t pt-4'
+            }`}
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={getLocalizedPath(link.href)}
-                className="block py-2 text-gray-700 hover:text-accent transition-colors"
+                className={`block py-2 px-2 rounded-lg transition-colors ${
+                  isHomePage
+                    ? 'text-gray-900 hover:bg-gray-100'
+                    : 'text-gray-700 hover:text-accent'
+                }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label[locale]}
               </Link>
             ))}
-            <button
-              onClick={toggleLocale}
-              className="flex items-center gap-2 py-2 text-gray-700 hover:text-accent transition-colors"
+            <div
+              className={`flex items-center gap-1 rounded-lg w-full ${
+                isHomePage
+                  ? 'bg-white/10 backdrop-blur-sm border border-white/20 p-1'
+                  : 'bg-gray-100 border border-gray-300 p-1'
+              }`}
             >
-              <Image
-                src={locale === 'de' ? '/icons/de.png' : '/icons/en.png'}
-                alt={locale === 'de' ? 'Deutsch' : 'English'}
-                width={20}
-                height={20}
-              />
-              <span>{locale === 'de' ? 'English' : 'Deutsch'}</span>
-            </button>
+              <button
+                onClick={toggleLocale}
+                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 flex-1 justify-center ${
+                  locale === 'de'
+                    ? isHomePage
+                      ? 'bg-white/90 text-gray-900'
+                      : 'bg-white text-gray-900 shadow-sm'
+                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                }`}
+                aria-label="Toggle to English"
+              >
+                <Image
+                  src="/icons/de.png"
+                  alt="Deutsch"
+                  width={16}
+                  height={16}
+                />
+                <span className="text-sm font-medium">DE</span>
+              </button>
+              <button
+                onClick={toggleLocale}
+                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 flex-1 justify-center ${
+                  locale === 'en'
+                    ? isHomePage
+                      ? 'bg-white/90 text-gray-900'
+                      : 'bg-white text-gray-900 shadow-sm'
+                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                }`}
+                aria-label="Toggle to Deutsch"
+              >
+                <Image
+                  src="/icons/en.png"
+                  alt="English"
+                  width={16}
+                  height={16}
+                />
+                <span className="text-sm font-medium">EN</span>
+              </button>
+            </div>
           </div>
         )}
       </nav>

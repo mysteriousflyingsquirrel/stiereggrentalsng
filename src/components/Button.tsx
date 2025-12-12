@@ -5,7 +5,7 @@ type ButtonProps = {
   children: ReactNode
   href?: string
   onClick?: () => void
-  variant?: 'primary' | 'secondary' | 'outline'
+  variant?: 'primary' | 'secondary' | 'outline' | 'gold'
   className?: string
   external?: boolean
 }
@@ -27,6 +27,8 @@ export default function Button({
       'bg-gray-800 text-white hover:bg-gray-700 active:scale-95',
     outline:
       'border-2 border-accent text-accent hover:bg-accent hover:text-white active:scale-95',
+    gold:
+      'bg-gold text-white hover:bg-gold-dark active:scale-95',
   }
 
   const combinedClassName = `${baseStyles} ${variants[variant]} ${className}`

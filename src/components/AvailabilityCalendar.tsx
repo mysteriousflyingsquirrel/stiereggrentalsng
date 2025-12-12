@@ -8,6 +8,7 @@ type AvailabilityCalendarProps = {
   months?: number
   className?: string
   locale?: 'de' | 'en'
+  showMonthSelector?: boolean
 }
 
 export default function AvailabilityCalendar({
@@ -15,9 +16,11 @@ export default function AvailabilityCalendar({
   months = 2,
   className = '',
   locale = 'de',
+  showMonthSelector = false,
 }: AvailabilityCalendarProps) {
   const [bookedRanges, setBookedRanges] = useState<BookedRange[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedMonth, setSelectedMonth] = useState(new Date())
 
   useEffect(() => {
     async function fetchAvailability() {
@@ -48,6 +51,14 @@ export default function AvailabilityCalendar({
   }
 
   const getMonthsToShow = () => {
+    if (showMonthSelector) {
+      // Show only the selected month
+      const month = new Date(selectedMonth)
+      month.setDate(1)
+      return [month]
+    }
+
+    // Show multiple months (original behavior)
     const monthsArray = []
     const today = new Date()
     today.setDate(1) // Start of month
@@ -59,6 +70,32 @@ export default function AvailabilityCalendar({
     }
 
     return monthsArray
+  }
+
+  const changeMonth = (direction: 'prev' | 'next') => {
+    setSelectedMonth((prev) => {
+      const newDate = new Date(prev)
+      if (direction === 'prev') {
+        newDate.setMonth(newDate.getMonth() - 1)
+      } else {
+        newDate.setMonth(newDate.getMonth() + 1)
+      }
+      return newDate
+    })
+  }
+
+  const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [year, month] = e.target.value.split('-').map(Number)
+    setSelectedMonth(new Date(year, month - 1, 1))
+  }
+
+  const handleYearSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const year = parseInt(e.target.value)
+    setSelectedMonth((prev) => {
+      const newDate = new Date(prev)
+      newDate.setFullYear(year)
+      return newDate
+    })
   }
 
   const getDaysInMonth = (date: Date): Date[] => {
@@ -126,18 +163,94 @@ export default function AvailabilityCalendar({
     )
   }
 
+  const monthsToShow = getMonthsToShow()
+
   return (
     <div className={className}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {getMonthsToShow().map((month, monthIndex) => {
+      {showMonthSelector && (
+        <div className="mb-4 flex items-center justify-between bg-white rounded-xl p-3 shadow-sm">
+          <button
+            onClick={() => changeMonth('prev')}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label={locale === 'de' ? 'Vorheriger Monat' : 'Previous month'}
+          >
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <select
+              value={`${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`}
+              onChange={handleMonthSelect}
+              className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent cursor-pointer"
+            >
+              {monthNames[locale].map((name, index) => (
+                <option key={index} value={`${selectedMonth.getFullYear()}-${String(index + 1).padStart(2, '0')}`}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedMonth.getFullYear()}
+              onChange={handleYearSelect}
+              className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent cursor-pointer"
+            >
+              {Array.from({ length: 5 }, (_, i) => {
+                const year = new Date().getFullYear() + i - 1
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+
+          <button
+            onClick={() => changeMonth('next')}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label={locale === 'de' ? 'Nächster Monat' : 'Next month'}
+          >
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      <div className={`grid gap-6 ${showMonthSelector ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
+        {monthsToShow.map((month, monthIndex) => {
           const days = getDaysInMonth(month)
           const currentMonth = month.getMonth()
 
           return (
             <div key={monthIndex} className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {monthNames[locale][month.getMonth()]} {month.getFullYear()}
-              </h3>
+              {!showMonthSelector && (
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  {monthNames[locale][month.getMonth()]} {month.getFullYear()}
+                </h3>
+              )}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {dayNames[locale].map((day) => (
                   <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">

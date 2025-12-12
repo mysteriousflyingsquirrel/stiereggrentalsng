@@ -1,0 +1,391 @@
+export type Apartment = {
+  id: string
+  slug: string
+  name: { de: string; en: string }
+  shortDescription: { de: string; en: string }
+  longDescription?: { de: string; en: string }
+  images: { src: string; alt: string }[]
+  facts: {
+    guests: number
+    bedrooms: number
+    beds: number
+    bathrooms: number
+    sqm?: number
+  }
+  location: { lat: number; lng: number; label?: string }
+  bookingLinks: { label: string; url: string }[]
+  icalUrls: string[]
+}
+
+export const apartments: Apartment[] = [
+  {
+    id: 'wega',
+    slug: 'wega',
+    name: {
+      de: 'Chalet Walt Apartment Wega',
+      en: 'Chalet Walt Apartment Wega',
+    },
+    shortDescription: {
+      de: 'Moderne 3½-Zimmer-Dachwohnung (96 m²) im Neubau von 2023 mit sonniger Südlage und grosszügigem Balkon (21 m²)',
+      en: 'Modern 2-bedroom penthouse (96 m²) in a brand-new building (2023) with stunning south-facing mountain views and a spacious 21 m² balcony',
+    },
+    longDescription: {
+      de: 'Willkommen in Ihrer exklusiven Ferienoase: Diese moderne 3½-Zimmer-Dachwohnung (96 m²) im Neubau von 2023 begeistert durch ihre sonnige Südlage, den grosszügigen Balkon (21 m²) und eine atemberaubende Aussicht auf die umliegende Bergwelt.Zentral im Herzen von Grindelwald gelegen, ruhig, charmant und nur wenige Schritte vom Dorfzentrum entfernt.',
+      en: 'Welcome to your private Alpine retreat: This modern 2-bedroom penthouse (96 m²) in a brand-new building (2023) offers stunning south-facing mountain views, a spacious 21 m² balcony, and an unbeatable location in the heart of Grindelwald – peaceful, sunny, and just a short walk from the village center.',
+    },
+    images: [
+      { src: '/images/wega/cwaw_wohnzimmer_768px.jpg', alt: 'Living room' },
+      { src: '/images/wega/cwaw_esstisch_768px.jpg', alt: 'Dining area' },
+      { src: '/images/wega/cwaw_kueche_1_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/wega/cwaw_kueche_2_768px.jpg', alt: 'Kitchen view' },
+      { src: '/images/wega/cwaw_schlafzimmer1_1_768px.jpg', alt: 'Bedroom 1' },
+      { src: '/images/wega/cwaw_schlafzimmer1_2_768px.jpg', alt: 'Bedroom 1 view' },
+      { src: '/images/wega/cwaw_schlafzimmer2_1_768px.jpg', alt: 'Bedroom 2' },
+      { src: '/images/wega/cwaw_schlafzimmer2_2_768px.jpg', alt: 'Bedroom 2 view' },
+      { src: '/images/wega/cwaw_badezimmer1_768px.jpg', alt: 'Bathroom 1' },
+      { src: '/images/wega/cwaw_badezimmer2_768px.jpg', alt: 'Bathroom 2' },
+      { src: '/images/wega/cwaw_balkon1_768px.jpg', alt: 'Balcony' },
+      { src: '/images/wega/cwaw_balkon2_768px.jpg', alt: 'Balcony view' },
+      { src: '/images/wega/cwaw_eingang_768px.jpg', alt: 'Entrance' },
+      { src: '/images/wega/cwaw_aussen_768px.jpg', alt: 'Exterior' },
+    ],
+    facts: {
+      guests: 4,
+      bedrooms: 2,
+      beds: 3,
+      bathrooms: 2,
+      sqm: 96,
+    },
+    location: {
+      lat: 46.624113753495735,
+      lng: 8.032121787611096,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/21a740265d7e1b7b04637fc8bcfb7b59?location=5460aeb2be103&id=21a740265d7e1b7b04637fc8bcfb7b59&pricetype=totalPrice&dp=0&clickId=RFSGHQ1TX624ZQWP&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/3432395/ical.ics?securitytoken=8c88c7d4d9d1479699045ff359ad00b5',
+    ],
+  },
+  {
+    id: 'valerian',
+    slug: 'valerian',
+    name: {
+      de: 'Grossenhaus Apartment Valerian',
+      en: 'Grossenhaus Apartment Valerian',
+    },
+    shortDescription: {
+      de: 'Stilvolle 4½-Zimmerwohnung (111 m²) im 1. Obergeschoss mit zwei Balkonen und herrlicher Bergsicht',
+      en: 'Elegant 2-bedroom apartment (111 m²) on the 1st floor with two balconies and magnificent mountain views',
+    },
+    longDescription: {
+      de: 'Diese stilvolle 4½-Zimmerwohnung (111 m²) im 1. Obergeschoss bietet alles für entspannte Ferientage im Herzen von Grindelwald. Zwei Balkone – einer nach Süden (9.15 m²) und einer nach Osten (7.88 m²) – schenken den ganzen Tag Sonne und eine herrliche Sicht auf die Bergwelt. Die ruhige und dennoch zentrale Lage lässt Sie in nur 3 Gehminuten das Dorfzentrum erreichen.',
+      en: 'This elegant 2-bedroom apartment (111 m²) on the 1st floor is your perfect alpine getaway. Enjoy two balconies – south-facing (9.15 m²) and east-facing (7.88 m²) – with plenty of sun and magnificent mountain views. The location is peaceful yet central, just a 3-minute walk from Grindelwald\'s village center.',
+    },
+    images: [
+      { src: '/images/valerian/gav_wohnzimmer_768px.jpg', alt: 'Living room' },
+      { src: '/images/valerian/gav_esstisch_768px.jpg', alt: 'Dining area' },
+      { src: '/images/valerian/gav_kueche_1_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/valerian/gav_kueche_2_768px.jpg', alt: 'Kitchen view' },
+      { src: '/images/valerian/gav_schlafzimmer1_1_768px.jpg', alt: 'Bedroom 1' },
+      { src: '/images/valerian/gav_schlafzimmer1_2_768px.jpg', alt: 'Bedroom 1 view' },
+      { src: '/images/valerian/gav_schlafzimmer2_1_768px.jpg', alt: 'Bedroom 2' },
+      { src: '/images/valerian/gav_schlafzimmer2_2_768px.jpg', alt: 'Bedroom 2 view' },
+      { src: '/images/valerian/gav_badezimmer1_768px.jpg', alt: 'Bathroom 1' },
+      { src: '/images/valerian/gav_badezimmer2_768px.jpg', alt: 'Bathroom 2' },
+      { src: '/images/valerian/gav_leseraum_768px.jpg', alt: 'Reading room' },
+      { src: '/images/valerian/gav_balkon_768px.jpg', alt: 'Balcony' },
+      { src: '/images/valerian/gav_eingang_768px.jpg', alt: 'Entrance' },
+      { src: '/images/valerian/gav_waschkueche_768px.jpg', alt: 'Laundry room' },
+    ],
+    facts: {
+      guests: 4,
+      bedrooms: 2,
+      beds: 3,
+      bathrooms: 2,
+      sqm: 111,
+    },
+    location: {
+      lat: 46.62450437348164,
+      lng: 8.03654315892381,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/081632dcc3499a06e5ea3c930293c618?location=5460aeb2be103&id=081632dcc3499a06e5ea3c930293c618&pricetype=totalPrice&dp=0&clickId=SDBHRJRDLTZH7YZ5&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/1698310/ical.ics?securitytoken=f02e669e24f6412a8165dc95132d4298',
+    ],
+  },
+  {
+    id: 'celina',
+    slug: 'celina',
+    name: {
+      de: 'Chalet Alpenblume Apartment Celina',
+      en: 'Chalet Alpenblume Apartment Celina',
+    },
+    shortDescription: {
+      de: 'Charmante 3½-Zimmerwohnung (85 m²) im 1. Obergeschoss mit grosszügigem 26 m² Südost-Balkon und herrlicher Bergsicht',
+      en: 'Inviting 2-bedroom apartment (85 m²) on the 1st floor with a spacious 26 m² south-east facing balcony and gorgeous mountain views',
+    },
+    longDescription: {
+      de: 'Herzlich willkommen im Chalet Alpenblume! Diese charmante 3½-Zimmerwohnung (85 m²) im 1. Obergeschoss begeistert mit einem grosszügigen 26 m² Südost-Balkon und herrlicher Bergsicht – perfekt für entspannte Ferientage zu viert.',
+      en: 'Welcome to Chalet Alpenblume! This inviting 2-bedroom apartment (85 m²) on the 1st floor features a spacious 26 m² south-east facing balcony with gorgeous mountain views – the perfect place to relax for up to 4 guests.',
+    },
+    images: [
+      { src: '/images/celina/caac_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/celina/caac_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/celina/caac_kueche_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/celina/caac_schlafzimmer1_1_768px.jpg', alt: 'Bedroom 1' },
+      { src: '/images/celina/caac_schlafzimmer1_2_768px.jpg', alt: 'Bedroom 1 view' },
+      { src: '/images/celina/caac_schlafzimmer2_1_768px.jpg', alt: 'Bedroom 2' },
+      { src: '/images/celina/caac_schlafzimmer2_2_768px.jpg', alt: 'Bedroom 2 view' },
+      { src: '/images/celina/caac_badezimmer1_1_768px.jpg', alt: 'Bathroom 1' },
+      { src: '/images/celina/caac_badezimmer1_2_768px.jpg', alt: 'Bathroom 1 view' },
+      { src: '/images/celina/caac_badezimmer2_768px.jpg', alt: 'Bathroom 2' },
+      { src: '/images/celina/caac_balkon_768px.jpg', alt: 'Balcony' },
+      { src: '/images/celina/caac_eingang_768px.jpg', alt: 'Entrance' },
+    ],
+    facts: {
+      guests: 4,
+      bedrooms: 2,
+      beds: 3,
+      bathrooms: 2,
+      sqm: 85,
+    },
+    location: {
+      lat: 46.626921361521575,
+      lng: 8.02746425978436,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/30975be1327d577d24cf7670806ae75a?location=5460aeb2be103&id=30975be1327d577d24cf7670806ae75a&pricetype=totalPrice&dp=0&clickId=D00GKSD8CW5L62H7&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/20345876?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3CMTVkq1WHCy76b&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/1698298/ical.ics?securitytoken=46a7f7bcf6664193bb78ee92571d30dd',
+    ],
+  },
+  {
+    id: 'apartment-ost',
+    slug: 'apartment-ost',
+    name: {
+      de: 'Chalet Stieregg Apartment Ost',
+      en: 'Chalet Stieregg Apartment Ost',
+    },
+    shortDescription: {
+      de: 'Charmante 2-Zimmerwohnung (44 m²) im Erdgeschoss – idealer Rückzugsort für zwei Personen',
+      en: 'Lovely 2-room apartment (44 m²) on the ground floor – perfect alpine escape for two',
+    },
+    longDescription: {
+      de: 'Willkommen im Chalet Stieregg! Diese charmante 2-Zimmerwohnung (44 m²) im Erdgeschoss ist der ideale Rückzugsort für zwei Personen. An sonniger, ruhiger Lage gelegen und nur 6 Gehminuten vom Bahnhof Grindelwald und dem Dorfzentrum entfernt – perfekt für erholsame Tage in den Bergen.',
+      en: 'Welcome to Chalet Stieregg! This lovely 2-room apartment (44 m²) on the ground floor is the perfect alpine escape for two. Located in a sunny and peaceful area, just a 6-minute walk from Grindelwald train station and the village center.',
+    },
+    images: [
+      { src: '/images/apartmentost/csao_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/apartmentost/csao_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/apartmentost/csao_kueche_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/apartmentost/csao_schlafzimmer_1_768px.jpg', alt: 'Bedroom' },
+      { src: '/images/apartmentost/csao_schlafzimmer_2_768px.jpg', alt: 'Bedroom view' },
+      { src: '/images/apartmentost/csao_badezimmer_768px.jpg', alt: 'Bathroom' },
+      { src: '/images/apartmentost/csao_terrasse_768px.jpg', alt: 'Terrace' },
+    ],
+    facts: {
+      guests: 2,
+      bedrooms: 1,
+      beds: 1,
+      bathrooms: 1,
+      sqm: 44,
+    },
+    location: {
+      lat: 46.62731155450113,
+      lng: 8.027293607253567,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/349b4cc552a019d03c5e02d2a424a574?location=5460aeb2be103&id=349b4cc552a019d03c5e02d2a424a574&pricetype=totalPrice&dp=0&clickId=N6X7W9MR6F7GTSSN&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/3460071?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405875_P3Yq7xw-pWR_7c0h&previous_page_section_name=1000&federated_search_id=035fb640-5b87-45ab-9cb1-91982050329c',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/1698294/ical.ics?securitytoken=ed0bda36efb04fd7acbcc4925b90e757',
+    ],
+  },
+  {
+    id: 'apartment-west',
+    slug: 'apartment-west',
+    name: {
+      de: 'Chalet Stieregg Apartment West',
+      en: 'Chalet Stieregg Apartment West',
+    },
+    shortDescription: {
+      de: 'Charmante 2-Zimmerwohnung (44 m²) im Erdgeschoss – idealer Rückzugsort für zwei Personen',
+      en: 'Lovely 2-room apartment (44 m²) on the ground floor – perfect alpine escape for two',
+    },
+    longDescription: {
+      de: 'Willkommen im Chalet Stieregg! Diese charmante 2-Zimmerwohnung (44 m²) im Erdgeschoss ist der ideale Rückzugsort für zwei Personen. An sonniger, ruhiger Lage gelegen und nur 6 Gehminuten vom Bahnhof Grindelwald und dem Dorfzentrum entfernt – perfekt für erholsame Tage in den Bergen.',
+      en: 'Welcome to Chalet Stieregg! This lovely 2-room apartment (44 m²) on the ground floor is the perfect alpine escape for two. Located in a sunny and peaceful area, just a 6-minute walk from Grindelwald train station and the village center.',
+    },
+    images: [
+      { src: '/images/apartmentwest/csaw_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/apartmentwest/csaw_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/apartmentwest/csaw_kueche_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/apartmentwest/csaw_schlafzimmer_1_768px.jpg', alt: 'Bedroom' },
+      { src: '/images/apartmentwest/csaw_schlafzimmer_2_768px.jpg', alt: 'Bedroom view' },
+      { src: '/images/apartmentwest/csaw_terrasse_1_768px.jpg', alt: 'Terrace' },
+      { src: '/images/apartmentwest/csaw_terrasse_2_768px.jpg', alt: 'Terrace view' },
+    ],
+    facts: {
+      guests: 2,
+      bedrooms: 1,
+      beds: 1,
+      bathrooms: 1,
+      sqm: 44,
+    },
+    location: {
+      lat: 46.62731374410197,
+      lng: 8.027111794561225,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/dd6f3056e061ea7b565811ec1c00ca63?location=5460aeb2be103&boostedId=dd6f3056e061ea7b565811ec1c00ca63%40u%40a&pricetype=totalPrice&dp=0&clickId=53YYZ4J6ZJ15V3JR&sT=dateless&prodName=JM&prodSource=Search&searchId=6fccc8689be57ef3&screen=search&searchRequestId=c7560621c2614f6f&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/17104334?search_mode=regular_search&adults=1&check_in=2025-11-12&check_out=2025-11-17&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3UbeL5B4VxZlbv8&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/1698287/ical.ics?securitytoken=50eb0f69cf0e49f1bd9295b5bdf6252d',
+    ],
+  },
+  {
+    id: 'studio-ost',
+    slug: 'studio-ost',
+    name: {
+      de: 'Chalet Stieregg Studio Ost',
+      en: 'Chalet Stieregg Studio Ost',
+    },
+    shortDescription: {
+      de: 'Renoviertes 1-Zimmer-Studio (28 m²) – perfekt für Einzelreisende',
+      en: 'Renovated 1-room studio (28 m²) – perfect for solo travelers',
+    },
+    longDescription: {
+      de: 'Klein, fein und perfekt für eine Auszeit in den Bergen: Dieses renovierte 1-Zimmer-Studio (28 m²) eignet sich ideal für Einzelreisende. Ruhig gelegen und mit allem ausgestattet, was man für einen angenehmen Aufenthalt braucht.',
+      en: 'Small but cozy: This renovated 1-room studio (28 m²) is perfect for solo travelers looking to unwind in the mountains. Quietly located and thoughtfully equipped for a relaxing stay.',
+    },
+    images: [
+      { src: '/images/studioost/csso_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/studioost/csso_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/studioost/csso_kueche_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/studioost/csso_bett_768px.jpg', alt: 'Bed' },
+      { src: '/images/studioost/csso_badezimmer_768px.jpg', alt: 'Bathroom' },
+      { src: '/images/studioost/csso_balkon_768px.jpg', alt: 'Balcony' },
+    ],
+    facts: {
+      guests: 2,
+      bedrooms: 0,
+      beds: 1,
+      bathrooms: 1,
+      sqm: 28,
+    },
+    location: {
+      lat: 46.62741012681669,
+      lng: 8.027309554918785,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee%40u%40a&pricetype=totalPrice&dp=0&clickId=HP23NT783YGCKPXP&sT=dateless&prodName=JM&prodSource=Search&searchId=e805caf64bbd725c&screen=search&searchRequestId=df1c64ec716e4c6a&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/42685109?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3vTQMuTT8_BXyXO&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
+    ],
+  },
+  {
+    id: 'studio-west',
+    slug: 'studio-west',
+    name: {
+      de: 'Chalet Stieregg Studio West',
+      en: 'Chalet Stieregg Studio West',
+    },
+    shortDescription: {
+      de: 'Frisch renovierte 1-Zimmerwohnung (28 m²) im Dachgeschoss mit Terrasse und Blick auf das Wetterhorn',
+      en: 'Freshly renovated 1-room studio (28 m²) on the top floor with terrace and views of the Wetterhorn',
+    },
+    longDescription: {
+      de: 'Diese frisch renovierte 1-Zimmerwohnung (28 m²) im Dachgeschoss des Chalet Stieregg ist ideal für zwei Personen, die Ruhe und Natur suchen. Die kleine Terrasse mit Nordausrichtung bietet einen friedlichen Blick auf den Wald und das beeindruckende Wetterhorn.',
+      en: 'This freshly renovated 1-room studio (28 m²) on the top floor of Chalet Stieregg is perfect for two guests seeking peace and nature. The small terrace faces north, offering tranquil views of the forest and the iconic Wetterhorn.',
+    },
+    images: [
+      { src: '/images/studiowest/cssw_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/studiowest/cssw_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/studiowest/cssw_kochnische_768px.jpg', alt: 'Kitchenette' },
+      { src: '/images/studiowest/cssw_bett_768px.jpg', alt: 'Bed' },
+      { src: '/images/studiowest/cssw_badezimmer_768px.jpg', alt: 'Bathroom' },
+      { src: '/images/studiowest/cssw_balkon_768px.jpg', alt: 'Balcony' },
+    ],
+    facts: {
+      guests: 2,
+      bedrooms: 0,
+      beds: 1,
+      bathrooms: 1,
+      sqm: 28,
+    },
+    location: {
+      lat: 46.62741012585345,
+      lng: 8.02710860371621,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/16266dd76336147d95957ab4d4b11979?location=5460aeb2be103&boostedId=16266dd76336147d95957ab4d4b11979%40u%40a&pricetype=totalPrice&dp=0&clickId=RYFR4FWLTSFRGXP7&sT=dateless&prodName=JM&prodSource=Search&searchId=31de121849d4b5d9&screen=search&searchRequestId=58e6f79a4ae84dd8&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/3483075?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3LoS6gxsGmjOD4C&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
+      },
+      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/1840472/ical.ics?securitytoken=bb82dda052c544d3a0cb9ca7d08a54e6',
+    ],
+  },
+]
+
+export function getApartmentBySlug(slug: string): Apartment | undefined {
+  return apartments.find((apt) => apt.slug === slug)
+}

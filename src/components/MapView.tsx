@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import { Apartment } from '@/data/apartments'
 import ApartmentMiniCard from './ApartmentMiniCard'
 import { Locale } from '@/lib/locale'
-import L from 'leaflet'
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import('react-leaflet').then((mod) => mod.MapContainer), {
@@ -21,8 +20,11 @@ const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {
   ssr: false,
 })
 
-// Create custom pin icon inspired by React icons
+// Create custom pin icon - only call when Leaflet is available
 function createCustomIcon() {
+  if (typeof window === 'undefined') return null
+  
+  const L = require('leaflet')
   const iconHtml = `
     <div style="
       position: relative;
@@ -53,9 +55,14 @@ type MapViewProps = {
 
 export default function MapView({ apartments, locale, className = '' }: MapViewProps) {
   const [isClient, setIsClient] = useState(false)
+  const [customIcon, setCustomIcon] = useState<any>(null)
 
   useEffect(() => {
     setIsClient(true)
+    // Create icon only on client side
+    if (typeof window !== 'undefined') {
+      setCustomIcon(createCustomIcon())
+    }
   }, [])
 
   if (!isClient) {
@@ -85,7 +92,7 @@ export default function MapView({ apartments, locale, className = '' }: MapViewP
           <Marker
             key={apartment.id}
             position={[apartment.location.lat, apartment.location.lng]}
-            icon={createCustomIcon()}
+            icon={customIcon}
           >
             <Popup>
               <ApartmentMiniCard apartment={apartment} locale={locale} />

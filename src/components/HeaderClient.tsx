@@ -13,6 +13,7 @@ export default function HeaderClient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const toggleLocale = () => {
+    if (typeof window === 'undefined') return
     const newLocale = locale === 'de' ? 'en' : 'de'
     const current = new URLSearchParams(Array.from(searchParams.entries()))
     current.set('lang', newLocale)

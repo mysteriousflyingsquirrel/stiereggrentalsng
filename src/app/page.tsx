@@ -27,8 +27,9 @@ function HomePageContent() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden pt-20">
+      {/* Hero Section with Gradient Fade */}
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24 pb-0">
+        {/* Banner Image with Gradient Fade */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/banner.jpg"
@@ -37,15 +38,21 @@ function HomePageContent() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/40"></div>
+          {/* Gradient fade: full opacity at top, invisible at bottom */}
+          {/* Dark overlay at top for text readability, fades to transparent */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent"></div>
+          {/* White gradient overlay to fade banner to invisible at bottom */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white"></div>
         </div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+        
+        {/* Centered Title and Subtitle */}
+        <div className="relative z-10 text-center text-white px-4 pt-20 pb-32 md:pb-40">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
             {locale === 'de'
               ? 'Stieregg Rentals'
               : 'Stieregg Rentals'}
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl lg:text-3xl mb-8 max-w-2xl mx-auto">
             {locale === 'de'
               ? 'Ihre perfekte Ferienwohnung in Grindelwald'
               : 'Your perfect holiday apartment in Grindelwald'}
@@ -53,8 +60,8 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* Apartments Section */}
-      <section id="apartments" className="container mx-auto px-4 py-16">
+      {/* Apartments Section - Flows into Banner */}
+      <section id="apartments" className="container mx-auto px-4 pt-0 pb-16 -mt-32 md:-mt-40 relative z-20">
         <div className="flex items-center justify-between mb-8">
           <SectionTitle>
             {locale === 'de' ? 'Unsere Apartments' : 'Our Apartments'}

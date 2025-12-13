@@ -37,6 +37,7 @@ export default function HeaderClient() {
   ]
 
   const isHomePage = pathname === '/'
+  const isActive = (href: string) => pathname === href
 
   return (
     <header
@@ -72,65 +73,85 @@ export default function HeaderClient() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation + Language Switcher - Top Right */}
           <div className="hidden md:flex items-center gap-4">
+            {/* Navigation Links */}
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={getLocalizedPath(link.href)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`group relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                   isHomePage
-                    ? 'text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20'
+                    ? isActive(link.href)
+                      ? 'text-white bg-white/15 backdrop-blur-sm'
+                      : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                    : isActive(link.href)
+                    ? 'text-accent bg-accent/5'
                     : 'text-gray-700 hover:text-accent hover:bg-gray-100'
                 }`}
               >
-                {link.label[locale]}
+                <span className="relative z-10">{link.label[locale]}</span>
+                <span
+                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-200 ${
+                    isActive(link.href)
+                      ? `w-8 ${isHomePage ? 'bg-white' : 'bg-accent'}`
+                      : `w-0 group-hover:w-8 ${isHomePage ? 'bg-white' : 'bg-accent'}`
+                  }`}
+                  aria-hidden="true"
+                ></span>
               </Link>
             ))}
+            {/* Language Switcher - Compact Pill */}
             <div
-              className={`flex items-center gap-1 rounded-lg ${
+              className={`flex items-center gap-0.5 rounded-full p-1 ${
                 isHomePage
-                  ? 'bg-white/10 backdrop-blur-sm border border-white/20 p-1'
-                  : 'bg-gray-100 border border-gray-300 p-1'
+                  ? 'bg-white/10 backdrop-blur-md border border-white/20'
+                  : 'bg-gray-100 border border-gray-200'
               }`}
             >
               <button
                 onClick={toggleLocale}
-                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                   locale === 'de'
                     ? isHomePage
-                      ? 'bg-white/90 text-gray-900'
+                      ? 'bg-white text-gray-900 shadow-md'
                       : 'bg-white text-gray-900 shadow-sm'
-                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                    : isHomePage
+                    ? 'text-white/80 hover:text-white hover:bg-white/10'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
                 aria-label="Toggle to English"
               >
                 <Image
                   src="/icons/de.png"
                   alt="Deutsch"
-                  width={16}
-                  height={16}
+                  width={14}
+                  height={14}
+                  className="rounded-sm"
                 />
-                <span className="text-sm font-medium">DE</span>
+                <span>DE</span>
               </button>
               <button
                 onClick={toggleLocale}
-                className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                   locale === 'en'
                     ? isHomePage
-                      ? 'bg-white/90 text-gray-900'
+                      ? 'bg-white text-gray-900 shadow-md'
                       : 'bg-white text-gray-900 shadow-sm'
-                    : 'bg-transparent text-gray-600 hover:text-gray-900'
+                    : isHomePage
+                    ? 'text-white/80 hover:text-white hover:bg-white/10'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
                 aria-label="Toggle to Deutsch"
               >
                 <Image
                   src="/icons/en.png"
                   alt="English"
-                  width={16}
-                  height={16}
+                  width={14}
+                  height={14}
+                  className="rounded-sm"
                 />
-                <span className="text-sm font-medium">EN</span>
+                <span>EN</span>
               </button>
             </div>
           </div>

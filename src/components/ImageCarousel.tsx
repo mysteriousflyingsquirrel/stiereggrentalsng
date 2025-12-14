@@ -32,9 +32,11 @@ const ChevronRightIcon = ({ className }: { className?: string }) => (
 type ImageCarouselProps = {
   images: { src: string; alt: string }[]
   className?: string
+  quality?: number
+  sizes?: string
 }
 
-export default function ImageCarousel({ images, className = '' }: ImageCarouselProps) {
+export default function ImageCarousel({ images, className = '', quality = 85, sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw' }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const touchStartX = useRef<number | null>(null)
   const touchEndX = useRef<number | null>(null)
@@ -108,7 +110,9 @@ export default function ImageCarousel({ images, className = '' }: ImageCarouselP
               alt={image.alt}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes={sizes}
+              quality={quality}
+              priority={index === 0}
             />
           </div>
         ))}

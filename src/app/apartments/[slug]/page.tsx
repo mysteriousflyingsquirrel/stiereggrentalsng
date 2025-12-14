@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react'
 import { useSearchParams, useParams } from 'next/navigation'
-import Image from 'next/image'
+import ImageCarousel from '@/components/ImageCarousel'
 import { getApartmentBySlug } from '@/data/apartments'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 import Button from '@/components/Button'
@@ -146,23 +146,47 @@ function ApartmentDetailPageContent() {
         </div>
       </div>
 
-      {/* Image Gallery */}
-      <div className="mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {apartment.images.map((image, index) => (
-            <div
-              key={index}
-              className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg"
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-          ))}
+      {/* Image Gallery - Map to images_big folder */}
+      <div className="mb-12 -mx-4 md:-mx-6 lg:-mx-8">
+        <div className="w-full">
+          <ImageCarousel 
+            quality={95}
+            sizes="100vw"
+            images={apartment.images.map(image => {
+              // Transform image path from /images/ to /images_big/
+              // Remove _768px suffix to match images_big filenames
+              const originalPath = image.src
+              const pathMatch = originalPath.match(/\/images\/([^/]+)\/([^/]+)$/)
+              
+              if (!pathMatch) {
+                // Fallback: simple replacement
+                return {
+                  ...image,
+                  src: originalPath.replace('/images/', '/images_big/').replace(/_768px\./, '.')
+                }
+              }
+              
+              const [, folder, filename] = pathMatch
+              // Remove _768px suffix (e.g., cwaw_wohnzimmer_768px.jpg -> cwaw_wohnzimmer.jpg)
+              let bigFilename = filename.replace(/_768px\.(jpg|jpeg|png|webp)$/i, '.$1')
+              
+              // Special case: cwaw_aussen_768px.jpg -> cwaw_aussen_1.JPG
+              if (bigFilename === 'cwaw_aussen.jpg') {
+                bigFilename = 'cwaw_aussen_1.JPG'
+              } else {
+                // Normalize extension to lowercase for other files
+                bigFilename = bigFilename.replace(/\.(JPG|JPEG|PNG|WEBP)$/i, (match) => match.toLowerCase())
+              }
+              
+              const bigImagePath = `/images_big/${folder}/${bigFilename}`
+              
+              return {
+                ...image,
+                src: bigImagePath
+              }
+            })} 
+            className="w-full h-80 md:h-96 lg:h-[500px]" 
+          />
         </div>
       </div>
 

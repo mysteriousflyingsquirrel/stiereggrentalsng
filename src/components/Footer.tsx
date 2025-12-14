@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Stieregg Rentals</h3>
             <p className="text-sm">
-              Luxury holiday apartments in Grindelwald, Switzerland
+              Holiday apartments in Grindelwald, Switzerland
             </p>
           </div>
           <div>

@@ -22,6 +22,29 @@ export default function AvailabilityCalendar({
   const [loading, setLoading] = useState(true)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
 
+  // Calculate valid date range: current month to 2 years ahead (24 months)
+  const getValidDateRange = () => {
+    const startDate = new Date()
+    startDate.setDate(1) // Start of current month
+    startDate.setHours(0, 0, 0, 0)
+
+    const endDate = new Date()
+    endDate.setMonth(endDate.getMonth() + 24) // 2 years ahead
+    endDate.setDate(1) // Start of that month
+    endDate.setHours(0, 0, 0, 0)
+
+    return { startDate, endDate }
+  }
+
+  const { startDate, endDate } = getValidDateRange()
+
+  const isDateInValidRange = (date: Date): boolean => {
+    const checkDate = new Date(date)
+    checkDate.setDate(1)
+    checkDate.setHours(0, 0, 0, 0)
+    return checkDate >= startDate && checkDate <= endDate
+  }
+
   useEffect(() => {
     async function fetchAvailability() {
       try {
@@ -52,21 +75,39 @@ export default function AvailabilityCalendar({
 
   const getMonthsToShow = () => {
     if (showMonthSelector) {
-      // Show only the selected month
+      // Show only the selected month (if within valid range)
       const month = new Date(selectedMonth)
       month.setDate(1)
+      
+      // Ensure selected month is within valid range
+      if (!isDateInValidRange(month)) {
+        // If outside range, use current month
+        const currentMonth = new Date()
+        currentMonth.setDate(1)
+        return [currentMonth]
+      }
+      
       return [month]
     }
 
-    // Show multiple months (original behavior)
+    // Show multiple months, but limit to valid range (current month + 2 years)
     const monthsArray = []
     const today = new Date()
     today.setDate(1) // Start of month
 
-    for (let i = 0; i < months; i++) {
+    // Calculate maximum months to show (up to 24 months from today)
+    const maxMonths = Math.min(months, 24)
+    const monthsFromToday = Math.floor((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 30))
+    const actualMonths = Math.min(maxMonths, monthsFromToday + 1)
+
+    for (let i = 0; i < actualMonths; i++) {
       const month = new Date(today)
       month.setMonth(today.getMonth() + i)
-      monthsArray.push(month)
+      
+      // Only add if within valid range
+      if (isDateInValidRange(month)) {
+        monthsArray.push(month)
+      }
     }
 
     return monthsArray
@@ -80,13 +121,28 @@ export default function AvailabilityCalendar({
       } else {
         newDate.setMonth(newDate.getMonth() + 1)
       }
+      newDate.setDate(1)
+      
+      // Clamp to valid range
+      if (newDate < startDate) {
+        return new Date(startDate)
+      }
+      if (newDate > endDate) {
+        return new Date(endDate)
+      }
+      
       return newDate
     })
   }
 
   const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [year, month] = e.target.value.split('-').map(Number)
-    setSelectedMonth(new Date(year, month - 1, 1))
+    const newDate = new Date(year, month - 1, 1)
+    
+    // Ensure selected date is within valid range
+    if (isDateInValidRange(newDate)) {
+      setSelectedMonth(newDate)
+    }
   }
 
   const handleYearSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -94,6 +150,16 @@ export default function AvailabilityCalendar({
     setSelectedMonth((prev) => {
       const newDate = new Date(prev)
       newDate.setFullYear(year)
+      newDate.setDate(1)
+      
+      // Clamp to valid range
+      if (newDate < startDate) {
+        return new Date(startDate)
+      }
+      if (newDate > endDate) {
+        return new Date(endDate)
+      }
+      
       return newDate
     })
   }
@@ -171,7 +237,12 @@ export default function AvailabilityCalendar({
         <div className="mb-4 flex items-center justify-between bg-white rounded-xl p-3 shadow-sm">
           <button
             onClick={() => changeMonth('prev')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            disabled={selectedMonth <= startDate}
+            className={`p-2 rounded-lg transition-colors ${
+              selectedMonth <= startDate
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-100'
+            }`}
             aria-label={locale === 'de' ? 'Vorheriger Monat' : 'Previous month'}
           >
             <svg
@@ -195,19 +266,27 @@ export default function AvailabilityCalendar({
               onChange={handleMonthSelect}
               className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent cursor-pointer"
             >
-              {monthNames[locale].map((name, index) => (
-                <option key={index} value={`${selectedMonth.getFullYear()}-${String(index + 1).padStart(2, '0')}`}>
-                  {name}
-                </option>
-              ))}
+              {monthNames[locale].map((name, index) => {
+                const checkDate = new Date(selectedMonth.getFullYear(), index, 1)
+                const isValid = isDateInValidRange(checkDate)
+                if (!isValid) return null
+                return (
+                  <option
+                    key={index}
+                    value={`${selectedMonth.getFullYear()}-${String(index + 1).padStart(2, '0')}`}
+                  >
+                    {name}
+                  </option>
+                )
+              })}
             </select>
             <select
               value={selectedMonth.getFullYear()}
               onChange={handleYearSelect}
               className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent cursor-pointer"
             >
-              {Array.from({ length: 5 }, (_, i) => {
-                const year = new Date().getFullYear() + i - 1
+              {Array.from({ length: 3 }, (_, i) => {
+                const year = new Date().getFullYear() + i
                 return (
                   <option key={year} value={year}>
                     {year}
@@ -219,7 +298,12 @@ export default function AvailabilityCalendar({
 
           <button
             onClick={() => changeMonth('next')}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            disabled={selectedMonth >= endDate}
+            className={`p-2 rounded-lg transition-colors ${
+              selectedMonth >= endDate
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-100'
+            }`}
             aria-label={locale === 'de' ? 'Nächster Monat' : 'Next month'}
           >
             <svg

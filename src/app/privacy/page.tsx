@@ -14,46 +14,22 @@ function PrivacyPageContent() {
 
   const content = {
     de: {
-      title: 'Datenschutzerklärung',
-      sections: [
-        {
-          title: 'Datenschutz',
-          text: 'Der Schutz Ihrer persönlichen Daten ist uns ein besonderes Anliegen. In dieser Datenschutzerklärung informieren wir Sie über die Verarbeitung personenbezogener Daten bei der Nutzung unserer Website.',
-        },
-        {
-          title: 'Verantwortliche Stelle',
-          text: 'Verantwortlich für die Datenverarbeitung ist:\nStieregg Rentals\nGrindelwald\nSchweiz\nE-Mail: info@stieregg.ch',
-        },
-        {
-          title: 'Erhebung und Speicherung personenbezogener Daten',
-          text: 'Beim Besuch unserer Website werden automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sogenannten Logfile gespeichert.',
-        },
-        {
-          title: 'Ihre Rechte',
-          text: 'Sie haben jederzeit das Recht, Auskunft über Ihre bei uns gespeicherten personenbezogenen Daten zu erhalten. Außerdem haben Sie ein Recht auf Berichtigung, Löschung oder Einschränkung der Verarbeitung Ihrer personenbezogenen Daten.',
-        },
-      ],
+      title: 'Datenschutz',
+      mainText: 'respektiert Ihre Privatsphäre. Diese Website erhebt keine personenbezogenen Daten, verwendet keine Cookies und dient ausschließlich zu Informationszwecken.',
+      contact: {
+        title: 'Kontakt:',
+        text: 'Bei Fragen zum Datenschutz kontaktieren Sie uns gerne unter',
+        email: 'info@stieregg.ch',
+      },
     },
     en: {
       title: 'Privacy Policy',
-      sections: [
-        {
-          title: 'Privacy',
-          text: 'The protection of your personal data is of particular concern to us. In this privacy policy, we inform you about the processing of personal data when using our website.',
-        },
-        {
-          title: 'Responsible Party',
-          text: 'Responsible for data processing is:\nStieregg Rentals\nGrindelwald\nSwitzerland\nEmail: info@stieregg.ch',
-        },
-        {
-          title: 'Collection and Storage of Personal Data',
-          text: 'When you visit our website, information is automatically sent to the server of our website. This information is temporarily stored in a so-called log file.',
-        },
-        {
-          title: 'Your Rights',
-          text: 'You have the right at any time to receive information about your personal data stored by us. You also have the right to rectification, deletion, or restriction of the processing of your personal data.',
-        },
-      ],
+      mainText: 'respects your privacy. This website does not collect any personal data, does not use cookies, and serves purely for informational purposes.',
+      contact: {
+        title: 'Contact:',
+        text: 'For any privacy-related inquiries, feel free to contact us at',
+        email: 'info@stieregg.ch',
+      },
     },
   }
 
@@ -63,14 +39,24 @@ function PrivacyPageContent() {
     <div className="container mx-auto px-4 py-16">
       <SectionTitle>{pageContent.title}</SectionTitle>
       <div className="max-w-3xl space-y-8">
-        {pageContent.sections.map((section, index) => (
-          <div key={index} className="bg-white rounded-2xl p-8 shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{section.title}</h2>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {section.text}
-            </p>
-          </div>
-        ))}
+        {/* Main Privacy Statement */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <p className="text-gray-700 leading-relaxed">
+            <span className="font-bold">Stieregg Rentals GmbH</span>{' '}
+            {pageContent.mainText}
+          </p>
+        </div>
+
+        {/* Contact Section */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">{pageContent.contact.title}</h2>
+          <p className="text-gray-700 leading-relaxed">
+            {pageContent.contact.text}{' '}
+            <a href={`mailto:${pageContent.contact.email}`} className="text-accent hover:text-accent-dark transition-colors">
+              {pageContent.contact.email}
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   )

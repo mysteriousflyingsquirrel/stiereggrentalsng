@@ -15,37 +15,45 @@ function ImpressumPageContent() {
   const content = {
     de: {
       title: 'Impressum',
-      sections: [
-        {
-          title: 'Angaben gemäß § 5 TMG',
-          text: 'Stieregg Rentals\nGrindelwald\nSchweiz',
-        },
-        {
-          title: 'Kontakt',
-          text: 'E-Mail: info@stieregg.ch',
-        },
-        {
-          title: 'Verantwortlich für den Inhalt',
-          text: 'Stieregg Rentals\nGrindelwald\nSchweiz',
-        },
-      ],
+      company: {
+        name: 'Stieregg Rentals GmbH',
+        address: 'Weidweg 5, Switzerland',
+        city: '3818 Grindelwald, Switzerland',
+        email: 'info@stieregg.ch',
+      },
+      details: {
+        director: 'Geschäftsführer:',
+        directorName: 'Andreas Kaufmann',
+        vat: 'Mehrwertsteuernummer (UID):',
+        vatNumber: 'CHE-202.275.796',
+        companyId: 'Firmenidentifikationsnummer (CH-ID):',
+        companyIdNumber: 'CH-036.4101075.8',
+      },
+      disclaimer: {
+        title: 'Haftungsausschluss:',
+        text: 'Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.',
+      },
     },
     en: {
-      title: 'Legal Notice',
-      sections: [
-        {
-          title: 'Information according to § 5 TMG',
-          text: 'Stieregg Rentals\nGrindelwald\nSwitzerland',
-        },
-        {
-          title: 'Contact',
-          text: 'Email: info@stieregg.ch',
-        },
-        {
-          title: 'Responsible for content',
-          text: 'Stieregg Rentals\nGrindelwald\nSwitzerland',
-        },
-      ],
+      title: 'Impressum',
+      company: {
+        name: 'Stieregg Rentals GmbH',
+        address: 'Weidweg 5, Switzerland',
+        city: '3818 Grindelwald, Switzerland',
+        email: 'info@stieregg.ch',
+      },
+      details: {
+        director: 'Managing Director:',
+        directorName: 'Andreas Kaufmann',
+        vat: 'VAT Number (UID):',
+        vatNumber: 'CHE-202.275.796',
+        companyId: 'Company ID (CH-ID):',
+        companyIdNumber: 'CH-036.4101075.8',
+      },
+      disclaimer: {
+        title: 'Disclaimer:',
+        text: 'The content of this website has been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content.',
+      },
     },
   }
 
@@ -55,14 +63,44 @@ function ImpressumPageContent() {
     <div className="container mx-auto px-4 py-16">
       <SectionTitle>{pageContent.title}</SectionTitle>
       <div className="max-w-3xl space-y-8">
-        {pageContent.sections.map((section, index) => (
-          <div key={index} className="bg-white rounded-2xl p-8 shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{section.title}</h2>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {section.text}
+        {/* Company Information */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="space-y-2 text-gray-700">
+            <p className="font-bold text-gray-900">{pageContent.company.name}</p>
+            <p>{pageContent.company.address}</p>
+            <p>{pageContent.company.city}</p>
+            <p>
+              <span className="font-medium">Email:</span>{' '}
+              <a href={`mailto:${pageContent.company.email}`} className="text-accent hover:text-accent-dark transition-colors">
+                {pageContent.company.email}
+              </a>
             </p>
           </div>
-        ))}
+        </div>
+
+        {/* Company Details */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="space-y-3 text-gray-700">
+            <p>
+              <span className="font-medium">{pageContent.details.director}</span>{' '}
+              {pageContent.details.directorName}
+            </p>
+            <p>
+              <span className="font-medium">{pageContent.details.vat}</span>{' '}
+              {pageContent.details.vatNumber}
+            </p>
+            <p>
+              <span className="font-medium">{pageContent.details.companyId}</span>{' '}
+              {pageContent.details.companyIdNumber}
+            </p>
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">{pageContent.disclaimer.title}</h2>
+          <p className="text-gray-700 leading-relaxed">{pageContent.disclaimer.text}</p>
+        </div>
       </div>
     </div>
   )

@@ -7,8 +7,8 @@ import Footer from '@/components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Stieregg Rentals - Luxury Holiday Apartments in Grindelwald',
-  description: 'Luxury holiday apartments in Grindelwald, Switzerland',
+  title: 'Stieregg Rentals - Holiday Apartments in Grindelwald',
+  description: 'Holiday apartments in Grindelwald, Switzerland',
   icons: {
     icon: '/icons/transparent_dark.svg',
     shortcut: '/icons/transparent_dark.svg',

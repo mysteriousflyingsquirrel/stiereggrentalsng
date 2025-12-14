@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 // Inline SVG icons
 const ChevronLeftIcon = ({ className }: { className?: string }) => (
@@ -36,6 +36,11 @@ type ImageCarouselProps = {
 
 export default function ImageCarousel({ images, className = '' }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const touchStartX = useRef<number | null>(null)
+  const touchEndX = useRef<number | null>(null)
+
+  // Minimum swipe distance (in pixels) to trigger a slide change
+  const minSwipeDistance = 50
 
   if (images.length === 0) {
     return (
@@ -59,8 +64,37 @@ export default function ImageCarousel({ images, className = '' }: ImageCarouselP
     setCurrentIndex(index)
   }
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEndX.current = null
+    touchStartX.current = e.targetTouches[0].clientX
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return
+
+    const distance = touchStartX.current - touchEndX.current
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      goToNext()
+    }
+    if (isRightSwipe) {
+      goToPrevious()
+    }
+  }
+
   return (
-    <div className={`relative w-full h-64 md:h-80 overflow-hidden rounded-2xl ${className}`}>
+    <div 
+      className={`relative w-full h-64 md:h-80 overflow-hidden rounded-2xl ${className}`}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="relative w-full h-full">
         {images.map((image, index) => (
           <div

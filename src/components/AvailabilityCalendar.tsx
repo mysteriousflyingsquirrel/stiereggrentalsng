@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { BookedRange } from '@/lib/availability'
+import { isApartmentAvailable } from '@/lib/booking'
+import { getLocaleFromSearchParams } from '@/lib/locale'
 
 type AvailabilityCalendarProps = {
   slug: string
@@ -9,6 +12,9 @@ type AvailabilityCalendarProps = {
   className?: string
   locale?: 'de' | 'en'
   showMonthSelector?: boolean
+  checkIn?: string | null
+  checkOut?: string | null
+  onDateSelect?: (checkIn: string | null, checkOut: string | null) => void
 }
 
 export default function AvailabilityCalendar({
@@ -17,10 +23,17 @@ export default function AvailabilityCalendar({
   className = '',
   locale = 'de',
   showMonthSelector = false,
+  checkIn = null,
+  checkOut = null,
+  onDateSelect,
 }: AvailabilityCalendarProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [bookedRanges, setBookedRanges] = useState<BookedRange[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null)
+  const currentLocale = locale || getLocaleFromSearchParams(searchParams)
 
   // Calculate valid date range: current month to 2 years ahead (24 months)
   const getValidDateRange = () => {
@@ -63,6 +76,24 @@ export default function AvailabilityCalendar({
     fetchAvailability()
   }, [slug])
 
+  // Jump to checkIn month if dates are selected and apartment is available
+  useEffect(() => {
+    if (checkIn && checkOut && !loading) {
+      const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
+      if (available) {
+        const checkInDate = new Date(checkIn)
+        const checkInMonth = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), 1)
+        checkInMonth.setHours(0, 0, 0, 0)
+        
+        // Only jump if the month is within valid range
+        if (isDateInValidRange(checkInMonth)) {
+          setSelectedMonth(checkInMonth)
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkIn, checkOut, bookedRanges, loading])
+
   const isDateBooked = (date: Date): boolean => {
     const dateStr = date.toISOString().split('T')[0]
     return bookedRanges.some((range) => {
@@ -73,10 +104,81 @@ export default function AvailabilityCalendar({
     })
   }
 
+  const formatDateToString = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const handleDateClick = (date: Date) => {
+    if (isDateBooked(date)) return // Don't allow selection of booked dates
+    
+    const dateStr = formatDateToString(date)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const dayDate = new Date(date)
+    dayDate.setHours(0, 0, 0, 0)
+    
+    // Don't allow selection of past dates
+    if (dayDate < today) return
+
+    let newCheckIn: string | null = checkIn || null
+    let newCheckOut: string | null = checkOut || null
+
+    if (!checkIn || (checkIn && dateStr < checkIn) || (checkIn && checkOut)) {
+      // If no check-in, or new date is before current check-in, or both are set, start new selection
+      newCheckIn = dateStr
+      newCheckOut = null
+    } else if (dateStr > checkIn) {
+      // If check-in is set and new date is after check-in, set check-out
+      newCheckOut = dateStr
+    }
+
+    // Update URL params
+    if (onDateSelect) {
+      onDateSelect(newCheckIn, newCheckOut)
+    } else {
+      // Default behavior: update URL params
+      const params = new URLSearchParams(searchParams.toString())
+      
+      if (newCheckIn) {
+        params.set('checkIn', newCheckIn)
+      } else {
+        params.delete('checkIn')
+      }
+
+      if (newCheckOut) {
+        params.set('checkOut', newCheckOut)
+      } else {
+        params.delete('checkOut')
+      }
+
+      // Preserve lang param
+      params.set('lang', currentLocale)
+
+      router.replace(`?${params.toString()}`, { scroll: false })
+    }
+  }
+
   const getMonthsToShow = () => {
+    // Determine starting month - use checkIn month if available and valid, otherwise use selectedMonth
+    let startMonth: Date = selectedMonth
+    if (checkIn && checkOut && !loading) {
+      const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
+      if (available) {
+        const checkInDate = new Date(checkIn)
+        const checkInMonth = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), 1)
+        checkInMonth.setHours(0, 0, 0, 0)
+        if (isDateInValidRange(checkInMonth)) {
+          startMonth = checkInMonth
+        }
+      }
+    }
+
     if (showMonthSelector) {
       // Show only the selected month (if within valid range)
-      const month = new Date(selectedMonth)
+      const month = new Date(startMonth)
       month.setDate(1)
       
       // Ensure selected month is within valid range
@@ -90,23 +192,25 @@ export default function AvailabilityCalendar({
       return [month]
     }
 
-    // Show multiple months, but limit to valid range (current month + 2 years)
+    // Show multiple months, but limit to valid range (starting from startMonth)
     const monthsArray = []
-    const today = new Date()
-    today.setDate(1) // Start of month
+    const baseMonth = new Date(startMonth)
+    baseMonth.setDate(1) // Start of month
+    baseMonth.setHours(0, 0, 0, 0)
 
-    // Calculate maximum months to show (up to 24 months from today)
+    // Calculate maximum months to show (up to 24 months)
     const maxMonths = Math.min(months, 24)
-    const monthsFromToday = Math.floor((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 30))
-    const actualMonths = Math.min(maxMonths, monthsFromToday + 1)
 
-    for (let i = 0; i < actualMonths; i++) {
-      const month = new Date(today)
-      month.setMonth(today.getMonth() + i)
+    for (let i = 0; i < maxMonths; i++) {
+      const month = new Date(baseMonth)
+      month.setMonth(baseMonth.getMonth() + i)
       
       // Only add if within valid range
       if (isDateInValidRange(month)) {
         monthsArray.push(month)
+      } else {
+        // If we've exceeded the valid range, stop
+        break
       }
     }
 
@@ -348,20 +452,69 @@ export default function AvailabilityCalendar({
                   const isBooked = isDateBooked(day)
                   const isToday =
                     day.toDateString() === new Date().toDateString()
+                  
+                  // Format day as YYYY-MM-DD for comparison
+                  const year = day.getFullYear()
+                  const month = String(day.getMonth() + 1).padStart(2, '0')
+                  const date = String(day.getDate()).padStart(2, '0')
+                  const dayStr = `${year}-${month}-${date}`
+                  
+                  // Check if this day is within the selected date range
+                  let isSelectedDate = false
+                  let isCheckIn = false
+                  let isCheckOut = false
+                  let isHoverRange = false
+                  
+                  if (checkIn && checkOut) {
+                    isCheckIn = dayStr === checkIn
+                    isCheckOut = dayStr === checkOut
+                    // Highlight dates between checkIn and checkOut (inclusive)
+                    if (dayStr >= checkIn && dayStr <= checkOut && isCurrentMonth) {
+                      isSelectedDate = true
+                    }
+                  } else if (checkIn && !checkOut && hoveredDate) {
+                    // Show hover preview when check-in is selected but check-out is not
+                    isCheckIn = dayStr === checkIn
+                    const hoverDate = hoveredDate
+                    const startDate = checkIn < hoverDate ? checkIn : hoverDate
+                    const endDate = checkIn > hoverDate ? checkIn : hoverDate
+                    if (dayStr >= startDate && dayStr <= endDate && isCurrentMonth && dayStr !== checkIn) {
+                      isHoverRange = true
+                    }
+                  } else if (checkIn && !checkOut) {
+                    isCheckIn = dayStr === checkIn
+                  }
+
+                  const today = new Date()
+                  today.setHours(0, 0, 0, 0)
+                  const dayDate = new Date(day)
+                  dayDate.setHours(0, 0, 0, 0)
+                  const isPast = dayDate < today
+                  const isClickable = isCurrentMonth && !isBooked && !isPast
 
                   return (
-                    <div
+                    <button
                       key={dayIndex}
+                      type="button"
+                      onClick={() => isClickable && handleDateClick(day)}
+                      onMouseEnter={() => isClickable && checkIn && !checkOut && setHoveredDate(dayStr)}
+                      onMouseLeave={() => setHoveredDate(null)}
+                      disabled={!isClickable}
                       className={`
-                        aspect-square flex items-center justify-center text-xs rounded
+                        aspect-square flex items-center justify-center text-xs rounded transition-colors
                         ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-700'}
-                        ${isBooked ? 'bg-red-100 text-red-600 font-medium' : ''}
-                        ${!isBooked && isCurrentMonth ? 'hover:bg-gray-100' : ''}
-                        ${isToday && !isBooked ? 'ring-2 ring-accent' : ''}
+                        ${isBooked ? 'bg-red-100 text-red-600 font-medium cursor-not-allowed' : ''}
+                        ${isPast ? 'opacity-50 cursor-not-allowed' : ''}
+                        ${isClickable && !checkIn ? 'hover:bg-gray-100 cursor-pointer' : ''}
+                        ${isToday && !isBooked && !isSelectedDate && !isHoverRange ? 'ring-2 ring-accent' : ''}
+                        ${isSelectedDate && !isBooked && isCurrentMonth ? 'bg-blue-50 text-blue-700' : ''}
+                        ${isHoverRange && !isBooked && isCurrentMonth ? 'bg-blue-100 text-blue-800' : ''}
+                        ${isCheckIn && !isBooked && isCurrentMonth ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : ''}
+                        ${isCheckOut && !isBooked && isCurrentMonth ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : ''}
                       `}
                     >
                       {day.getDate()}
-                    </div>
+                    </button>
                   )
                 })}
               </div>

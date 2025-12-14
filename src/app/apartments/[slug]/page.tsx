@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { useSearchParams, useParams } from 'next/navigation'
 import Image from 'next/image'
 import { getApartmentBySlug } from '@/data/apartments'
@@ -9,6 +9,8 @@ import Button from '@/components/Button'
 import Badge from '@/components/Badge'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import Link from 'next/link'
+import { buildMailtoLink } from '@/lib/booking'
+import { isApartmentAvailable } from '@/lib/booking'
 
 // Force dynamic rendering since we use useSearchParams
 export const dynamic = 'force-dynamic'
@@ -19,6 +21,25 @@ function ApartmentDetailPageContent() {
   const locale = getLocaleFromSearchParams(searchParams)
   const slug = params.slug as string
   const apartment = getApartmentBySlug(slug)
+  
+  // Get selected dates from URL params
+  const checkIn = searchParams.get('checkIn')
+  const checkOut = searchParams.get('checkOut')
+  
+  const handleBookingRequest = (apartment: any, checkIn: string, checkOut: string, guestsNumber?: number) => {
+    const name = prompt(locale === 'de' ? 'Bitte geben Sie Ihren Namen ein:' : 'Please enter your name:')
+    if (name) {
+      const mailtoLink = buildMailtoLink(
+        apartment,
+        checkIn,
+        checkOut,
+        guestsNumber,
+        name.trim(),
+        locale
+      )
+      window.location.href = mailtoLink
+    }
+  }
 
   if (!apartment) {
     return (
@@ -46,22 +67,57 @@ function ApartmentDetailPageContent() {
         <div className="flex gap-2">
           {[...apartment.bookingLinks]
             .sort((a, b) => {
-              // Always put "Direct Booking" first
-              if (a.label === 'Direct Booking') return -1
-              if (b.label === 'Direct Booking') return 1
+              // Always put "Booking request" / "Buchungsanfrage" first
+              if (a.label === 'Booking request') return -1
+              if (b.label === 'Booking request') return 1
               return 0
             })
-            .map((link, index) => (
-              <Button
-                key={index}
-                href={link.url}
-                variant={link.label === 'Direct Booking' ? 'gold' : 'primary'}
-                external
-                className="flex-1 text-sm py-3"
-              >
-                {link.label}
-              </Button>
-            ))}
+            .map((link, index) => {
+              const displayLabel = link.label === 'Booking request' 
+                ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
+                : link.label
+              
+              // Handle Booking request button specially - generate mailto link with dates
+              if (link.label === 'Booking request') {
+                if (!checkIn || !checkOut) {
+                  // Show hint if dates not selected
+                  return (
+                    <div key={index} className="text-sm text-gray-500 italic px-4 py-2 text-center">
+                      {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
+                    </div>
+                  )
+                }
+                
+                // Generate mailto link with selected dates
+                const guestsParam = searchParams.get('guests')
+                const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+                
+                return (
+                  <Button
+                    key={index}
+                    onClick={() => handleBookingRequest(apartment, checkIn, checkOut, guestsNumber)}
+                    variant="gold"
+                    className="flex-1 text-sm py-3"
+                  >
+                    {displayLabel}
+                  </Button>
+                )
+              }
+              
+              // Regular booking links
+              return (
+                <Button
+                  key={index}
+                  href={link.url}
+                  variant="primary"
+                  external
+                  className="flex-1 text-sm py-3"
+                >
+                  {displayLabel}
+                </Button>
+              )
+            })
+            .filter(Boolean)}
         </div>
       </div>
 
@@ -178,7 +234,13 @@ function ApartmentDetailPageContent() {
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           {locale === 'de' ? 'Verfügbarkeit' : 'Availability'}
         </h2>
-        <AvailabilityCalendar slug={apartment.slug} months={6} locale={locale} />
+        <AvailabilityCalendar 
+          slug={apartment.slug} 
+          months={2} 
+          locale={locale}
+          checkIn={checkIn}
+          checkOut={checkOut}
+        />
       </div>
 
       {/* Booking Buttons */}
@@ -189,22 +251,57 @@ function ApartmentDetailPageContent() {
         <div className="flex flex-wrap gap-4">
           {[...apartment.bookingLinks]
             .sort((a, b) => {
-              // Always put "Direct Booking" first
-              if (a.label === 'Direct Booking') return -1
-              if (b.label === 'Direct Booking') return 1
+              // Always put "Booking request" / "Buchungsanfrage" first
+              if (a.label === 'Booking request') return -1
+              if (b.label === 'Booking request') return 1
               return 0
             })
-            .map((link, index) => (
-              <Button
-                key={index}
-                href={link.url}
-                variant={link.label === 'Direct Booking' ? 'gold' : 'primary'}
-                external
-                className="text-lg px-8 py-4"
-              >
-                {link.label}
-              </Button>
-            ))}
+            .map((link, index) => {
+              const displayLabel = link.label === 'Booking request' 
+                ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
+                : link.label
+              
+              // Handle Booking request button specially - generate mailto link with dates
+              if (link.label === 'Booking request') {
+                if (!checkIn || !checkOut) {
+                  // Show hint if dates not selected
+                  return (
+                    <div key={index} className="text-sm text-gray-500 italic px-4 py-2">
+                      {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
+                    </div>
+                  )
+                }
+                
+                // Generate mailto link with selected dates
+                const guestsParam = searchParams.get('guests')
+                const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+                
+                return (
+                  <Button
+                    key={index}
+                    onClick={() => handleBookingRequest(apartment, checkIn, checkOut, guestsNumber)}
+                    variant="gold"
+                    className="text-lg px-8 py-4"
+                  >
+                    {displayLabel}
+                  </Button>
+                )
+              }
+              
+              // Regular booking links
+              return (
+                <Button
+                  key={index}
+                  href={link.url}
+                  variant="primary"
+                  external
+                  className="text-lg px-8 py-4"
+                >
+                  {displayLabel}
+                </Button>
+              )
+            })
+            .filter(Boolean)}
         </div>
       </div>
     </div>

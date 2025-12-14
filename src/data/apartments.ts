@@ -66,7 +66,7 @@ export const apartments: Apartment[] = [
         label: 'e-domizil',
         url: 'https://www.e-domizil.ch/rental/21a740265d7e1b7b04637fc8bcfb7b59?location=5460aeb2be103&id=21a740265d7e1b7b04637fc8bcfb7b59&pricetype=totalPrice&dp=0&clickId=RFSGHQ1TX624ZQWP&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/3432395/ical.ics?securitytoken=8c88c7d4d9d1479699045ff359ad00b5',
@@ -120,7 +120,7 @@ export const apartments: Apartment[] = [
         label: 'e-domizil',
         url: 'https://www.e-domizil.ch/rental/081632dcc3499a06e5ea3c930293c618?location=5460aeb2be103&id=081632dcc3499a06e5ea3c930293c618&pricetype=totalPrice&dp=0&clickId=SDBHRJRDLTZH7YZ5&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698310/ical.ics?securitytoken=f02e669e24f6412a8165dc95132d4298',
@@ -176,7 +176,7 @@ export const apartments: Apartment[] = [
         label: 'Airbnb',
         url: 'https://www.airbnb.ch/rooms/20345876?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3CMTVkq1WHCy76b&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698298/ical.ics?securitytoken=46a7f7bcf6664193bb78ee92571d30dd',
@@ -227,7 +227,7 @@ export const apartments: Apartment[] = [
         label: 'Airbnb',
         url: 'https://www.airbnb.ch/rooms/3460071?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405875_P3Yq7xw-pWR_7c0h&previous_page_section_name=1000&federated_search_id=035fb640-5b87-45ab-9cb1-91982050329c',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698294/ical.ics?securitytoken=ed0bda36efb04fd7acbcc4925b90e757',
@@ -278,7 +278,7 @@ export const apartments: Apartment[] = [
         label: 'Airbnb',
         url: 'https://www.airbnb.ch/rooms/17104334?search_mode=regular_search&adults=1&check_in=2025-11-12&check_out=2025-11-17&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3UbeL5B4VxZlbv8&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698287/ical.ics?securitytoken=50eb0f69cf0e49f1bd9295b5bdf6252d',
@@ -328,7 +328,7 @@ export const apartments: Apartment[] = [
         label: 'Airbnb',
         url: 'https://www.airbnb.ch/rooms/42685109?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3vTQMuTT8_BXyXO&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
@@ -378,7 +378,7 @@ export const apartments: Apartment[] = [
         label: 'Airbnb',
         url: 'https://www.airbnb.ch/rooms/3483075?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3LoS6gxsGmjOD4C&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
       },
-      { label: 'Direct Booking', url: 'mailto:info@stieregg.ch' },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1840472/ical.ics?securitytoken=bb82dda052c544d3a0cb9ca7d08a54e6',

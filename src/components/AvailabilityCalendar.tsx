@@ -33,6 +33,7 @@ export default function AvailabilityCalendar({
   const [loading, setLoading] = useState(true)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [hoveredDate, setHoveredDate] = useState<string | null>(null)
+  const [hasManuallyChangedMonth, setHasManuallyChangedMonth] = useState(false)
   const currentLocale = locale || getLocaleFromSearchParams(searchParams)
 
   // Calculate valid date range: current month to 2 years ahead (24 months)
@@ -76,9 +77,9 @@ export default function AvailabilityCalendar({
     fetchAvailability()
   }, [slug])
 
-  // Jump to checkIn month if dates are selected and apartment is available
+  // Jump to checkIn month if dates are selected and apartment is available (only on initial load, not when user manually changes month)
   useEffect(() => {
-    if (checkIn && checkOut && !loading) {
+    if (checkIn && checkOut && !loading && !hasManuallyChangedMonth) {
       const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
       if (available) {
         const checkInDate = new Date(checkIn)
@@ -92,7 +93,7 @@ export default function AvailabilityCalendar({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkIn, checkOut, bookedRanges, loading])
+  }, [checkIn, checkOut, bookedRanges, loading, hasManuallyChangedMonth])
 
   const isDateBooked = (date: Date): boolean => {
     const dateStr = date.toISOString().split('T')[0]
@@ -218,6 +219,7 @@ export default function AvailabilityCalendar({
   }
 
   const changeMonth = (direction: 'prev' | 'next') => {
+    setHasManuallyChangedMonth(true)
     setSelectedMonth((prev) => {
       const newDate = new Date(prev)
       if (direction === 'prev') {
@@ -240,6 +242,7 @@ export default function AvailabilityCalendar({
   }
 
   const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setHasManuallyChangedMonth(true)
     const [year, month] = e.target.value.split('-').map(Number)
     const newDate = new Date(year, month - 1, 1)
     
@@ -250,6 +253,7 @@ export default function AvailabilityCalendar({
   }
 
   const handleYearSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setHasManuallyChangedMonth(true)
     const year = parseInt(e.target.value)
     setSelectedMonth((prev) => {
       const newDate = new Date(prev)
@@ -389,14 +393,19 @@ export default function AvailabilityCalendar({
               onChange={handleYearSelect}
               className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent cursor-pointer"
             >
-              {Array.from({ length: 3 }, (_, i) => {
-                const year = new Date().getFullYear() + i
-                return (
+              {(() => {
+                const currentYear = new Date().getFullYear()
+                const endYear = endDate.getFullYear()
+                const years = []
+                for (let year = currentYear; year <= endYear; year++) {
+                  years.push(year)
+                }
+                return years.map((year) => (
                   <option key={year} value={year}>
                     {year}
                   </option>
-                )
-              })}
+                ))
+              })()}
             </select>
           </div>
 

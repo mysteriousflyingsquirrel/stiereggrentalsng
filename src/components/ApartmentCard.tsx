@@ -82,73 +82,82 @@ export default function ApartmentCard({
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4">
+        {/* Booking Section */}
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold text-gray-900 mb-3">
+            {locale === 'de' ? 'Buchung' : 'Booking'}
+          </h4>
+          
           {!hasDates ? (
             // Show hint if no dates selected
             <div className="text-sm text-gray-500 italic px-4 py-2">
               {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
             </div>
-          ) : !isAvailable ? (
-            // Show message when dates are selected but apartment is not available
-            <div className="text-sm text-gray-600 px-4 py-2 italic w-full text-center">
-              {locale === 'de'
-                ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
-                : 'No availability on these dates. Please choose other dates.'}
-            </div>
           ) : (
-            // Show booking buttons when dates are selected and apartment is available
-            [...apartment.bookingLinks]
-              .sort((a, b) => {
-                // Always put "Booking request" / "Buchungsanfrage" first
-                if (a.label === 'Booking request') return -1
-                if (b.label === 'Booking request') return 1
-                return 0
-              })
-              .map((link, index) => {
-                // Handle Booking request button specially
-                if (link.label === 'Booking request') {
-                  const localizedLabel = locale === 'de' ? 'Buchungsanfrage' : 'Booking request'
-                  
-                  const handleBookingRequest = () => {
-                    const name = prompt(locale === 'de' ? 'Bitte geben Sie Ihren Namen ein:' : 'Please enter your name:')
-                    if (name) {
-                      const mailtoLink = buildMailtoLink(
-                        apartment,
-                        checkIn!,
-                        checkOut!,
-                        guestsNumber,
-                        name.trim(),
-                        locale
+            <div className="flex flex-wrap gap-2">
+              {!isAvailable ? (
+                // Show message when dates are selected but apartment is not available
+                <div className="text-sm text-gray-600 px-4 py-2 italic w-full text-center">
+                  {locale === 'de'
+                    ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
+                    : 'No availability on these dates. Please choose other dates.'}
+                </div>
+              ) : (
+                // Show booking buttons when dates are selected and apartment is available
+                [...apartment.bookingLinks]
+                  .sort((a, b) => {
+                    // Always put "Booking request" / "Buchungsanfrage" first
+                    if (a.label === 'Booking request') return -1
+                    if (b.label === 'Booking request') return 1
+                    return 0
+                  })
+                  .map((link, index) => {
+                    // Handle Booking request button specially
+                    if (link.label === 'Booking request') {
+                      const localizedLabel = locale === 'de' ? 'Buchungsanfrage' : 'Booking request'
+                      
+                      const handleBookingRequest = () => {
+                        const name = prompt(locale === 'de' ? 'Bitte geben Sie Ihren Namen ein:' : 'Please enter your name:')
+                        if (name) {
+                          const mailtoLink = buildMailtoLink(
+                            apartment,
+                            checkIn!,
+                            checkOut!,
+                            guestsNumber,
+                            name.trim(),
+                            locale
+                          )
+                          window.location.href = mailtoLink
+                        }
+                      }
+                      
+                      return (
+                        <Button
+                          key={index}
+                          onClick={handleBookingRequest}
+                          variant="gold"
+                          className="text-sm px-4 py-2"
+                        >
+                          {localizedLabel}
+                        </Button>
                       )
-                      window.location.href = mailtoLink
                     }
-                  }
-                  
-                  return (
-                    <Button
-                      key={index}
-                      onClick={handleBookingRequest}
-                      variant="gold"
-                      className="text-sm px-4 py-2"
-                    >
-                      {localizedLabel}
-                    </Button>
-                  )
-                }
 
-                // Regular booking links
-                return (
-                  <Button
-                    key={index}
-                    href={link.url}
-                    variant="primary"
-                    external
-                    className="text-sm px-4 py-2"
-                  >
-                    {link.label}
-                  </Button>
-                )
-              })
+                    // Regular booking links
+                    return (
+                      <Button
+                        key={index}
+                        href={link.url}
+                        variant="primary"
+                        external
+                        className="text-sm px-4 py-2"
+                      >
+                        {link.label}
+                      </Button>
+                    )
+                  })
+              )}
+            </div>
           )}
         </div>
 

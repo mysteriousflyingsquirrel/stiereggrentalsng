@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   title: 'Stieregg Rentals - Holiday Apartments in Grindelwald',
   description: 'Holiday apartments in Grindelwald, Switzerland',
   icons: {
-    icon: '/icons/transparent_dark.svg',
-    shortcut: '/icons/transparent_dark.svg',
-    apple: '/icons/transparent_dark.svg',
+    icon: '/icons/logo_white_dark.svg',
+    shortcut: '/icons/logo_white_dark.svg',
+    apple: '/icons/logo_white_dark.svg',
   },
 }
 

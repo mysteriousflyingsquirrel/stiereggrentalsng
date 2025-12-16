@@ -53,19 +53,26 @@ export default function HeaderClient() {
             <div
               className={`relative transition-all duration-300 ${
                 isHomePage
-                  ? 'bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-md rounded-2xl p-4 shadow-2xl ring-2 ring-white/60 ring-offset-2 ring-offset-transparent hover:ring-accent hover:ring-4 hover:shadow-accent/30 hover:scale-105'
+                  ? 'backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:scale-105'
                   : 'bg-gradient-to-br from-gray-50 to-white rounded-xl p-3 shadow-md hover:shadow-lg hover:ring-2 hover:ring-accent transition-all'
               }`}
             >
               {isHomePage && (
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <>
+                  {/* Main background - solid white */}
+                  <div className="absolute inset-0 rounded-2xl bg-white/95"></div>
+                  {/* Subtle border */}
+                  <div className="absolute inset-0 rounded-2xl border border-white/30"></div>
+                  {/* Hover accent overlay */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </>
               )}
               <Image
                 src="/icons/transparent_dark.svg"
                 alt="Stieregg Rentals"
                 width={180}
                 height={60}
-                className={`relative h-12 md:h-16 w-auto transition-transform duration-300 ${
+                className={`relative z-10 h-12 md:h-16 w-auto transition-transform duration-300 ${
                   isHomePage ? 'group-hover:scale-105' : ''
                 }`}
                 priority

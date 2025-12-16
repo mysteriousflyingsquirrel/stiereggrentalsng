@@ -30,9 +30,6 @@ export default function ApartmentMiniCard({
         />
       </div>
       <h4 className="font-bold text-gray-900 mb-1">{apartment.name[locale]}</h4>
-      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-        {apartment.shortDescription[locale]}
-      </p>
       <Button
         href={`/apartments/${apartment.slug}?lang=${locale}`}
         variant="primary"

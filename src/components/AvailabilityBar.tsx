@@ -147,7 +147,7 @@ export default function AvailabilityBar({ className = '' }: AvailabilityBarProps
           <button
             onClick={handleClear}
             disabled={!hasFilters}
-            className={`h-[42px] px-4 text-sm font-medium rounded-lg transition-colors whitespace-nowrap touch-manipulation ${
+            className={`ml-4 h-[42px] px-4 text-sm font-medium rounded-lg transition-colors whitespace-nowrap touch-manipulation ${
               hasFilters
                 ? 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 active:bg-gray-200 cursor-pointer'
                 : 'text-gray-400 cursor-not-allowed opacity-60'

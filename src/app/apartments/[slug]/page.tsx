@@ -190,7 +190,15 @@ function ApartmentDetailPageContent() {
       </div>
 
       {/* Image Gallery - Map to images_big folder */}
-      <div className="mb-12 -mx-4 md:-mx-6 lg:-mx-8">
+      <div className="mb-12 -mx-4 md:-mx-6 lg:-mx-8 relative">
+        {/* Price Sticker */}
+        {apartment.priceFrom && (
+          <div className="absolute top-6 left-4 md:left-6 lg:left-8 bg-accent text-white rounded-lg px-5 py-3 shadow-xl z-10 border-2 border-white/30">
+            <span className="text-xl font-bold">
+              {locale === 'de' ? 'ab' : 'from'} CHF {apartment.priceFrom}
+            </span>
+          </div>
+        )}
         <div className="w-full">
           <ImageCarousel 
             quality={95}
@@ -478,6 +486,25 @@ function ApartmentDetailPageContent() {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
           {locale === 'de' ? 'Buchung' : 'Booking'}
         </h2>
+        
+        {/* Best Price Message */}
+        <div className="mb-4 bg-gold/10 border-2 border-gold/30 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <svg className="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-semibold text-gray-900 mb-1">
+                {locale === 'de' ? 'Bester Preis garantiert!' : 'Best price guaranteed!'}
+              </p>
+              <p className="text-sm text-gray-700">
+                {locale === 'de' 
+                  ? 'Buchen Sie direkt über unsere Buchungsanfrage und erhalten Sie den günstigsten Preis.' 
+                  : 'Book directly through our booking request and get the cheapest price available.'}
+              </p>
+            </div>
+          </div>
+        </div>
         
         {!hasDates ? (
           // Show hint if no dates selected

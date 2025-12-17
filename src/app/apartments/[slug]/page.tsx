@@ -8,6 +8,7 @@ import { getLocaleFromSearchParams } from '@/lib/locale'
 import Button from '@/components/Button'
 import Badge from '@/components/Badge'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
+import BookingModal from '@/components/BookingModal'
 import Link from 'next/link'
 import { buildMailtoLink } from '@/lib/booking'
 import { isApartmentAvailable } from '@/lib/booking'
@@ -31,6 +32,7 @@ function ApartmentDetailPageContent() {
   // Fetch availability data
   const [bookedRanges, setBookedRanges] = useState<BookedRange[]>([])
   const [availabilityLoading, setAvailabilityLoading] = useState(true)
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
   
   useEffect(() => {
     async function fetchAvailability() {
@@ -58,18 +60,24 @@ function ApartmentDetailPageContent() {
     : true
   
   const handleBookingRequest = (apartment: any, checkIn: string, checkOut: string, guestsNumber?: number) => {
-    const name = prompt(locale === 'de' ? 'Bitte geben Sie Ihren Namen ein:' : 'Please enter your name:')
-    if (name) {
-      const mailtoLink = buildMailtoLink(
-        apartment,
-        checkIn,
-        checkOut,
-        guestsNumber,
-        name.trim(),
-        locale
-      )
-      window.location.href = mailtoLink
-    }
+    setIsBookingModalOpen(true)
+  }
+
+  const handleBookingConfirm = (name: string) => {
+    if (!apartment || !checkIn || !checkOut) return
+    
+    const guestsParam = searchParams.get('guests')
+    const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+    
+    const mailtoLink = buildMailtoLink(
+      apartment,
+      checkIn,
+      checkOut,
+      guestsNumber,
+      name,
+      locale
+    )
+    window.location.href = mailtoLink
   }
 
   if (!apartment) {
@@ -612,6 +620,19 @@ function ApartmentDetailPageContent() {
         )}
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {apartment && checkIn && checkOut && (
+        <BookingModal
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+          apartment={apartment}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          locale={locale}
+          onConfirm={handleBookingConfirm}
+        />
+      )}
     </div>
   )
 }

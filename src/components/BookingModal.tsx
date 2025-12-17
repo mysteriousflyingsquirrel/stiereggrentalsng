@@ -1,0 +1,229 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Locale } from '@/lib/locale'
+import { Apartment } from '@/data/apartments'
+import { HiXMark } from 'react-icons/hi2'
+
+type BookingModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  apartment: Apartment
+  checkIn: string
+  checkOut: string
+  locale: Locale
+  onConfirm: (name: string) => void
+}
+
+export default function BookingModal({
+  isOpen,
+  onClose,
+  apartment,
+  checkIn,
+  checkOut,
+  locale,
+  onConfirm,
+}: BookingModalProps) {
+  const [name, setName] = useState('')
+
+  // Reset name when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setName('')
+    }
+  }, [isOpen])
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === 'de' ? 'de-CH' : 'en-GB',
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }
+    )
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (name.trim()) {
+      onConfirm(name.trim())
+      onClose()
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {locale === 'de' ? 'Buchungsanfrage' : 'Booking Request'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label={locale === 'de' ? 'Schließen' : 'Close'}
+          >
+            <HiXMark className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <form onSubmit={handleSubmit} className="p-6">
+          {/* Selected Apartment */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              {locale === 'de' ? 'Ausgewähltes Apartment:' : 'Selected apartment:'}
+            </h3>
+            <div className="flex items-center gap-3 p-3 bg-accent/5 border border-accent/20 rounded-lg">
+              <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900">
+                  {apartment.name[locale]}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Selected Dates */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              {locale === 'de' ? 'Ausgewählte Daten:' : 'Selected dates:'}
+            </h3>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500">
+                    {locale === 'de' ? 'Anreise' : 'Check-in'}
+                  </div>
+                  <div className="font-semibold text-gray-900">
+                    {formatDate(checkIn)}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500">
+                    {locale === 'de' ? 'Abreise' : 'Check-out'}
+                  </div>
+                  <div className="font-semibold text-gray-900">
+                    {formatDate(checkOut)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Name Input */}
+          <div className="mb-6">
+            <label
+              htmlFor="name"
+              className="block text-sm font-semibold text-gray-700 mb-2"
+            >
+              {locale === 'de' ? 'Ihr Name' : 'Your Name'} *
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={
+                locale === 'de'
+                  ? 'Bitte geben Sie Ihren Namen ein'
+                  : 'Please enter your name'
+              }
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all"
+              required
+              autoFocus
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+            >
+              {locale === 'de' ? 'Abbrechen' : 'Cancel'}
+            </button>
+            <button
+              type="submit"
+              disabled={!name.trim()}
+              className="flex-1 px-4 py-3 bg-gold text-white rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gold-dark hover:shadow-lg"
+            >
+              {locale === 'de' ? 'Weiter' : 'Continue'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+

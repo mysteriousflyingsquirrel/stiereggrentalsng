@@ -77,7 +77,7 @@ export default function AvailabilityCalendar({
     fetchAvailability()
   }, [slug])
 
-  // Jump to checkIn month if dates are selected and apartment is available (only on initial load, not when user manually changes month)
+  // Jump to checkIn month if dates are selected AND apartment is available (only on initial load, not when user manually changes month)
   useEffect(() => {
     if (checkIn && checkOut && !loading && !hasManuallyChangedMonth) {
       const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
@@ -90,26 +90,30 @@ export default function AvailabilityCalendar({
         if (isDateInValidRange(checkInMonth)) {
           setSelectedMonth(checkInMonth)
         }
+      } else {
+        // If not available, reset to current month
+        const today = new Date()
+        today.setDate(1)
+        today.setHours(0, 0, 0, 0)
+        setSelectedMonth(today)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkIn, checkOut, bookedRanges, loading, hasManuallyChangedMonth])
-
-  const isDateBooked = (date: Date): boolean => {
-    const dateStr = date.toISOString().split('T')[0]
-    return bookedRanges.some((range) => {
-      const start = new Date(range.start)
-      const end = new Date(range.end)
-      const checkDate = new Date(dateStr)
-      return checkDate >= start && checkDate <= end
-    })
-  }
 
   const formatDateToString = (date: Date): string => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
+  }
+
+  const isDateBooked = (date: Date): boolean => {
+    const dateStr = formatDateToString(date)
+    // Compare as strings (YYYY-MM-DD format) to avoid timezone issues
+    return bookedRanges.some((range) => {
+      return dateStr >= range.start && dateStr <= range.end
+    })
   }
 
   const handleDateClick = (date: Date) => {
@@ -163,7 +167,7 @@ export default function AvailabilityCalendar({
   }
 
   const getMonthsToShow = () => {
-    // Determine starting month - use checkIn month if available and valid, otherwise use selectedMonth
+    // Determine starting month - use checkIn month if dates are selected, apartment is available, and valid, otherwise use selectedMonth
     let startMonth: Date = selectedMonth
     if (checkIn && checkOut && !loading) {
       const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
@@ -456,32 +460,39 @@ export default function AvailabilityCalendar({
                 ))}
               </div>
               <div className="grid grid-cols-7 gap-1">
-                {days.map((day, dayIndex) => {
-                  const isCurrentMonth = day.getMonth() === currentMonth
-                  const isBooked = isDateBooked(day)
-                  const isToday =
-                    day.toDateString() === new Date().toDateString()
+                {(() => {
+                  // Check availability once for the selected dates (if any)
+                  const isSelectedRangeAvailable = checkIn && checkOut 
+                    ? isApartmentAvailable(bookedRanges, checkIn, checkOut)
+                    : false
                   
-                  // Format day as YYYY-MM-DD for comparison
-                  const year = day.getFullYear()
-                  const month = String(day.getMonth() + 1).padStart(2, '0')
-                  const date = String(day.getDate()).padStart(2, '0')
-                  const dayStr = `${year}-${month}-${date}`
-                  
-                  // Check if this day is within the selected date range
-                  let isSelectedDate = false
-                  let isCheckIn = false
-                  let isCheckOut = false
-                  let isHoverRange = false
-                  
-                  if (checkIn && checkOut) {
-                    isCheckIn = dayStr === checkIn
-                    isCheckOut = dayStr === checkOut
-                    // Highlight dates between checkIn and checkOut (inclusive)
-                    if (dayStr >= checkIn && dayStr <= checkOut && isCurrentMonth) {
-                      isSelectedDate = true
-                    }
-                  } else if (checkIn && !checkOut && hoveredDate) {
+                  return days.map((day, dayIndex) => {
+                    const isCurrentMonth = day.getMonth() === currentMonth
+                    const isBooked = isDateBooked(day)
+                    const isToday =
+                      day.toDateString() === new Date().toDateString()
+                    
+                    // Format day as YYYY-MM-DD for comparison
+                    const year = day.getFullYear()
+                    const month = String(day.getMonth() + 1).padStart(2, '0')
+                    const date = String(day.getDate()).padStart(2, '0')
+                    const dayStr = `${year}-${month}-${date}`
+                    
+                    // Check if this day is within the selected date range
+                    let isSelectedDate = false
+                    let isCheckIn = false
+                    let isCheckOut = false
+                    let isHoverRange = false
+                    
+                    if (checkIn && checkOut) {
+                      // Highlight dates if available, otherwise still show them as selected but maybe with different styling
+                      isCheckIn = dayStr === checkIn
+                      isCheckOut = dayStr === checkOut
+                      // Highlight dates between checkIn and checkOut (inclusive)
+                      if (dayStr >= checkIn && dayStr <= checkOut && isCurrentMonth) {
+                        isSelectedDate = true
+                      }
+                    } else if (checkIn && !checkOut && hoveredDate) {
                     // Show hover preview when check-in is selected but check-out is not
                     isCheckIn = dayStr === checkIn
                     const hoverDate = hoveredDate
@@ -516,16 +527,17 @@ export default function AvailabilityCalendar({
                         ${isPast ? 'opacity-50 cursor-not-allowed' : ''}
                         ${isClickable && !checkIn ? 'hover:bg-gray-100 cursor-pointer' : ''}
                         ${isToday && !isBooked && !isSelectedDate && !isHoverRange ? 'ring-2 ring-accent' : ''}
-                        ${isSelectedDate && !isBooked && isCurrentMonth ? 'bg-blue-50 text-blue-700' : ''}
+                        ${isSelectedDate && !isBooked && isCurrentMonth ? (isSelectedRangeAvailable ? 'bg-blue-50 text-blue-700' : 'bg-yellow-50 text-yellow-700') : ''}
                         ${isHoverRange && !isBooked && isCurrentMonth ? 'bg-blue-100 text-blue-800' : ''}
-                        ${isCheckIn && !isBooked && isCurrentMonth ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : ''}
-                        ${isCheckOut && !isBooked && isCurrentMonth ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : ''}
+                        ${isCheckIn && !isBooked && isCurrentMonth ? (isSelectedRangeAvailable ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : 'bg-yellow-200 text-yellow-900 font-semibold ring-2 ring-yellow-400') : ''}
+                        ${isCheckOut && !isBooked && isCurrentMonth ? (isSelectedRangeAvailable ? 'bg-blue-200 text-blue-900 font-semibold ring-2 ring-blue-400' : 'bg-yellow-200 text-yellow-900 font-semibold ring-2 ring-yellow-400') : ''}
                       `}
                     >
                       {day.getDate()}
                     </button>
                   )
-                })}
+                  })
+                })()}
               </div>
             </div>
           )

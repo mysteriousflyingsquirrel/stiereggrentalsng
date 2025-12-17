@@ -109,8 +109,16 @@ export default function DateRangePicker({
     })
   }
 
+  const formatDateToString = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   const handleDateClick = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0]
+    // Format date using local time components to avoid timezone issues
+    const dateStr = formatDateToString(date)
     const dateObj = new Date(date)
     dateObj.setHours(0, 0, 0, 0)
 
@@ -141,12 +149,12 @@ export default function DateRangePicker({
 
   const isDateInRange = (date: Date): boolean => {
     if (!checkIn || !checkOut) return false
-    const dateStr = date.toISOString().split('T')[0]
+    const dateStr = formatDateToString(date)
     return dateStr >= checkIn && dateStr <= checkOut
   }
 
   const isDateSelected = (date: Date, type: 'checkIn' | 'checkOut'): boolean => {
-    const dateStr = date.toISOString().split('T')[0]
+    const dateStr = formatDateToString(date)
     if (type === 'checkIn') return dateStr === checkIn
     return dateStr === checkOut
   }

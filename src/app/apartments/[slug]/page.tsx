@@ -198,10 +198,10 @@ function ApartmentDetailPageContent() {
       </div>
 
       {/* Image Gallery - Map to images_big folder */}
-      <div className="mb-12 -mx-4 md:-mx-6 lg:-mx-8 relative">
+      <div className="mb-12 relative">
         {/* Price Sticker */}
         {apartment.priceFrom && (
-          <div className="absolute top-6 left-4 md:left-6 lg:left-8 bg-accent text-white rounded-lg px-5 py-3 shadow-xl z-10 border-2 border-white/30">
+          <div className="absolute top-6 left-6 bg-accent text-white rounded-lg px-5 py-3 shadow-xl z-10 border-2 border-white/30">
             <span className="text-xl font-bold">
               {locale === 'de' ? 'ab' : 'from'} CHF {apartment.priceFrom}
             </span>

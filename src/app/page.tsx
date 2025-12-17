@@ -161,6 +161,10 @@ function HomePageContent() {
                   key={apartment.id}
                   apartment={apartment}
                   locale={locale}
+                  bookedRanges={availabilityMap[apartment.slug] || []}
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                  guests={guests}
                 />
               ))
             )}

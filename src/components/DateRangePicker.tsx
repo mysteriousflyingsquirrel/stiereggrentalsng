@@ -39,6 +39,15 @@ export default function DateRangePicker({
     }
   }, [isOpen])
 
+  // When the calendar closes with only a check-in selected (no check-out),
+  // reset the check-in so there is no half-finished selection left.
+  useEffect(() => {
+    if (!isOpen && checkIn && !checkOut) {
+      onCheckInChange('')
+      setSelectionMode('checkIn')
+    }
+  }, [isOpen, checkIn, checkOut, onCheckInChange])
+
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 

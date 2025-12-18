@@ -20,6 +20,21 @@
   top: 4.5rem; /* move controls a bit lower from the very top */
 }
 
+/* Tidy up Leaflet attribution:
+   - Hide Leaflet/Ukraine badge/link
+   - Hide separator characters while keeping OpenStreetMap text visible */
+.leaflet-control-attribution {
+  font-size: 0; /* hide bare text like " | " */
+}
+
+.leaflet-control-attribution a[href*="leafletjs.com"] {
+  display: none !important; /* hide Leaflet link + its badge */
+}
+
+.leaflet-control-attribution a[href*="openstreetmap.org"] {
+  font-size: 11px; /* restore readable size for OSM attribution */
+}
+
 /* Custom styles */
 @layer base {
   body {

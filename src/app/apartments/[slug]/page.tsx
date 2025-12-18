@@ -200,6 +200,13 @@ function ApartmentDetailPageContent() {
             {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
           </Badge>
           {apartment.facts.sqm && <Badge>{apartment.facts.sqm} m²</Badge>}
+          {apartment.minNights && (
+            <Badge>
+              {locale === 'de'
+                ? `Min. ${apartment.minNights} ${apartment.minNights === 1 ? 'Nacht' : 'Nächte'}`
+                : `Min. ${apartment.minNights} night${apartment.minNights !== 1 ? 's' : ''}`}
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -498,28 +505,9 @@ function ApartmentDetailPageContent() {
         {/* Booking Section */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          {locale === 'de' ? 'Buchung' : 'Booking'}
-        </h2>
-        
-        {/* Best Price Message */}
-        <div className="mb-4 bg-gold/10 border-2 border-gold/30 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <p className="font-semibold text-gray-900 mb-1">
-                {locale === 'de' ? 'Bester Preis garantiert!' : 'Best price guaranteed!'}
-              </p>
-              <p className="text-sm text-gray-700">
-                {locale === 'de' 
-                  ? 'Buchen Sie direkt über unsere Buchungsanfrage und erhalten Sie den günstigsten Preis.' 
-                  : 'Book directly through our booking request and get the cheapest price available.'}
-              </p>
-            </div>
-          </div>
-        </div>
-        
+            {locale === 'de' ? 'Buchung' : 'Booking'}
+          </h2>
+
         {!hasDates ? (
           // Show hint if no dates selected
           <div className="text-sm text-gray-500 italic px-4 py-2">
@@ -563,14 +551,7 @@ function ApartmentDetailPageContent() {
                   </span>
                 )}
               </div>
-              {/* Minimum stay info (only when below minimum) */}
-              {hasDates && !meetsMinNights && (
-                <div className="mt-2 text-sm text-red-600">
-                  {locale === 'de'
-                    ? `Mindestaufenthalt für dieses Apartment: ${apartment.minNights ?? 1} ${(apartment.minNights ?? 1) === 1 ? 'Nacht' : 'Nächte'}.`
-                    : `Minimum stay for this apartment is ${apartment.minNights ?? 1} night${(apartment.minNights ?? 1) !== 1 ? 's' : ''}.`}
-                </div>
-              )}
+              {/* Minimum stay info below has been removed as it is now covered by the nights badge */}
             </div>
             
             {/* Booking buttons */}
@@ -592,48 +573,69 @@ function ApartmentDetailPageContent() {
                   </div>
                 ) : (
                   // Show booking buttons when dates are selected, apartment is available, and minimum nights are met
-                  [...apartment.bookingLinks]
-                    .sort((a, b) => {
-                      // Always put "Booking request" / "Buchungsanfrage" first
-                      if (a.label === 'Booking request') return -1
-                      if (b.label === 'Booking request') return 1
-                      return 0
-                    })
-                    .map((link, index) => {
-                      const displayLabel = link.label === 'Booking request' 
-                        ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
-                        : link.label
-                      
-                      // Handle Booking request button specially - open booking modal first
-                      if (link.label === 'Booking request') {
-                        const guestsParam = searchParams.get('guests')
-                        const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+                  <>
+                    {/* Best Price Message - only show when booking is possible */}
+                    <div className="mt-4 mb-1 bg-gold/10 border-2 border-gold/30 rounded-lg p-4 w-full">
+                      <div className="flex items-start gap-3">
+                        <svg className="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <p className="font-semibold text-gray-900 mb-1">
+                            {locale === 'de' ? 'Bester Preis garantiert!' : 'Best price guaranteed!'}
+                          </p>
+                          <p className="text-sm text-gray-700">
+                            {locale === 'de' 
+                              ? 'Buchen Sie direkt über unsere Buchungsanfrage und erhalten Sie den günstigsten Preis.' 
+                              : 'Book directly through our booking request and get the cheapest price available.'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {[...apartment.bookingLinks]
+                      .sort((a, b) => {
+                        // Always put "Booking request" / "Buchungsanfrage" first
+                        if (a.label === 'Booking request') return -1
+                        if (b.label === 'Booking request') return 1
+                        return 0
+                      })
+                      .map((link, index) => {
+                        const displayLabel = link.label === 'Booking request' 
+                          ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
+                          : link.label
                         
+                        // Handle Booking request button specially - open booking modal first
+                        if (link.label === 'Booking request') {
+                          const guestsParam = searchParams.get('guests')
+                          const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+                          
+                          return (
+                            <Button
+                              key={index}
+                              onClick={() => handleBookingRequest(apartment, checkIn!, checkOut!, guestsNumber)}
+                              variant="gold"
+                              className="text-lg px-8 py-4"
+                            >
+                              {displayLabel}
+                            </Button>
+                          )
+                        }
+                        
+                        // Regular booking links
                         return (
                           <Button
                             key={index}
-                            onClick={() => handleBookingRequest(apartment, checkIn!, checkOut!, guestsNumber)}
-                            variant="gold"
+                            href={link.url}
+                            variant="primary"
+                            external
                             className="text-lg px-8 py-4"
                           >
                             {displayLabel}
                           </Button>
                         )
-                      }
-                      
-                      // Regular booking links
-                      return (
-                        <Button
-                          key={index}
-                          href={link.url}
-                          variant="primary"
-                          external
-                          className="text-lg px-8 py-4"
-                        >
-                          {displayLabel}
-                        </Button>
-                      )
-                    })
+                      })}
+                  </>
                 )}
               </div>
             )}

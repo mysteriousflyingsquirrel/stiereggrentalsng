@@ -1,6 +1,6 @@
 import { BookedRange } from './availability'
 import { Apartment } from '@/data/apartments'
-import { getSeasonIdForDateString, SeasonId } from '@/data/seasons'
+import { getActiveSeasonIdsForDateString, SeasonId } from '@/data/seasons'
 
 /**
  * Checks if an apartment is available for the given date range
@@ -59,28 +59,38 @@ export function getStayNights(checkIn: string, checkOut: string): number {
  * Determine the minimum nights requirement based on season.
  * Uses the global season date definition from src/data/seasons,
  * and the per-apartment minNights values from src/data/apartments.
- * Falls back to global defaults if not configured on the apartment.
+ *
+ * If a date falls into multiple seasons (based on configured ranges),
+ * the lowest applicable minimum nights across those seasons is used.
+ * If a date is in no explicit season range, "low" season is assumed.
  */
 export function getSeasonalMinNights(checkIn: string, _apartment?: Apartment): number {
-  const seasonId = getSeasonIdForDateString(checkIn)
+  const activeSeasonIds = getActiveSeasonIdsForDateString(checkIn)
+
   const defaults: Record<SeasonId, number> = {
     high: 5,
+    mid: 4,
     low: 3,
   }
 
-  if (_apartment && _apartment.minNights) {
-    const value = _apartment.minNights[seasonId]
-    if (typeof value === 'number') {
-      return value
-    }
-  }
+  const candidateSeasons: SeasonId[] =
+    activeSeasonIds.length > 0 ? (activeSeasonIds as SeasonId[]) : ['low']
 
-  return defaults[seasonId]
+  const candidates = candidateSeasons.map((seasonId) => {
+    const apartmentMin =
+      _apartment && _apartment.minNights
+        ? _apartment.minNights[seasonId]
+        : undefined
+
+    return typeof apartmentMin === 'number' ? apartmentMin : defaults[seasonId]
+  })
+
+  return Math.min(...candidates)
 }
 
 /**
  * Check if a stay meets the apartment's minimum nights requirement.
- * Uses seasonal rules (high/low season) that can later be customised per apartment.
+ * Uses seasonal rules (high/mid/low season) that can be customised per apartment.
  */
 export function meetsMinimumNights(
   apartment: Apartment,

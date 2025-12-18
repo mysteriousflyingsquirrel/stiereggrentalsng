@@ -18,11 +18,12 @@ export type Apartment = {
   priceFrom?: number // Starting price in CHF
   /**
    * Seasonal minimum stay in nights for this apartment.
-   * 'high' and 'low' refer to the seasons defined in src/data/seasons.ts.
+   * 'high', 'mid' and 'low' refer to the seasons defined in src/data/seasons.ts.
    */
   minNights?: {
-    high: number
-    low: number
+    high?: number
+    mid?: number
+    low?: number
   }
 }
 
@@ -118,8 +119,8 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/3432395/ical.ics?securitytoken=8c88c7d4d9d1479699045ff359ad00b5',
     ],
-    priceFrom: 120,
-    minNights: { high: 7, low: 5 },
+    priceFrom: 380,
+    minNights: { high: 7, mid: 5, low: 4 },
   },
   {
     id: 'valerian',
@@ -212,8 +213,8 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698310/ical.ics?securitytoken=f02e669e24f6412a8165dc95132d4298',
     ],
-    priceFrom: 120,
-    minNights: { high: 7, low: 5 },
+    priceFrom: 360,
+    minNights: { high: 7, mid: 5, low: 4 },
   },
   {
     id: 'celina',
@@ -314,8 +315,8 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698298/ical.ics?securitytoken=46a7f7bcf6664193bb78ee92571d30dd',
     ],
-    priceFrom: 100,
-    minNights: { high: 7, low: 5 },
+    priceFrom: 340,
+    minNights: { high: 7, mid: 5, low: 4 },
   },
   {
     id: 'apartment-ost',
@@ -395,8 +396,8 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698294/ical.ics?securitytoken=ed0bda36efb04fd7acbcc4925b90e757',
     ],
-    priceFrom: 90,
-    minNights: { high: 5, low: 3 },
+    priceFrom: 140,
+    minNights: { high: 7, mid: 5, low: 4 },
   },
   {
     id: 'apartment-west',
@@ -480,86 +481,8 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1698287/ical.ics?securitytoken=50eb0f69cf0e49f1bd9295b5bdf6252d',
     ],
-    priceFrom: 90,
-    minNights: { high: 5, low: 3 },
-  },
-  {
-    id: 'studio-ost',
-    slug: 'studio-ost',
-    name: {
-      de: 'Chalet Stieregg Studio Ost',
-      en: 'Chalet Stieregg Studio Ost',
-    },
-    longDescription: {
-      de: 'Klein, fein und perfekt für eine Auszeit in den Bergen: Dieses renovierte 1-Zimmer-Studio (28 m²) eignet sich ideal für Einzelreisende. Ruhig gelegen und mit allem ausgestattet, was man für einen angenehmen Aufenthalt braucht.',
-      en: 'Small but cozy: This renovated 1-room studio (28 m²) is perfect for solo travelers looking to unwind in the mountains. Quietly located and thoughtfully equipped for a relaxing stay.',
-    },
-    images: [
-      { src: '/images/studioost/csso_wohnzimmer_1_768px.jpg', alt: 'Living room' },
-      { src: '/images/studioost/csso_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
-      { src: '/images/studioost/csso_kueche_768px.jpg', alt: 'Kitchen' },
-      { src: '/images/studioost/csso_bett_768px.jpg', alt: 'Bed' },
-      { src: '/images/studioost/csso_badezimmer_768px.jpg', alt: 'Bathroom' },
-      { src: '/images/studioost/csso_balkon_768px.jpg', alt: 'Balcony' },
-    ],
-    facts: {
-      guests: 1,
-      bedrooms: 1,
-      beds: 1,
-      bathrooms: 1,
-      sqm: 28,
-    },
-    amenities: {
-      de: [
-        'Waschmaschine',
-        'TV',
-        'WiFi',
-        'Keine Haustiere',
-        'Nichtraucher',
-        'Küche',
-        'Heizung',
-        'Kühlschrank',
-        'Gefrierschrank',
-        'Parkplatz',
-        'Bettwäsche (kostenlos)',
-        'Handtücher (kostenlos)',
-      ],
-      en: [
-        'Washing machine',
-        'TV',
-        'WiFi',
-        'No pets',
-        'No smoking',
-        'Kitchen',
-        'Heating',
-        'Fridge',
-        'Freezer',
-        'Parking',
-        'Bed linen (free)',
-        'Towels (free)',
-      ],
-    },
-    location: {
-      lat: 46.62741012681669,
-      lng: 8.027309554918785,
-      label: 'Grindelwald',
-    },
-    bookingLinks: [
-      {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee%40u%40a&pricetype=totalPrice&dp=0&clickId=HP23NT783YGCKPXP&sT=dateless&prodName=JM&prodSource=Search&searchId=e805caf64bbd725c&screen=search&searchRequestId=df1c64ec716e4c6a&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/42685109?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3vTQMuTT8_BXyXO&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
-      },
-      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
-    ],
-    icalUrls: [
-      'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
-    ],
-    priceFrom: 70,
-    minNights: { high: 5, low: 3 },
+    priceFrom: 140,
+    minNights: { high: 7, mid: 5, low: 4 },
   },
   {
     id: 'studio-west',
@@ -642,8 +565,86 @@ export const apartments: Apartment[] = [
     icalUrls: [
       'https://inventory.atraveo.com/ical/export/1840472/ical.ics?securitytoken=bb82dda052c544d3a0cb9ca7d08a54e6',
     ],
-    priceFrom: 70,
-    minNights: { high: 5, low: 3 },
+    priceFrom: 105,
+    minNights: { high: 5, mid: 4, low: 3 },
+  },
+  {
+    id: 'studio-ost',
+    slug: 'studio-ost',
+    name: {
+      de: 'Chalet Stieregg Studio Ost',
+      en: 'Chalet Stieregg Studio Ost',
+    },
+    longDescription: {
+      de: 'Klein, fein und perfekt für eine Auszeit in den Bergen: Dieses renovierte 1-Zimmer-Studio (28 m²) eignet sich ideal für Einzelreisende. Ruhig gelegen und mit allem ausgestattet, was man für einen angenehmen Aufenthalt braucht.',
+      en: 'Small but cozy: This renovated 1-room studio (28 m²) is perfect for solo travelers looking to unwind in the mountains. Quietly located and thoughtfully equipped for a relaxing stay.',
+    },
+    images: [
+      { src: '/images/studioost/csso_wohnzimmer_1_768px.jpg', alt: 'Living room' },
+      { src: '/images/studioost/csso_wohnzimmer_2_768px.jpg', alt: 'Living room view' },
+      { src: '/images/studioost/csso_kueche_768px.jpg', alt: 'Kitchen' },
+      { src: '/images/studioost/csso_bett_768px.jpg', alt: 'Bed' },
+      { src: '/images/studioost/csso_badezimmer_768px.jpg', alt: 'Bathroom' },
+      { src: '/images/studioost/csso_balkon_768px.jpg', alt: 'Balcony' },
+    ],
+    facts: {
+      guests: 1,
+      bedrooms: 1,
+      beds: 1,
+      bathrooms: 1,
+      sqm: 28,
+    },
+    amenities: {
+      de: [
+        'Waschmaschine',
+        'TV',
+        'WiFi',
+        'Keine Haustiere',
+        'Nichtraucher',
+        'Küche',
+        'Heizung',
+        'Kühlschrank',
+        'Gefrierschrank',
+        'Parkplatz',
+        'Bettwäsche (kostenlos)',
+        'Handtücher (kostenlos)',
+      ],
+      en: [
+        'Washing machine',
+        'TV',
+        'WiFi',
+        'No pets',
+        'No smoking',
+        'Kitchen',
+        'Heating',
+        'Fridge',
+        'Freezer',
+        'Parking',
+        'Bed linen (free)',
+        'Towels (free)',
+      ],
+    },
+    location: {
+      lat: 46.62741012681669,
+      lng: 8.027309554918785,
+      label: 'Grindelwald',
+    },
+    bookingLinks: [
+      {
+        label: 'e-domizil',
+        url: 'https://www.e-domizil.ch/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee%40u%40a&pricetype=totalPrice&dp=0&clickId=HP23NT783YGCKPXP&sT=dateless&prodName=JM&prodSource=Search&searchId=e805caf64bbd725c&screen=search&searchRequestId=df1c64ec716e4c6a&priceRate=nonRefund',
+      },
+      {
+        label: 'Airbnb',
+        url: 'https://www.airbnb.ch/rooms/42685109?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3vTQMuTT8_BXyXO&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
+      },
+      { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
+    ],
+    icalUrls: [
+      'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
+    ],
+    priceFrom: 95,
+    minNights: { high: 5, mid: 4, low: 3 },
   },
 ]
 

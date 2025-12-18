@@ -1,4 +1,4 @@
-export type SeasonId = 'high' | 'low'
+export type SeasonId = 'high' | 'mid' | 'low'
 
 /**
  * Configuration for a season.
@@ -19,6 +19,13 @@ export const seasons: Record<SeasonId, SeasonConfig> = {
     label: {
       de: 'Hochsaison',
       en: 'High season',
+    },
+  },
+  mid: {
+    id: 'mid',
+    label: {
+      de: 'Zwischensaison',
+      en: 'Mid season',
     },
   },
   low: {
@@ -45,12 +52,21 @@ type MonthDay = `${string}-${string}`
  */
 const seasonDateRanges: Record<SeasonId, { start: MonthDay; end: MonthDay }[]> = {
   high: [
-    // 1 June – 30 September
-    { start: '06-01', end: '09-30' },
-    // 1 December – 28 February
-    { start: '12-01', end: '02-28' },
+    // 20 Dec – 2 Jan
+    { start: '12-20', end: '01-02' },
+    // 24 Jan – 30 Mar
+    { start: '01-24', end: '03-30' },
+    // 6 Jun – 23 Oct
+    { start: '06-06', end: '10-23' },
   ],
-  low: [], // everything that is not high season
+  mid: [
+    // 3 Jan – 23 Jan
+    { start: '01-03', end: '01-23' },
+    // 21 Mar – 5 Jun
+    { start: '03-21', end: '06-05' },
+  ],
+  // Everything that is not high or mid season is low season
+  low: [],
 }
 
 function toMonthDayNumber(date: Date): number {
@@ -88,15 +104,41 @@ function isWithinRange(date: Date, start: MonthDay, end: MonthDay): boolean {
  * High season ranges are defined in `seasonDateRanges.high` (using MM-DD strings).
  * Low season is simply any date that is not in a high season range.
  */
-export function getSeasonIdForDate(date: Date): SeasonId {
+/**
+ * Return all season IDs whose date ranges include the given date.
+ * Does NOT include "low" explicitly – low is defined as "not in any other season".
+ */
+export function getActiveSeasonIdsForDate(date: Date): SeasonId[] {
   if (isNaN(date.getTime())) {
-    return 'low'
+    return []
   }
 
-  const highRanges = seasonDateRanges.high
-  const isHigh = highRanges.some(({ start, end }) => isWithinRange(date, start, end))
+  const active: SeasonId[] = []
 
-  return isHigh ? 'high' : 'low'
+  ;(['high', 'mid'] as SeasonId[]).forEach((seasonId: SeasonId) => {
+    const ranges = seasonDateRanges[seasonId] || []
+    if (ranges.some((range) => isWithinRange(date, range.start, range.end))) {
+      active.push(seasonId)
+    }
+  })
+
+  return active
+}
+
+export function getActiveSeasonIdsForDateString(dateStr: string): SeasonId[] {
+  const date = new Date(dateStr)
+  return getActiveSeasonIdsForDate(date)
+}
+
+/**
+ * Kept for backwards compatibility where only a single season is needed.
+ * If multiple seasons match, prefers high, then mid, otherwise low.
+ */
+export function getSeasonIdForDate(date: Date): SeasonId {
+  const active = getActiveSeasonIdsForDate(date)
+  if (active.includes('high')) return 'high'
+  if (active.includes('mid')) return 'mid'
+  return 'low'
 }
 
 export function getSeasonIdForDateString(dateStr: string): SeasonId {

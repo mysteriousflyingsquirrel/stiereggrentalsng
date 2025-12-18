@@ -101,11 +101,6 @@ export default function ApartmentCard({
           {apartment.facts.sqm && (
             <Badge>{apartment.facts.sqm} m²</Badge>
           )}
-          <Badge>
-            {locale === 'de'
-              ? 'Saisonale Mindestaufenthaltsdauer'
-              : 'Seasonal minimum stay'}
-          </Badge>
         </div>
 
         <Link

@@ -202,11 +202,6 @@ function ApartmentDetailPageContent() {
                 {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
               </Badge>
               {apartment.facts.sqm && <Badge>{apartment.facts.sqm} m²</Badge>}
-          <Badge>
-            {locale === 'de'
-              ? `Saisonale Min. ${seasonalMinNights} ${seasonalMinNights === 1 ? 'Nacht' : 'Nächte'}`
-              : `Seasonal min. ${seasonalMinNights} night${seasonalMinNights !== 1 ? 's' : ''}`}
-          </Badge>
             </div>
           </div>
           <div className="flex-shrink-0">

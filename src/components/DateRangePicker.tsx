@@ -181,11 +181,10 @@ export default function DateRangePicker({
     })
   }
 
-  // Prepare three consecutive months to show vertically
+  // Prepare two consecutive months to show vertically
   const monthsToShow = [
     selectedMonth,
     new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1),
-    new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 2, 1),
   ]
 
   const displayText = checkIn && checkOut

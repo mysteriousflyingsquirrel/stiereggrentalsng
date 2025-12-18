@@ -479,7 +479,7 @@ function ApartmentDetailPageContent() {
           </h2>
           <AvailabilityCalendar 
             slug={apartment.slug} 
-            months={3} 
+            months={2} 
             locale={locale}
             checkIn={checkIn}
             checkOut={checkOut}

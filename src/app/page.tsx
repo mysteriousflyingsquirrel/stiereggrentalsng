@@ -19,7 +19,9 @@ export const dynamic = 'force-dynamic'
 function HomePageContent() {
   const searchParams = useSearchParams()
   const locale = getLocaleFromSearchParams(searchParams)
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>(() => {
+    return searchParams.get('view') === 'map' ? 'map' : 'grid'
+  })
 
   // Get booking params from URL
   const checkIn = searchParams.get('checkIn')
@@ -27,6 +29,7 @@ function HomePageContent() {
   const guestsParam = searchParams.get('guests')
   const guests = guestsParam || '1' // Default to 1 if not specified
   const onlyAvailable = searchParams.get('onlyAvailable') === '1'
+  const focusedApartmentSlug = searchParams.get('apartment')
 
   // Fetch availability for all apartments
   const { availabilityMap, loading: availabilityLoading } = useApartmentAvailability(
@@ -170,7 +173,11 @@ function HomePageContent() {
             )}
           </div>
         ) : (
-          <MapView apartments={filteredApartments} locale={locale} />
+          <MapView
+            apartments={filteredApartments}
+            locale={locale}
+            focusedSlug={focusedApartmentSlug}
+          />
         )}
       </section>
     </div>

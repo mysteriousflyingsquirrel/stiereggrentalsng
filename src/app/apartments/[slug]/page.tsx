@@ -114,6 +114,15 @@ function ApartmentDetailPageContent() {
     return `${path}?${search}`
   }
 
+  const buildMapHref = () => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
+    params.set('lang', locale)
+    params.set('view', 'map')
+    params.set('apartment', apartment.slug)
+    const search = params.toString()
+    return `/${search ? `?${search}` : ''}#apartments`
+  }
+
   // Basic JSON-LD structured data for this apartment
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -165,36 +174,49 @@ function ApartmentDetailPageContent() {
       </nav>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
-          {title}
-        </h1>
-        {subtitle && (
-          <p className="text-2xl md:text-3xl font-semibold text-gray-700 mb-8">
-            {subtitle}
-          </p>
-        )}
-        {!subtitle && <div className="mb-8"></div>}
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="accent">
-            {apartment.facts.guests} {locale === 'de' ? 'Gäste' : 'Guests'}
-          </Badge>
-          <Badge>
-            {apartment.facts.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}
-          </Badge>
-          <Badge>
-            {apartment.facts.beds} {locale === 'de' ? 'Betten' : 'Beds'}
-          </Badge>
-          <Badge>
-            {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
-          </Badge>
-          {apartment.facts.sqm && <Badge>{apartment.facts.sqm} m²</Badge>}
-          {apartment.minNights && (
-            <Badge>
-              {locale === 'de'
-                ? `Min. ${apartment.minNights} ${apartment.minNights === 1 ? 'Nacht' : 'Nächte'}`
-                : `Min. ${apartment.minNights} night${apartment.minNights !== 1 ? 's' : ''}`}
-            </Badge>
-          )}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="text-2xl md:text-3xl font-semibold text-gray-700 mb-4 md:mb-6">
+                {subtitle}
+              </p>
+            )}
+            {!subtitle && <div className="mb-4 md:mb-6"></div>}
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="accent">
+                {apartment.facts.guests} {locale === 'de' ? 'Gäste' : 'Guests'}
+              </Badge>
+              <Badge>
+                {apartment.facts.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}
+              </Badge>
+              <Badge>
+                {apartment.facts.beds} {locale === 'de' ? 'Betten' : 'Beds'}
+              </Badge>
+              <Badge>
+                {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
+              </Badge>
+              {apartment.facts.sqm && <Badge>{apartment.facts.sqm} m²</Badge>}
+              {apartment.minNights && (
+                <Badge>
+                  {locale === 'de'
+                    ? `Min. ${apartment.minNights} ${apartment.minNights === 1 ? 'Nacht' : 'Nächte'}`
+                    : `Min. ${apartment.minNights} night${apartment.minNights !== 1 ? 's' : ''}`}
+                </Badge>
+              )}
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <Button
+              href={buildMapHref()}
+              variant="secondary"
+              className="px-5 py-2 text-sm md:text-base"
+            >
+              {locale === 'de' ? 'Auf Karte anzeigen' : 'Show on Map'}
+            </Button>
+          </div>
         </div>
       </div>
 

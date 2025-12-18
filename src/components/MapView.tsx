@@ -51,9 +51,10 @@ type MapViewProps = {
   apartments: Apartment[]
   locale: Locale
   className?: string
+  focusedSlug?: string | null
 }
 
-export default function MapView({ apartments, locale, className = '' }: MapViewProps) {
+export default function MapView({ apartments, locale, className = '', focusedSlug }: MapViewProps) {
   const [isClient, setIsClient] = useState(false)
   const [customIcon, setCustomIcon] = useState<any>(null)
 
@@ -74,13 +75,20 @@ export default function MapView({ apartments, locale, className = '' }: MapViewP
   }
 
   // Default center to Grindelwald
-  const center: [number, number] = [46.6244, 8.0344]
+  let center: [number, number] = [46.6244, 8.0344]
+
+  if (focusedSlug) {
+    const focusedApartment = apartments.find((apt) => apt.slug === focusedSlug)
+    if (focusedApartment) {
+      center = [focusedApartment.location.lat, focusedApartment.location.lng]
+    }
+  }
 
   return (
     <div className={`w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg ${className}`}>
       <MapContainer
         center={center}
-        zoom={13}
+        zoom={focusedSlug ? 15 : 13}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
       >
@@ -88,17 +96,29 @@ export default function MapView({ apartments, locale, className = '' }: MapViewP
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {apartments.map((apartment) => (
+        {apartments.map((apartment) => {
+          const isFocused = focusedSlug && apartment.slug === focusedSlug
+          return (
           <Marker
             key={apartment.id}
             position={[apartment.location.lat, apartment.location.lng]}
             icon={customIcon}
+            eventHandlers={
+              isFocused
+                ? {
+                    add: (e) => {
+                      // Open the popup automatically when this marker is added
+                      e.target.openPopup()
+                    },
+                  }
+                : undefined
+            }
           >
             <Popup>
               <ApartmentMiniCard apartment={apartment} locale={locale} />
             </Popup>
           </Marker>
-        ))}
+        )})}
       </MapContainer>
     </div>
   )

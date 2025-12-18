@@ -167,9 +167,12 @@ export default function AvailabilityCalendar({
   }
 
   const getMonthsToShow = () => {
-    // Determine starting month - use checkIn month if dates are selected, apartment is available, and valid, otherwise use selectedMonth
+    // Determine starting month
+    // - By default use the currently selected month
+    // - If dates are selected and the user has NOT manually changed the month,
+    //   jump to the check-in month (as long as the range is available and valid)
     let startMonth: Date = selectedMonth
-    if (checkIn && checkOut && !loading) {
+    if (checkIn && checkOut && !loading && !hasManuallyChangedMonth) {
       const available = isApartmentAvailable(bookedRanges, checkIn, checkOut)
       if (available) {
         const checkInDate = new Date(checkIn)

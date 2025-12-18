@@ -1,5 +1,6 @@
 import { BookedRange } from './availability'
 import { Apartment } from '@/data/apartments'
+import { getSeasonIdForDateString, SeasonId } from '@/data/seasons'
 
 /**
  * Checks if an apartment is available for the given date range
@@ -55,15 +56,38 @@ export function getStayNights(checkIn: string, checkOut: string): number {
 }
 
 /**
+ * Determine the minimum nights requirement based on season.
+ * Uses the global season date definition from src/data/seasons,
+ * and the per-apartment minNights values from src/data/apartments.
+ * Falls back to global defaults if not configured on the apartment.
+ */
+export function getSeasonalMinNights(checkIn: string, _apartment?: Apartment): number {
+  const seasonId = getSeasonIdForDateString(checkIn)
+  const defaults: Record<SeasonId, number> = {
+    high: 5,
+    low: 3,
+  }
+
+  if (_apartment && _apartment.minNights) {
+    const value = _apartment.minNights[seasonId]
+    if (typeof value === 'number') {
+      return value
+    }
+  }
+
+  return defaults[seasonId]
+}
+
+/**
  * Check if a stay meets the apartment's minimum nights requirement.
- * If minNights is not set, default to 1.
+ * Uses seasonal rules (high/low season) that can later be customised per apartment.
  */
 export function meetsMinimumNights(
   apartment: Apartment,
   checkIn: string,
   checkOut: string
 ): boolean {
-  const min = apartment.minNights ?? 1
+  const min = getSeasonalMinNights(checkIn, apartment)
   const nights = getStayNights(checkIn, checkOut)
   if (nights === 0) return false
   return nights >= min

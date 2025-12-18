@@ -10,7 +10,7 @@ import Badge from '@/components/Badge'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import BookingModal from '@/components/BookingModal'
 import Link from 'next/link'
-import { buildMailtoLink, isApartmentAvailable, getStayNights, meetsMinimumNights } from '@/lib/booking'
+import { buildMailtoLink, isApartmentAvailable, getStayNights, getSeasonalMinNights, meetsMinimumNights } from '@/lib/booking'
 import { BookedRange } from '@/lib/availability'
 
 // Force dynamic rendering since we use useSearchParams
@@ -82,6 +82,9 @@ function ApartmentDetailPageContent() {
   const meetsMinNights = hasDates && checkIn && checkOut
     ? meetsMinimumNights(apartment!, checkIn, checkOut)
     : true
+  const seasonalMinNights = hasDates && checkIn
+    ? getSeasonalMinNights(checkIn, apartment)
+    : getSeasonalMinNights(new Date().toISOString().slice(0, 10), apartment)
   const isBookable = hasDates && !availabilityLoading
     ? isAvailable && meetsMinNights
     : true
@@ -199,13 +202,11 @@ function ApartmentDetailPageContent() {
                 {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
               </Badge>
               {apartment.facts.sqm && <Badge>{apartment.facts.sqm} m²</Badge>}
-              {apartment.minNights && (
-                <Badge>
-                  {locale === 'de'
-                    ? `Min. ${apartment.minNights} ${apartment.minNights === 1 ? 'Nacht' : 'Nächte'}`
-                    : `Min. ${apartment.minNights} night${apartment.minNights !== 1 ? 's' : ''}`}
-                </Badge>
-              )}
+          <Badge>
+            {locale === 'de'
+              ? `Saisonale Min. ${seasonalMinNights} ${seasonalMinNights === 1 ? 'Nacht' : 'Nächte'}`
+              : `Seasonal min. ${seasonalMinNights} night${seasonalMinNights !== 1 ? 's' : ''}`}
+          </Badge>
             </div>
           </div>
           <div className="flex-shrink-0">
@@ -531,7 +532,7 @@ function ApartmentDetailPageContent() {
                 {locale === 'de' ? 'Ausgewählte Daten:' : 'Selected dates:'}
               </div>
               <div className="flex flex-wrap gap-2 items-center mb-3">
-                <Badge variant="accent" className="text-base px-4 py-2">
+                <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
                   {new Date(checkIn).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
                     year: 'numeric',
                     month: 'long',
@@ -539,7 +540,7 @@ function ApartmentDetailPageContent() {
                   })}
                 </Badge>
                 <span className="text-gray-400">→</span>
-                <Badge variant="accent" className="text-base px-4 py-2">
+                <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
                   {new Date(checkOut).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
                     year: 'numeric',
                     month: 'long',
@@ -548,9 +549,9 @@ function ApartmentDetailPageContent() {
                 </Badge>
                 {/* Nights badge */}
                 {hasDates && (
-                  <span
-                    className={`inline-flex items-center px-4 py-2 rounded-full text-base font-medium border ${
-                      apartment.minNights && nights < apartment.minNights
+                  <Badge
+                    className={`text-base px-4 py-2 border ${
+                      nights < seasonalMinNights
                         ? 'bg-red-50 text-red-700 border-red-200'
                         : 'bg-green-50 text-green-700 border-green-200'
                     }`}
@@ -558,7 +559,7 @@ function ApartmentDetailPageContent() {
                     {locale === 'de'
                       ? `${nights} ${nights === 1 ? 'Nacht' : 'Nächte'}`
                       : `${nights} night${nights !== 1 ? 's' : ''}`}
-                  </span>
+                  </Badge>
                 )}
               </div>
               {/* Minimum stay info below has been removed as it is now covered by the nights badge */}
@@ -578,8 +579,8 @@ function ApartmentDetailPageContent() {
                   // Available but stay is shorter than minimum requirement
                   <div className="text-sm text-gray-600 py-2 italic w-full">
                     {locale === 'de'
-                      ? `Die gewählte Aufenthaltsdauer unterschreitet den Mindestaufenthalt von ${apartment.minNights ?? 1} ${(apartment.minNights ?? 1) === 1 ? 'Nacht' : 'Nächten'}. Bitte wählen Sie längere Daten.`
-                      : `The selected stay is shorter than the minimum of ${apartment.minNights ?? 1} night${(apartment.minNights ?? 1) !== 1 ? 's' : ''}. Please choose a longer stay.`}
+                      ? `Die gewählte Aufenthaltsdauer unterschreitet den saisonalen Mindestaufenthalt von ${seasonalMinNights} ${seasonalMinNights === 1 ? 'Nacht' : 'Nächten'}. Bitte wählen Sie längere Daten.`
+                      : `The selected stay is shorter than the seasonal minimum of ${seasonalMinNights} night${seasonalMinNights !== 1 ? 's' : ''}. Please choose a longer stay.`}
                   </div>
                 ) : (
                   // Show booking buttons when dates are selected, apartment is available, and minimum nights are met

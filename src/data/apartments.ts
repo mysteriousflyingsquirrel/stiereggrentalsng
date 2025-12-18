@@ -16,7 +16,14 @@ export type Apartment = {
   bookingLinks: { label: string; url: string }[]
   icalUrls: string[]
   priceFrom?: number // Starting price in CHF
-  minNights?: number // Minimum stay in nights for this apartment
+  /**
+   * Seasonal minimum stay in nights for this apartment.
+   * 'high' and 'low' refer to the seasons defined in src/data/seasons.ts.
+   */
+  minNights?: {
+    high: number
+    low: number
+  }
 }
 
 export const apartments: Apartment[] = [
@@ -112,7 +119,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/3432395/ical.ics?securitytoken=8c88c7d4d9d1479699045ff359ad00b5',
     ],
     priceFrom: 120,
-    minNights: 4,
+    minNights: { high: 7, low: 5 },
   },
   {
     id: 'valerian',
@@ -206,7 +213,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/1698310/ical.ics?securitytoken=f02e669e24f6412a8165dc95132d4298',
     ],
     priceFrom: 120,
-    minNights: 5,
+    minNights: { high: 7, low: 5 },
   },
   {
     id: 'celina',
@@ -308,7 +315,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/1698298/ical.ics?securitytoken=46a7f7bcf6664193bb78ee92571d30dd',
     ],
     priceFrom: 100,
-    minNights: 3,
+    minNights: { high: 7, low: 5 },
   },
   {
     id: 'apartment-ost',
@@ -389,7 +396,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/1698294/ical.ics?securitytoken=ed0bda36efb04fd7acbcc4925b90e757',
     ],
     priceFrom: 90,
-    minNights: 3,
+    minNights: { high: 5, low: 3 },
   },
   {
     id: 'apartment-west',
@@ -474,7 +481,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/1698287/ical.ics?securitytoken=50eb0f69cf0e49f1bd9295b5bdf6252d',
     ],
     priceFrom: 90,
-    minNights: 3,
+    minNights: { high: 5, low: 3 },
   },
   {
     id: 'studio-ost',
@@ -552,7 +559,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
     ],
     priceFrom: 70,
-    minNights: 2,
+    minNights: { high: 5, low: 3 },
   },
   {
     id: 'studio-west',
@@ -636,7 +643,7 @@ export const apartments: Apartment[] = [
       'https://inventory.atraveo.com/ical/export/1840472/ical.ics?securitytoken=bb82dda052c544d3a0cb9ca7d08a54e6',
     ],
     priceFrom: 70,
-    minNights: 2,
+    minNights: { high: 5, low: 3 },
   },
 ]
 

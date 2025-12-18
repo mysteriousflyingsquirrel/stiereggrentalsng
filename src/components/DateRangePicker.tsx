@@ -92,7 +92,6 @@ export default function DateRangePicker({
     const year = date.getFullYear()
     const month = date.getMonth()
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
     const days: Date[] = []
 
     // Add days from previous month to fill first week
@@ -104,6 +103,16 @@ export default function DateRangePicker({
       const day = new Date(startDate)
       day.setDate(startDate.getDate() + i)
       days.push(day)
+    }
+
+    // Remove trailing weeks that belong entirely to the next month
+    // (keep leading days from previous month so weekdays stay aligned)
+    for (let i = days.length - 7; i >= 0; i -= 7) {
+      const week = days.slice(i, i + 7)
+      const hasCurrentMonthDay = week.some((d) => d.getMonth() === month)
+      if (hasCurrentMonthDay) {
+        return days.slice(0, i + 7)
+      }
     }
 
     return days
@@ -287,31 +296,45 @@ export default function DateRangePicker({
 
                   {/* Calendar grid */}
                   <div className="grid grid-cols-7 gap-1">
-                    {days.map((day, index) => {
-                      const isCurrentMonth = day.getMonth() === currentMonth
-                      const isPast = day < today
-                      const isInRange = isDateInRange(day)
-                      const isCheckIn = isDateSelected(day, 'checkIn')
-                      const isCheckOut = isDateSelected(day, 'checkOut')
-                      const isDisabled = isPast || !isCurrentMonth
+                    {(() => {
+                      const weeks: Date[][] = []
+                      for (let i = 0; i < days.length; i += 7) {
+                        weeks.push(days.slice(i, i + 7))
+                      }
 
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => handleDateClick(day)}
-                          disabled={isDisabled}
-                          className={`
-                            aspect-square flex items-center justify-center text-sm rounded-lg transition-all
-                            ${isDisabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100 cursor-pointer'}
-                            ${isInRange ? 'bg-accent/10' : ''}
-                            ${isCheckIn || isCheckOut ? 'bg-accent text-white font-semibold' : ''}
-                            ${!isDisabled && isCurrentMonth ? 'hover:bg-accent/20' : ''}
-                          `}
-                        >
-                          {day.getDate()}
-                        </button>
-                      )
-                    })}
+                      return weeks.map((week, weekIndex) => {
+                        const isPureNextMonthRow =
+                          weekIndex > 0 && week.every((d) => d.getMonth() !== currentMonth)
+                        if (isPureNextMonthRow) return null
+
+                        return week.map((day, index) => {
+                          const key = weekIndex * 7 + index
+                          const isCurrentMonth = day.getMonth() === currentMonth
+                          const isPast = day < today
+                          const isInRange = isDateInRange(day)
+                          const isCheckIn = isDateSelected(day, 'checkIn')
+                          const isCheckOut = isDateSelected(day, 'checkOut')
+                          const isDisabled = isPast || !isCurrentMonth
+
+                          return (
+                            <button
+                              key={key}
+                              onClick={() => handleDateClick(day)}
+                              disabled={isDisabled}
+                              className={`
+                                aspect-square flex items-center justify-center text-sm rounded-lg transition-all
+                                ${isDisabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100 cursor-pointer'}
+                                ${isInRange ? 'bg-accent/10' : ''}
+                                ${isCheckIn || isCheckOut ? 'bg-accent text-white font-semibold' : ''}
+                                ${!isDisabled && isCurrentMonth ? 'hover:bg-accent/20' : ''}
+                              `}
+                            >
+                              {day.getDate()}
+                            </button>
+                          )
+                        })
+                      })
+                    })()}
                   </div>
                 </div>
               )

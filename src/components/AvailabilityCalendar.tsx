@@ -269,7 +269,6 @@ export default function AvailabilityCalendar({
     const year = date.getFullYear()
     const month = date.getMonth()
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
     const days: Date[] = []
 
     // Add days from previous month to fill first week
@@ -281,6 +280,16 @@ export default function AvailabilityCalendar({
       const day = new Date(startDate)
       day.setDate(startDate.getDate() + i)
       days.push(day)
+    }
+
+    // Remove trailing weeks that belong entirely to the next month
+    // (keep leading days from previous month so weekdays stay aligned)
+    for (let i = days.length - 7; i >= 0; i -= 7) {
+      const week = days.slice(i, i + 7)
+      const hasCurrentMonthDay = week.some((d) => d.getMonth() === month)
+      if (hasCurrentMonthDay) {
+        return days.slice(0, i + 7)
+      }
     }
 
     return days

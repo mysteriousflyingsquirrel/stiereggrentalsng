@@ -57,12 +57,14 @@ type MapViewProps = {
 export default function MapView({ apartments, locale, className = '', focusedSlug }: MapViewProps) {
   const [isClient, setIsClient] = useState(false)
   const [customIcon, setCustomIcon] = useState<any>(null)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
     // Create icon only on client side
     if (typeof window !== 'undefined') {
       setCustomIcon(createCustomIcon())
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
     }
   }, [])
 
@@ -89,8 +91,9 @@ export default function MapView({ apartments, locale, className = '', focusedSlu
       <MapContainer
         center={center}
         zoom={focusedSlug ? 15 : 13}
+        scrollWheelZoom={false} // Disable mouse wheel zoom for desktop users
+        dragging={!isTouchDevice} // On touch devices, disable one-finger drag; use controls/pinch instead
         style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

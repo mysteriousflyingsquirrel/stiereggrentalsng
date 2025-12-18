@@ -116,65 +116,6 @@ function ApartmentDetailPageContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Sticky Book Button for Mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40 p-4">
-        <div className="flex gap-2">
-          {[...apartment.bookingLinks]
-            .sort((a, b) => {
-              // Always put "Booking request" / "Buchungsanfrage" first
-              if (a.label === 'Booking request') return -1
-              if (b.label === 'Booking request') return 1
-              return 0
-            })
-            .map((link, index) => {
-              const displayLabel = link.label === 'Booking request' 
-                ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
-                : link.label
-              
-              // Handle Booking request button specially - generate mailto link with dates
-              if (link.label === 'Booking request') {
-                if (!checkIn || !checkOut) {
-                  // Show hint if dates not selected
-                  return (
-                    <div key={index} className="text-sm text-gray-500 italic px-4 py-2 text-center">
-                      {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
-                    </div>
-                  )
-                }
-                
-                // Generate mailto link with selected dates
-                const guestsParam = searchParams.get('guests')
-                const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
-                
-                return (
-                  <Button
-                    key={index}
-                    onClick={() => handleBookingRequest(apartment, checkIn, checkOut, guestsNumber)}
-                    variant="gold"
-                    className="flex-1 text-sm py-3"
-                  >
-                    {displayLabel}
-                  </Button>
-                )
-              }
-              
-              // Regular booking links
-              return (
-                <Button
-                  key={index}
-                  href={link.url}
-                  variant="primary"
-                  external
-                  className="flex-1 text-sm py-3"
-                >
-                  {displayLabel}
-                </Button>
-              )
-            })
-            .filter(Boolean)}
-        </div>
-      </div>
-
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">

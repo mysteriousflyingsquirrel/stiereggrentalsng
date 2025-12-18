@@ -184,23 +184,9 @@ export default function AvailabilityCalendar({
       }
     }
 
-    if (showMonthSelector) {
-      // Show only the selected month (if within valid range)
-      const month = new Date(startMonth)
-      month.setDate(1)
-      
-      // Ensure selected month is within valid range
-      if (!isDateInValidRange(month)) {
-        // If outside range, use current month
-        const currentMonth = new Date()
-        currentMonth.setDate(1)
-        return [currentMonth]
-      }
-      
-      return [month]
-    }
-
-    // Show multiple months, but limit to valid range (starting from startMonth)
+    // Show multiple months (respecting the `months` prop), but limit to valid range
+    // starting from startMonth. When `showMonthSelector` is true, the selector
+    // simply controls this startMonth; we still render multiple stacked months.
     const monthsArray = []
     const baseMonth = new Date(startMonth)
     baseMonth.setDate(1) // Start of month
@@ -443,18 +429,23 @@ export default function AvailabilityCalendar({
         </div>
       )}
 
-      <div className={`grid gap-6 ${showMonthSelector ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
+      {/* Months grid – when the month selector is shown (apartment page),
+          stack months vertically in a scrollable area similar to the date range picker */}
+      <div className={showMonthSelector ? 'max-h-[520px] overflow-y-auto pr-1' : ''}>
+        <div className={`grid gap-6 ${showMonthSelector ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
         {monthsToShow.map((month, monthIndex) => {
           const days = getDaysInMonth(month)
           const currentMonth = month.getMonth()
 
           return (
             <div key={monthIndex} className="bg-white rounded-xl p-4 shadow-sm">
-              {!showMonthSelector && (
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  {monthNames[locale][month.getMonth()]} {month.getFullYear()}
-                </h3>
-              )}
+              <h3
+                className={`mb-4 font-semibold text-gray-900 ${
+                  showMonthSelector ? 'text-base' : 'text-lg'
+                }`}
+              >
+                {monthNames[locale][month.getMonth()]} {month.getFullYear()}
+              </h3>
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {dayNames[locale].map((day) => (
                   <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
@@ -545,6 +536,7 @@ export default function AvailabilityCalendar({
             </div>
           )
         })}
+        </div>
       </div>
       <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
         <div className="flex items-center gap-2">

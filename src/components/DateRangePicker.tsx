@@ -21,6 +21,7 @@ export default function DateRangePicker({
   className = '',
 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
+  // Base month for the calendar view (first of the two months shown)
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [selectionMode, setSelectionMode] = useState<'checkIn' | 'checkOut'>('checkIn')
   const pickerRef = useRef<HTMLDivElement>(null)
@@ -180,8 +181,12 @@ export default function DateRangePicker({
     })
   }
 
-  const days = getDaysInMonth(selectedMonth)
-  const currentMonth = selectedMonth.getMonth()
+  // Prepare three consecutive months to show vertically
+  const monthsToShow = [
+    selectedMonth,
+    new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1),
+    new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 2, 1),
+  ]
 
   const displayText = checkIn && checkOut
     ? `${formatDisplayDate(checkIn)} - ${formatDisplayDate(checkOut)}`
@@ -210,7 +215,7 @@ export default function DateRangePicker({
 
       {/* Calendar dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 p-4 z-50 min-w-[320px]">
+        <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 p-4 z-50 min-w-[320px] max-h-[520px] overflow-y-auto">
           {/* Month navigation */}
           <div className="flex items-center justify-between mb-4">
             <button
@@ -234,6 +239,9 @@ export default function DateRangePicker({
             </button>
             <h3 className="text-lg font-semibold text-gray-900">
               {monthNames[locale][selectedMonth.getMonth()]} {selectedMonth.getFullYear()}
+              {' '}–{' '}
+              {monthNames[locale][monthsToShow[monthsToShow.length - 1].getMonth()]}{' '}
+              {monthsToShow[monthsToShow.length - 1].getFullYear()}
             </h3>
             <button
               onClick={() => changeMonth('next')}
@@ -256,40 +264,57 @@ export default function DateRangePicker({
             </button>
           </div>
 
-          {/* Day names */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {dayNames[locale].map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {days.map((day, index) => {
-              const isCurrentMonth = day.getMonth() === currentMonth
-              const isPast = day < today
-              const isInRange = isDateInRange(day)
-              const isCheckIn = isDateSelected(day, 'checkIn')
-              const isCheckOut = isDateSelected(day, 'checkOut')
-              const isDisabled = isPast || !isCurrentMonth
+          {/* Two months stacked vertically */}
+          <div className="space-y-4">
+            {monthsToShow.map((monthDate, monthIndex) => {
+              const days = getDaysInMonth(monthDate)
+              const currentMonth = monthDate.getMonth()
 
               return (
-                <button
-                  key={index}
-                  onClick={() => handleDateClick(day)}
-                  disabled={isDisabled}
-                  className={`
-                    aspect-square flex items-center justify-center text-sm rounded-lg transition-all
-                    ${isDisabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100 cursor-pointer'}
-                    ${isInRange ? 'bg-accent/10' : ''}
-                    ${isCheckIn || isCheckOut ? 'bg-accent text-white font-semibold' : ''}
-                    ${!isDisabled && isCurrentMonth ? 'hover:bg-accent/20' : ''}
-                  `}
-                >
-                  {day.getDate()}
-                </button>
+                <div key={monthIndex}>
+                  {/* Month title for each block */}
+                  <h4 className="text-sm font-medium text-gray-800 mb-2">
+                    {monthNames[locale][monthDate.getMonth()]} {monthDate.getFullYear()}
+                  </h4>
+
+                  {/* Day names */}
+                  <div className="grid grid-cols-7 gap-1 mb-2">
+                    {dayNames[locale].map((day) => (
+                      <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar grid */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {days.map((day, index) => {
+                      const isCurrentMonth = day.getMonth() === currentMonth
+                      const isPast = day < today
+                      const isInRange = isDateInRange(day)
+                      const isCheckIn = isDateSelected(day, 'checkIn')
+                      const isCheckOut = isDateSelected(day, 'checkOut')
+                      const isDisabled = isPast || !isCurrentMonth
+
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleDateClick(day)}
+                          disabled={isDisabled}
+                          className={`
+                            aspect-square flex items-center justify-center text-sm rounded-lg transition-all
+                            ${isDisabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100 cursor-pointer'}
+                            ${isInRange ? 'bg-accent/10' : ''}
+                            ${isCheckIn || isCheckOut ? 'bg-accent text-white font-semibold' : ''}
+                            ${!isDisabled && isCurrentMonth ? 'hover:bg-accent/20' : ''}
+                          `}
+                        >
+                          {day.getDate()}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
               )
             })}
           </div>

@@ -10,8 +10,7 @@ import Badge from '@/components/Badge'
 import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import BookingModal from '@/components/BookingModal'
 import Link from 'next/link'
-import { buildMailtoLink } from '@/lib/booking'
-import { isApartmentAvailable } from '@/lib/booking'
+import { buildMailtoLink, isApartmentAvailable, getStayNights, meetsMinimumNights } from '@/lib/booking'
 import { BookedRange } from '@/lib/availability'
 
 // Force dynamic rendering since we use useSearchParams
@@ -53,12 +52,6 @@ function ApartmentDetailPageContent() {
     fetchAvailability()
   }, [apartment])
   
-  // Check availability if dates are selected
-  const hasDates = !!(checkIn && checkOut)
-  const isAvailable = hasDates && !availabilityLoading
-    ? isApartmentAvailable(bookedRanges, checkIn, checkOut)
-    : true
-  
   const handleBookingRequest = (apartment: any, checkIn: string, checkOut: string, guestsNumber?: number) => {
     setIsBookingModalOpen(true)
   }
@@ -79,6 +72,19 @@ function ApartmentDetailPageContent() {
     )
     window.location.href = mailtoLink
   }
+
+  // Check availability if dates are selected (after apartment is confirmed non-null)
+  const hasDates = !!(checkIn && checkOut)
+  const nights = hasDates && checkIn && checkOut ? getStayNights(checkIn, checkOut) : 0
+  const isAvailable = hasDates && !availabilityLoading && checkIn && checkOut
+    ? isApartmentAvailable(bookedRanges, checkIn, checkOut)
+    : true
+  const meetsMinNights = hasDates && checkIn && checkOut
+    ? meetsMinimumNights(apartment!, checkIn, checkOut)
+    : true
+  const isBookable = hasDates && !availabilityLoading
+    ? isAvailable && meetsMinNights
+    : true
 
   if (!apartment) {
     return (
@@ -542,19 +548,27 @@ function ApartmentDetailPageContent() {
                     day: 'numeric',
                   })}
                 </Badge>
-              </div>
-              
-              {/* Availability badge */}
-              {!availabilityLoading && (
-                <div className="mb-4">
-                  <Badge 
-                    variant={isAvailable ? undefined : undefined} 
-                    className={isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}
+                {/* Nights badge */}
+                {hasDates && (
+                  <span
+                    className={`inline-flex items-center px-4 py-2 rounded-full text-base font-medium border ${
+                      apartment.minNights && nights < apartment.minNights
+                        ? 'bg-red-50 text-red-700 border-red-200'
+                        : 'bg-green-50 text-green-700 border-green-200'
+                    }`}
                   >
-                    {isAvailable
-                      ? locale === 'de' ? 'Verfügbar' : 'Available'
-                      : locale === 'de' ? 'Nicht verfügbar' : 'Not available'}
-                  </Badge>
+                    {locale === 'de'
+                      ? `${nights} ${nights === 1 ? 'Nacht' : 'Nächte'}`
+                      : `${nights} night${nights !== 1 ? 's' : ''}`}
+                  </span>
+                )}
+              </div>
+              {/* Minimum stay info (only when below minimum) */}
+              {hasDates && !meetsMinNights && (
+                <div className="mt-2 text-sm text-red-600">
+                  {locale === 'de'
+                    ? `Mindestaufenthalt für dieses Apartment: ${apartment.minNights ?? 1} ${(apartment.minNights ?? 1) === 1 ? 'Nacht' : 'Nächte'}.`
+                    : `Minimum stay for this apartment is ${apartment.minNights ?? 1} night${(apartment.minNights ?? 1) !== 1 ? 's' : ''}.`}
                 </div>
               )}
             </div>
@@ -564,13 +578,20 @@ function ApartmentDetailPageContent() {
               <div className="flex flex-wrap gap-4">
                 {!isAvailable ? (
                   // Show message when dates are selected but apartment is not available
-                  <div className="text-sm text-gray-600 px-4 py-2 italic w-full">
+                  <div className="text-sm text-gray-600 py-2 italic w-full">
                     {locale === 'de'
                       ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
                       : 'No availability on these dates. Please choose other dates.'}
                   </div>
+                ) : !meetsMinNights ? (
+                  // Available but stay is shorter than minimum requirement
+                  <div className="text-sm text-gray-600 py-2 italic w-full">
+                    {locale === 'de'
+                      ? `Die gewählte Aufenthaltsdauer unterschreitet den Mindestaufenthalt von ${apartment.minNights ?? 1} ${(apartment.minNights ?? 1) === 1 ? 'Nacht' : 'Nächten'}. Bitte wählen Sie längere Daten.`
+                      : `The selected stay is shorter than the minimum of ${apartment.minNights ?? 1} night${(apartment.minNights ?? 1) !== 1 ? 's' : ''}. Please choose a longer stay.`}
+                  </div>
                 ) : (
-                  // Show booking buttons when dates are selected and apartment is available
+                  // Show booking buttons when dates are selected, apartment is available, and minimum nights are met
                   [...apartment.bookingLinks]
                     .sort((a, b) => {
                       // Always put "Booking request" / "Buchungsanfrage" first
@@ -583,7 +604,7 @@ function ApartmentDetailPageContent() {
                         ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
                         : link.label
                       
-                      // Handle Booking request button specially - generate mailto link with dates
+                      // Handle Booking request button specially - open booking modal first
                       if (link.label === 'Booking request') {
                         const guestsParam = searchParams.get('guests')
                         const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined

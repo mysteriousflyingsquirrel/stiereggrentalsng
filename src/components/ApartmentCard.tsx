@@ -101,6 +101,13 @@ export default function ApartmentCard({
           {apartment.facts.sqm && (
             <Badge>{apartment.facts.sqm} m²</Badge>
           )}
+          {apartment.minNights && (
+            <Badge>
+              {locale === 'de'
+                ? `Min. ${apartment.minNights} ${apartment.minNights === 1 ? 'Nacht' : 'Nächte'}`
+                : `Min. ${apartment.minNights} night${apartment.minNights !== 1 ? 's' : ''}`}
+            </Badge>
+          )}
         </div>
 
         <Link

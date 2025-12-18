@@ -38,6 +38,38 @@ export function isApartmentAvailable(
 }
 
 /**
+ * Calculate number of nights between two dates
+ */
+export function getStayNights(checkIn: string, checkOut: string): number {
+  const inDate = new Date(checkIn)
+  const outDate = new Date(checkOut)
+
+  // Normalize to midnight to avoid DST/timezone issues
+  inDate.setHours(0, 0, 0, 0)
+  outDate.setHours(0, 0, 0, 0)
+
+  const diffMs = outDate.getTime() - inDate.getTime()
+  if (diffMs <= 0) return 0
+
+  return diffMs / (1000 * 60 * 60 * 24)
+}
+
+/**
+ * Check if a stay meets the apartment's minimum nights requirement.
+ * If minNights is not set, default to 1.
+ */
+export function meetsMinimumNights(
+  apartment: Apartment,
+  checkIn: string,
+  checkOut: string
+): boolean {
+  const min = apartment.minNights ?? 1
+  const nights = getStayNights(checkIn, checkOut)
+  if (nights === 0) return false
+  return nights >= min
+}
+
+/**
  * Generates a mailto link for booking request
  * @param apartment The apartment to book
  * @param checkIn Check-in date (YYYY-MM-DD)

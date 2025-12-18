@@ -37,15 +37,27 @@ export default function HeaderClient() {
   ]
 
   const isHomePage = pathname === '/'
+
+  const getSeason = () => {
+    const month = new Date().getMonth() + 1
+    if (month === 12 || month <= 2) return 'winter'
+    if (month >= 3 && month <= 5) return 'spring'
+    if (month >= 6 && month <= 8) return 'summer'
+    return 'autumn'
+  }
+
+  const season = getSeason()
   const isActive = (href: string) => pathname === href
 
   return (
     <header
-      className={`${
-        isHomePage
+      className={`
+        ${isHomePage
           ? 'absolute top-0 left-0 right-0 bg-transparent z-50'
           : 'bg-white shadow-md sticky top-0 z-50'
-      }`}
+        }
+        season-${season}
+      `}
     >
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
@@ -68,7 +80,7 @@ export default function HeaderClient() {
                 </>
               )}
               <Image
-                src="/icons/transparent_dark.svg"
+                src="/icons/logo_transparent_dark.svg"
                 alt="Stieregg Rentals"
                 width={180}
                 height={60}
@@ -81,17 +93,17 @@ export default function HeaderClient() {
           </Link>
 
           {/* Desktop Navigation + Language Switcher - Top Right */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             {/* Navigation Links */}
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={getLocalizedPath(link.href)}
-                className={`group relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                className={`group relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 min-w-[120px] text-center ${
                   isHomePage
                     ? isActive(link.href)
-                      ? 'text-white bg-white/15 backdrop-blur-sm'
-                      : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                      ? 'text-white backdrop-blur-md bg-gradient-to-br from-white/30 to-sky-200/40 border border-white/40 shadow-md'
+                      : 'text-white/90 backdrop-blur-md bg-gradient-to-br from-white/25 to-sky-200/30 border border-white/30 hover:text-white hover:from-white/35 hover:to-sky-200/40 hover:border-white/40'
                     : isActive(link.href)
                     ? 'text-accent bg-accent/5'
                     : 'text-gray-700 hover:text-accent hover:bg-gray-100'
@@ -108,11 +120,12 @@ export default function HeaderClient() {
                 ></span>
               </Link>
             ))}
+
             {/* Language Switcher - Compact Pill */}
             <div
               className={`flex items-center gap-0.5 rounded-full p-1 ${
                 isHomePage
-                  ? 'bg-white/10 backdrop-blur-md border border-white/20'
+                  ? 'backdrop-blur-md bg-gradient-to-br from-white/25 to-sky-200/30 border border-white/30'
                   : 'bg-gray-100 border border-gray-200'
               }`}
             >
@@ -166,7 +179,7 @@ export default function HeaderClient() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-all ${
+            className={`lg:hidden p-2 rounded-lg transition-all ${
               isHomePage
                 ? 'text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20'
                 : 'hover:bg-gray-100'
@@ -201,7 +214,7 @@ export default function HeaderClient() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div
-            className={`md:hidden mt-4 pb-4 rounded-lg ${
+            className={`lg:hidden mt-4 pb-4 rounded-lg ${
               isHomePage
                 ? 'bg-white/95 backdrop-blur-md border border-white/20 pt-4'
                 : 'border-t pt-4'

@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
 import ImageCarousel from '@/components/ImageCarousel'
-import { getApartmentBySlug } from '@/data/apartments'
+import { apartments, getApartmentBySlug } from '@/data/apartments'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 import Button from '@/components/Button'
 import Badge from '@/components/Badge'
@@ -114,8 +114,55 @@ function ApartmentDetailPageContent() {
     return `${path}?${search}`
   }
 
+  // Basic JSON-LD structured data for this apartment
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LodgingBusiness',
+    name: apartment.name[locale],
+    description: apartment.longDescription?.[locale] ?? '',
+    url:
+      typeof window !== 'undefined'
+        ? `${window.location.origin}/apartments/${apartment.slug}`
+        : `/apartments/${apartment.slug}`,
+    image: apartment.images.map((img) =>
+      typeof window !== 'undefined'
+        ? `${window.location.origin}${img.src}`
+        : img.src
+    ),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Weidweg 5',
+      addressLocality: 'Grindelwald',
+      postalCode: '3818',
+      addressCountry: 'CH',
+    },
+    telephone: '+41 79 768 39 73',
+    priceRange: apartment.priceFrom ? `CHF ${apartment.priceFrom}+` : undefined,
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* Breadcrumb / back links */}
+      <nav className="mb-4 text-sm text-gray-600">
+        <Link href={getLocalizedPath('/')} className="hover:text-accent">
+          {locale === 'de' ? 'Startseite' : 'Home'}
+        </Link>
+        <span className="mx-2">/</span>
+        <Link
+          href={`${getLocalizedPath('/')}#apartments`}
+          className="hover:text-accent"
+        >
+          {locale === 'de' ? 'Unsere Apartments' : 'Our Apartments'}
+        </Link>
+        <span className="mx-2">/</span>
+        <span className="text-gray-900 font-medium">{subtitle || title}</span>
+      </nav>
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
@@ -597,6 +644,28 @@ function ApartmentDetailPageContent() {
           onConfirm={handleBookingConfirm}
         />
       )}
+
+      {/* More apartments */}
+      <section className="mt-12 border-t pt-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">
+          {locale === 'de'
+            ? 'Weitere Apartments in Grindelwald'
+            : 'More apartments in Grindelwald'}
+        </h2>
+        <div className="flex flex-wrap gap-3 text-sm">
+          {apartments
+            .filter((apt) => apt.slug !== apartment.slug)
+            .map((apt) => (
+              <Link
+                key={apt.slug}
+                href={`/apartments/${apt.slug}?lang=${locale}`}
+                className="inline-flex items-center px-3 py-1.5 rounded-full bg-white shadow-sm border border-gray-200 text-gray-800 hover:border-accent hover:text-accent transition-colors"
+              >
+                {apt.name[locale]}
+              </Link>
+            ))}
+        </div>
+      </section>
     </div>
   )
 }

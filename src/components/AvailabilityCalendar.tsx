@@ -430,7 +430,7 @@ export default function AvailabilityCalendar({
 
     return (
       <div key={monthIndex} className="bg-white rounded-xl p-4">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between min-h-[2.5rem]">
           {showPrevButton ? (
             <button
               onClick={() => changeMonth('prev')}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { apartments } from '@/data/apartments'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 import SectionTitle from '@/components/SectionTitle'
@@ -18,6 +18,7 @@ export const dynamic = 'force-dynamic'
 
 function HomePageContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const locale = getLocaleFromSearchParams(searchParams)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>(() => {
     return searchParams.get('view') === 'map' ? 'map' : 'grid'
@@ -114,7 +115,15 @@ function HomePageContent() {
           </SectionTitle>
           <div className="flex gap-2 bg-white rounded-xl p-1 shadow-md">
             <button
-              onClick={() => setViewMode('grid')}
+              onClick={() => {
+                setViewMode('grid')
+                // Remove apartment parameter from URL to reset map highlight
+                const params = new URLSearchParams(Array.from(searchParams.entries()))
+                params.delete('apartment')
+                params.delete('view')
+                params.set('lang', locale)
+                router.replace(`?${params.toString()}`, { scroll: false })
+              }}
               className={`px-4 py-2 rounded-lg transition-all ${
                 viewMode === 'grid'
                   ? 'bg-accent text-white shadow-md'

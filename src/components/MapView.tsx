@@ -21,18 +21,22 @@ const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {
 })
 
 // Create custom pin icon - only call when Leaflet is available
-function createCustomIcon() {
+function createCustomIcon(isFocused: boolean = false) {
   if (typeof window === 'undefined') return null
   
   const L = require('leaflet')
+  const size = isFocused ? 40 : 32
+  const height = isFocused ? 50 : 40
+  const fillColor = isFocused ? '#DC2626' : '#273646' // Red for focused, dark gray for others
+  
   const iconHtml = `
     <div style="
       position: relative;
-      width: 32px;
-      height: 40px;
+      width: ${size}px;
+      height: ${height}px;
     ">
-      <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16 0C10.477 0 6 4.477 6 10C6 16 16 28 16 28C16 28 26 16 26 10C26 4.477 21.523 0 16 0Z" fill="#273646" stroke="white" stroke-width="2"/>
+      <svg width="${size}" height="${height}" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 0C10.477 0 6 4.477 6 10C6 16 16 28 16 28C16 28 26 16 26 10C26 4.477 21.523 0 16 0Z" fill="${fillColor}" stroke="white" stroke-width="2"/>
         <circle cx="16" cy="10" r="4" fill="white"/>
       </svg>
     </div>
@@ -41,9 +45,9 @@ function createCustomIcon() {
   return L.divIcon({
     html: iconHtml,
     className: 'custom-marker',
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
-    popupAnchor: [0, -40],
+    iconSize: [size, height],
+    iconAnchor: [size / 2, height],
+    popupAnchor: [0, -height],
   })
 }
 
@@ -57,13 +61,15 @@ type MapViewProps = {
 export default function MapView({ apartments, locale, className = '', focusedSlug }: MapViewProps) {
   const [isClient, setIsClient] = useState(false)
   const [customIcon, setCustomIcon] = useState<any>(null)
+  const [focusedIcon, setFocusedIcon] = useState<any>(null)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
-    // Create icon only on client side
+    // Create icons only on client side
     if (typeof window !== 'undefined') {
-      setCustomIcon(createCustomIcon())
+      setCustomIcon(createCustomIcon(false))
+      setFocusedIcon(createCustomIcon(true))
       setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
     }
   }, [])
@@ -76,21 +82,24 @@ export default function MapView({ apartments, locale, className = '', focusedSlu
     )
   }
 
-  // Default center to Grindelwald
-  let center: [number, number] = [46.6244, 8.0344]
+  // Calculate center as midpoint of bounding box (middle of min/max lat/lng)
+  let center: [number, number] = [46.6244, 8.0344] // Default fallback
 
-  if (focusedSlug) {
-    const focusedApartment = apartments.find((apt) => apt.slug === focusedSlug)
-    if (focusedApartment) {
-      center = [focusedApartment.location.lat, focusedApartment.location.lng]
-    }
+  if (apartments.length > 0) {
+    const lats = apartments.map(apt => apt.location.lat)
+    const lngs = apartments.map(apt => apt.location.lng)
+    const minLat = Math.min(...lats)
+    const maxLat = Math.max(...lats)
+    const minLng = Math.min(...lngs)
+    const maxLng = Math.max(...lngs)
+    center = [(minLat + maxLat) / 2, (minLng + maxLng) / 2]
   }
 
   return (
     <div className={`w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg ${className}`}>
       <MapContainer
         center={center}
-        zoom={focusedSlug ? 15 : 13}
+        zoom={16}
         scrollWheelZoom={false} // Disable mouse wheel zoom for desktop users
         dragging={!isTouchDevice} // On touch devices, disable one-finger drag; use controls/pinch instead
         style={{ height: '100%', width: '100%' }}
@@ -105,7 +114,7 @@ export default function MapView({ apartments, locale, className = '', focusedSlu
           <Marker
             key={apartment.id}
             position={[apartment.location.lat, apartment.location.lng]}
-            icon={customIcon}
+            icon={isFocused ? focusedIcon : customIcon}
             eventHandlers={
               isFocused
                 ? {

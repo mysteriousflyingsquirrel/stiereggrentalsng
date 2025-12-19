@@ -105,7 +105,7 @@ export default function ApartmentCard({
 
         <Link
           href={buildApartmentLink()}
-          className="block text-center text-accent hover:text-accent-dark font-medium transition-colors"
+          className="block text-center !text-gray-600 hover:!text-gray-900 font-medium transition-colors no-underline"
         >
           {locale === 'de' ? 'Details anzeigen' : 'View Details'} →
         </Link>

@@ -56,17 +56,14 @@ function ApartmentDetailPageContent() {
     setIsBookingModalOpen(true)
   }
 
-  const handleBookingConfirm = (name: string) => {
+  const handleBookingConfirm = (name: string, guests: number) => {
     if (!apartment || !checkIn || !checkOut) return
-    
-    const guestsParam = searchParams.get('guests')
-    const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
     
     const mailtoLink = buildMailtoLink(
       apartment,
       checkIn,
       checkOut,
-      guestsNumber,
+      guests,
       name,
       locale
     )
@@ -471,9 +468,9 @@ function ApartmentDetailPageContent() {
       )}
 
       {/* Availability Calendar and Booking - Side by side on larger screens */}
-      <div className="mb-12 md:mb-0 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="mb-12 md:mb-0 grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Availability Calendar */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             {locale === 'de' ? 'Verfügbarkeit' : 'Availability'}
           </h2>
@@ -509,144 +506,145 @@ function ApartmentDetailPageContent() {
         </div>
 
         {/* Booking Section */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-2">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             {locale === 'de' ? 'Buchung' : 'Booking'}
           </h2>
-
-        {!hasDates ? (
-          // Show hint if no dates selected
-          <div className="text-sm text-gray-500 italic px-4 py-2">
-            {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
-          </div>
-        ) : (
-          <>
-            {/* Show selected dates */}
-            <div className="mb-4">
-              <div className="text-sm text-gray-600 mb-2">
-                {locale === 'de' ? 'Ausgewählte Daten:' : 'Selected dates:'}
+          <div className="bg-white rounded-2xl p-6 shadow-lg">
+            {!hasDates ? (
+              // Show hint if no dates selected
+              <div className="text-sm text-gray-500 italic px-4 py-2">
+                {locale === 'de' ? 'Bitte wählen Sie zuerst die Daten' : 'Select dates first'}
               </div>
-              <div className="flex flex-wrap gap-2 items-center mb-3">
-                <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
-                  {new Date(checkIn).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </Badge>
-                <span className="text-gray-400">→</span>
-                <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
-                  {new Date(checkOut).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </Badge>
-                {/* Nights badge */}
-                {hasDates && (
-                  <Badge
-                    className={`text-base px-4 py-2 border ${
-                      nights < seasonalMinNights
-                        ? 'bg-red-50 text-red-700 border-red-200'
-                        : 'bg-green-50 text-green-700 border-green-200'
-                    }`}
-                  >
-                    {locale === 'de'
-                      ? `${nights} ${nights === 1 ? 'Nacht' : 'Nächte'}`
-                      : `${nights} night${nights !== 1 ? 's' : ''}`}
-                  </Badge>
-                )}
-              </div>
-              {/* Minimum stay info below has been removed as it is now covered by the nights badge */}
-            </div>
-            
-            {/* Booking buttons */}
-            {!availabilityLoading && (
-              <div className="flex flex-wrap gap-4">
-                {!isAvailable ? (
-                  // Show message when dates are selected but apartment is not available
-                  <div className="text-sm text-gray-600 py-2 italic w-full">
-                    {locale === 'de'
-                      ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
-                      : 'No availability on these dates. Please choose other dates.'}
+            ) : (
+              <>
+                {/* Show selected dates */}
+                <div className="mb-4">
+                  <div className="text-sm text-gray-600 mb-2">
+                    {locale === 'de' ? 'Ausgewählte Daten:' : 'Selected dates:'}
                   </div>
-                ) : !meetsMinNights ? (
-                  // Available but stay is shorter than minimum requirement
-                  <div className="text-sm text-gray-600 py-2 italic w-full">
-                    {locale === 'de'
-                      ? `Die gewählte Aufenthaltsdauer unterschreitet den saisonalen Mindestaufenthalt von ${seasonalMinNights} ${seasonalMinNights === 1 ? 'Nacht' : 'Nächten'}. Bitte wählen Sie längere Daten.`
-                      : `The selected stay is shorter than the seasonal minimum of ${seasonalMinNights} night${seasonalMinNights !== 1 ? 's' : ''}. Please choose a longer stay.`}
-                  </div>
-                ) : (
-                  // Show booking buttons when dates are selected, apartment is available, and minimum nights are met
-                  <>
-                    {/* Best Price Message - only show when booking is possible */}
-                    <div className="mt-4 mb-1 bg-gold/10 border-2 border-gold/30 rounded-lg p-4 w-full">
-                      <div className="flex items-start gap-3">
-                        <svg className="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div>
-                          <p className="font-semibold text-gray-900 mb-1">
-                            {locale === 'de' ? 'Bester Preis garantiert!' : 'Best price guaranteed!'}
-                          </p>
-                          <p className="text-sm text-gray-700">
-                            {locale === 'de' 
-                              ? 'Buchen Sie direkt über unsere Buchungsanfrage und erhalten Sie den günstigsten Preis.' 
-                              : 'Book directly through our booking request and get the cheapest price available.'}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {[...apartment.bookingLinks]
-                      .sort((a, b) => {
-                        // Always put "Booking request" / "Buchungsanfrage" first
-                        if (a.label === 'Booking request') return -1
-                        if (b.label === 'Booking request') return 1
-                        return 0
-                      })
-                      .map((link, index) => {
-                        const displayLabel = link.label === 'Booking request' 
-                          ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
-                          : link.label
-                        
-                        // Handle Booking request button specially - open booking modal first
-                        if (link.label === 'Booking request') {
-                          const guestsParam = searchParams.get('guests')
-                          const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
-                          
-                          return (
-                            <Button
-                              key={index}
-                              onClick={() => handleBookingRequest(apartment, checkIn!, checkOut!, guestsNumber)}
-                              variant="gold"
-                              className="text-lg px-8 py-4"
-                            >
-                              {displayLabel}
-                            </Button>
-                          )
-                        }
-                        
-                        // Regular booking links
-                        return (
-                          <Button
-                            key={index}
-                            href={link.url}
-                            variant="primary"
-                            external
-                            className="text-lg px-8 py-4"
-                          >
-                            {displayLabel}
-                          </Button>
-                        )
+                  <div className="flex flex-wrap gap-2 items-center mb-3">
+                    <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
+                      {new Date(checkIn).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
                       })}
-                  </>
+                    </Badge>
+                    <span className="text-gray-400">→</span>
+                    <Badge variant="accent" className="text-base px-4 py-2 border border-transparent">
+                      {new Date(checkOut).toLocaleDateString(locale === 'de' ? 'de-CH' : 'en-GB', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </Badge>
+                    {/* Nights badge */}
+                    {hasDates && (
+                      <Badge
+                        className={`text-base px-4 py-2 border ${
+                          nights < seasonalMinNights
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : 'bg-green-50 text-green-700 border-green-200'
+                        }`}
+                      >
+                        {locale === 'de'
+                          ? `${nights} ${nights === 1 ? 'Nacht' : 'Nächte'}`
+                          : `${nights} night${nights !== 1 ? 's' : ''}`}
+                      </Badge>
+                    )}
+                  </div>
+                  {/* Minimum stay info below has been removed as it is now covered by the nights badge */}
+                </div>
+                
+                {/* Booking buttons */}
+                {!availabilityLoading && (
+                  <div className="flex flex-wrap gap-4">
+                    {!isAvailable ? (
+                      // Show message when dates are selected but apartment is not available
+                      <div className="text-sm text-gray-600 py-2 italic w-full">
+                        {locale === 'de'
+                          ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
+                          : 'No availability on these dates. Please choose other dates.'}
+                      </div>
+                    ) : !meetsMinNights ? (
+                      // Available but stay is shorter than minimum requirement
+                      <div className="text-sm text-gray-600 py-2 italic w-full">
+                        {locale === 'de'
+                          ? `Die gewählte Aufenthaltsdauer unterschreitet den saisonalen Mindestaufenthalt von ${seasonalMinNights} ${seasonalMinNights === 1 ? 'Nacht' : 'Nächten'}. Bitte wählen Sie längere Daten.`
+                          : `The selected stay is shorter than the seasonal minimum of ${seasonalMinNights} night${seasonalMinNights !== 1 ? 's' : ''}. Please choose a longer stay.`}
+                      </div>
+                    ) : (
+                      // Show booking buttons when dates are selected, apartment is available, and minimum nights are met
+                      <>
+                        {/* Best Price Message - only show when booking is possible */}
+                        <div className="mt-4 mb-1 bg-gold/10 border-2 border-gold/30 rounded-lg p-4 w-full">
+                          <div className="flex items-start gap-3">
+                            <svg className="w-6 h-6 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                              <p className="font-semibold text-gray-900 mb-1">
+                                {locale === 'de' ? 'Bester Preis garantiert!' : 'Best price guaranteed!'}
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                {locale === 'de' 
+                                  ? 'Buchen Sie direkt über unsere Buchungsanfrage und erhalten Sie den günstigsten Preis.' 
+                                  : 'Book directly through our booking request and get the cheapest price available.'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {[...apartment.bookingLinks]
+                          .sort((a, b) => {
+                            // Always put "Booking request" / "Buchungsanfrage" first
+                            if (a.label === 'Booking request') return -1
+                            if (b.label === 'Booking request') return 1
+                            return 0
+                          })
+                          .map((link, index) => {
+                            const displayLabel = link.label === 'Booking request' 
+                              ? (locale === 'de' ? 'Buchungsanfrage' : 'Booking request')
+                              : link.label
+                            
+                            // Handle Booking request button specially - open booking modal first
+                            if (link.label === 'Booking request') {
+                              const guestsParam = searchParams.get('guests')
+                              const guestsNumber = guestsParam ? parseInt(guestsParam, 10) : undefined
+                              
+                              return (
+                                <Button
+                                  key={index}
+                                  onClick={() => handleBookingRequest(apartment, checkIn!, checkOut!, guestsNumber)}
+                                  variant="gold"
+                                  className="text-lg px-8 py-4"
+                                >
+                                  {displayLabel}
+                                </Button>
+                              )
+                            }
+                            
+                            // Regular booking links
+                            return (
+                              <Button
+                                key={index}
+                                href={link.url}
+                                variant="primary"
+                                external
+                                className="text-lg px-8 py-4"
+                              >
+                                {displayLabel}
+                              </Button>
+                            )
+                          })}
+                      </>
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
-          </>
-        )}
+          </div>
         </div>
       </div>
 
@@ -660,6 +658,10 @@ function ApartmentDetailPageContent() {
           checkOut={checkOut}
           locale={locale}
           onConfirm={handleBookingConfirm}
+          initialGuests={(() => {
+            const guestsParam = searchParams.get('guests')
+            return guestsParam ? parseInt(guestsParam, 10) : undefined
+          })()}
         />
       )}
 

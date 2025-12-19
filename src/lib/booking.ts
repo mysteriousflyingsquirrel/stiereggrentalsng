@@ -143,14 +143,14 @@ export function buildMailtoLink(
     `Check-out: ${formatDate(checkOut)}`,
   ]
 
-  if (guests) {
-    bodyLines.push(`Guests: ${guests}`)
-  }
-
   if (guestName) {
     bodyLines.push(`Name: ${guestName}`)
   } else {
     bodyLines.push('Name: ____')
+  }
+
+  if (guests) {
+    bodyLines.push(`${locale === 'de' ? 'Anzahl Gäste' : 'Number of Guests'}: ${guests}`)
   }
 
   bodyLines.push('')

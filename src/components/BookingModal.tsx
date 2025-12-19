@@ -12,7 +12,8 @@ type BookingModalProps = {
   checkIn: string
   checkOut: string
   locale: Locale
-  onConfirm: (name: string) => void
+  onConfirm: (name: string, guests: number) => void
+  initialGuests?: number
 }
 
 export default function BookingModal({
@@ -23,15 +24,20 @@ export default function BookingModal({
   checkOut,
   locale,
   onConfirm,
+  initialGuests,
 }: BookingModalProps) {
   const [name, setName] = useState('')
+  const [guests, setGuests] = useState<number>(initialGuests || 1)
 
-  // Reset name when modal opens/closes
+  // Reset name and guests when modal opens/closes
   useEffect(() => {
     if (!isOpen) {
       setName('')
+      setGuests(initialGuests || 1)
+    } else if (initialGuests) {
+      setGuests(initialGuests)
     }
-  }, [isOpen])
+  }, [isOpen, initialGuests])
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -61,7 +67,7 @@ export default function BookingModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (name.trim()) {
-      onConfirm(name.trim())
+      onConfirm(name.trim(), guests)
       onClose()
     }
   }
@@ -202,6 +208,36 @@ export default function BookingModal({
               required
               autoFocus
             />
+          </div>
+
+          {/* Guests Input */}
+          <div className="mb-6">
+            <label
+              htmlFor="guests"
+              className="block text-sm font-semibold text-gray-700 mb-2"
+            >
+              {locale === 'de' ? 'Anzahl Gäste' : 'Number of Guests'} *
+            </label>
+            <input
+              id="guests"
+              type="number"
+              min={1}
+              max={apartment.facts.guests}
+              value={guests}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10)
+                if (!isNaN(value) && value >= 1 && value <= apartment.facts.guests) {
+                  setGuests(value)
+                }
+              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all"
+              required
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {locale === 'de'
+                ? `Maximal ${apartment.facts.guests} ${apartment.facts.guests === 1 ? 'Gast' : 'Gäste'}`
+                : `Maximum ${apartment.facts.guests} ${apartment.facts.guests === 1 ? 'guest' : 'guests'}`}
+            </p>
           </div>
 
           {/* Actions */}

@@ -471,9 +471,9 @@ function ApartmentDetailPageContent() {
       )}
 
       {/* Availability Calendar and Booking - Side by side on larger screens */}
-      <div className="mb-12 md:mb-0 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="mb-12 md:mb-0 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Availability Calendar */}
-        <div>
+        <div className="lg:col-span-2">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             {locale === 'de' ? 'Verfügbarkeit' : 'Availability'}
           </h2>
@@ -509,7 +509,7 @@ function ApartmentDetailPageContent() {
         </div>
 
         {/* Booking Section */}
-        <div>
+        <div className="lg:col-span-1">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             {locale === 'de' ? 'Buchung' : 'Booking'}
           </h2>

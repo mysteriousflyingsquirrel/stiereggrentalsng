@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getLocaleFromSearchParams } from '@/lib/locale'
-import DateRangePicker from './DateRangePicker'
+import AvailabilityCalendar from './AvailabilityCalendar'
 
 type AvailabilityBarProps = {
   className?: string
@@ -80,12 +80,15 @@ export default function AvailabilityBar({ className = '' }: AvailabilityBarProps
       <div className="flex flex-col lg:flex-row lg:items-end gap-4">
         {/* Date range picker */}
         <div className="flex-1 min-w-0">
-          <DateRangePicker
-            checkIn={checkIn}
-            checkOut={checkOut}
+          <AvailabilityCalendar
+            slug={null}
+            months={2}
+            locale={locale}
+            checkIn={checkIn || null}
+            checkOut={checkOut || null}
+            dropdown={true}
             onCheckInChange={setCheckIn}
             onCheckOutChange={setCheckOut}
-            locale={locale}
           />
         </div>
 

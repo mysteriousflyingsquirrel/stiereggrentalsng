@@ -288,8 +288,8 @@ export default function AvailabilityCalendar({
   const changeMonth = (direction: 'prev' | 'next') => {
     setHasManuallyChangedMonth(true)
     
-    // Always move by 2 months (month pair) - CSS handles showing 1 or 2 months responsively
-    const monthStep = 2
+    // Move by 1 month per swipe/click
+    const monthStep = 1
 
     setSelectedMonth((prev) => {
       const newDate = new Date(prev)
@@ -681,7 +681,7 @@ export default function AvailabilityCalendar({
   const canGoPrev = selectedMonth > startDate
   const canGoNext = (() => {
     const lastMonth = new Date(selectedMonth)
-    const step = showMonthSelector ? 1 : 2
+    const step = 1
     lastMonth.setMonth(lastMonth.getMonth() + step - 1)
     return lastMonth < endDate
   })()

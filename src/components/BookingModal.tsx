@@ -73,15 +73,15 @@ export default function BookingModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[1001] flex items-start justify-center p-4 pt-20 md:pt-4 md:items-center overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[calc(100vh-5rem)] md:max-h-[90vh] overflow-y-auto my-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
@@ -103,10 +103,10 @@ export default function BookingModal({
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
               {locale === 'de' ? 'Ausgewähltes Apartment:' : 'Selected apartment:'}
             </h3>
-            <div className="flex items-center gap-3 p-3 bg-accent/5 border border-accent/20 rounded-lg">
-              <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+            <div className="flex items-center gap-2 p-2 bg-accent/5 border border-accent/20 rounded-lg">
+              <div className="flex-shrink-0 w-6 h-6 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -119,8 +119,8 @@ export default function BookingModal({
                   />
                 </svg>
               </div>
-              <div className="flex-1">
-                <div className="font-semibold text-gray-900">
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-gray-900 text-sm truncate">
                   {apartment.name[locale]}
                 </div>
               </div>
@@ -132,11 +132,11 @@ export default function BookingModal({
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
               {locale === 'de' ? 'Ausgewählte Daten:' : 'Selected dates:'}
             </h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+            <div className="flex gap-2">
+              <div className="flex items-center gap-2 flex-1 p-2 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0 w-6 h-6 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -149,19 +149,19 @@ export default function BookingModal({
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="text-xs text-gray-500">
                     {locale === 'de' ? 'Anreise' : 'Check-in'}
                   </div>
-                  <div className="font-semibold text-gray-900">
+                  <div className="font-semibold text-gray-900 text-sm truncate">
                     {formatDate(checkIn)}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0 w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
+              <div className="flex items-center gap-2 flex-1 p-2 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0 w-6 h-6 bg-accent text-white rounded-lg flex items-center justify-center font-semibold">
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -174,11 +174,11 @@ export default function BookingModal({
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="text-xs text-gray-500">
                     {locale === 'de' ? 'Abreise' : 'Check-out'}
                   </div>
-                  <div className="font-semibold text-gray-900">
+                  <div className="font-semibold text-gray-900 text-sm truncate">
                     {formatDate(checkOut)}
                   </div>
                 </div>

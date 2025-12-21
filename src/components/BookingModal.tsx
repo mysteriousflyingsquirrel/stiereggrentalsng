@@ -218,21 +218,57 @@ export default function BookingModal({
             >
               {locale === 'de' ? 'Anzahl Gäste' : 'Number of Guests'} *
             </label>
-            <input
-              id="guests"
-              type="number"
-              min={1}
-              max={apartment.facts.guests}
-              value={guests}
-              onChange={(e) => {
-                const value = parseInt(e.target.value, 10)
-                if (!isNaN(value) && value >= 1 && value <= apartment.facts.guests) {
-                  setGuests(value)
-                }
-              }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all"
-              required
-            />
+            
+            {/* Mobile: Button interface */}
+            <div className="md:hidden">
+              <div className="flex items-center border border-gray-300 rounded-lg h-[42px]">
+                <button
+                  type="button"
+                  onClick={() => setGuests(Math.max(1, guests - 1))}
+                  disabled={guests <= 1}
+                  className="h-full w-12 text-gray-600 hover:text-gray-900 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-l-lg flex items-center justify-center touch-manipulation"
+                  aria-label={locale === 'de' ? 'Gäste verringern' : 'Decrease guests'}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
+                  </svg>
+                </button>
+                <span className="h-full flex-1 px-4 min-w-[3rem] text-center font-medium text-gray-900 border-x border-gray-300 flex items-center justify-center">
+                  {guests}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setGuests(Math.min(apartment.facts.guests, guests + 1))}
+                  disabled={guests >= apartment.facts.guests}
+                  className="h-full w-12 text-gray-600 hover:text-gray-900 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-r-lg flex items-center justify-center touch-manipulation"
+                  aria-label={locale === 'de' ? 'Gäste erhöhen' : 'Increase guests'}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Desktop: Number input */}
+            <div className="hidden md:block">
+              <input
+                id="guests"
+                type="number"
+                min={1}
+                max={apartment.facts.guests}
+                value={guests}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10)
+                  if (!isNaN(value) && value >= 1 && value <= apartment.facts.guests) {
+                    setGuests(value)
+                  }
+                }}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all"
+                required
+              />
+            </div>
+            
             <p className="mt-1 text-xs text-gray-500">
               {locale === 'de'
                 ? `Maximal ${apartment.facts.guests} ${apartment.facts.guests === 1 ? 'Gast' : 'Gäste'}`

@@ -42,6 +42,7 @@ export default function AvailabilityCalendar({
   const [hasManuallyChangedMonth, setHasManuallyChangedMonth] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [selectionMode, setSelectionMode] = useState<'checkIn' | 'checkOut'>('checkIn')
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null)
   const calendarRef = useRef<HTMLDivElement>(null)
   const currentLocale = locale || getLocaleFromSearchParams(searchParams)
 
@@ -309,6 +310,54 @@ export default function AvailabilityCalendar({
       
       return newDate
     })
+  }
+
+  // Swipe handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    setTouchStart({ x: touch.clientX, y: touch.clientY })
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Prevent default to avoid scrolling while swiping horizontally
+    if (touchStart) {
+      const touch = e.touches[0]
+      const deltaX = touch.clientX - touchStart.x
+      const deltaY = touch.clientY - touchStart.y
+      
+      // Only prevent default if horizontal swipe is dominant
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+        e.preventDefault()
+      }
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return
+
+    const touch = e.changedTouches[0]
+    const deltaX = touch.clientX - touchStart.x
+    const deltaY = touch.clientY - touchStart.y
+    const minSwipeDistance = 50
+
+    // Check if it's a horizontal swipe (not vertical scroll)
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        // Swipe right = previous month
+        if (selectedMonth > startDate) {
+          changeMonth('prev')
+        }
+      } else {
+        // Swipe left = next month
+        const lastMonth = new Date(selectedMonth)
+        lastMonth.setMonth(lastMonth.getMonth() + 1)
+        if (lastMonth < endDate) {
+          changeMonth('next')
+        }
+      }
+    }
+
+    setTouchStart(null)
   }
 
   const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -588,7 +637,12 @@ export default function AvailabilityCalendar({
         {isOpen && (
           <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 p-4 z-50 min-w-[320px] md:min-w-[640px]">
             {/* Calendar months - 2 months side-by-side on desktop, 1 on mobile */}
-            <div className="relative overflow-hidden">
+            <div 
+              className="relative overflow-hidden"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
                 {(() => {
                   const canGoPrevDropdown = selectedMonth > startDate
@@ -637,7 +691,12 @@ export default function AvailabilityCalendar({
       {/* Single container for all calendar elements */}
       <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-4">
         {/* Calendar months - 2 months side-by-side on desktop, 1 on mobile */}
-        <div className="relative overflow-hidden">
+        <div 
+          className="relative overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
             {monthsToShow.map((month, monthIndex) => {
               const isFirstMonth = monthIndex === 0

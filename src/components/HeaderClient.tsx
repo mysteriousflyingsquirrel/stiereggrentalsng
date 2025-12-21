@@ -59,24 +59,24 @@ export default function HeaderClient() {
         season-${season}
       `}
     >
-      <nav className="container mx-auto px-4 py-4">
+      <nav className="container mx-auto px-4 py-2 md:py-4">
         <div className="flex items-center justify-between">
           <Link href={getLocalizedPath('/')} className="flex items-center group">
             <div
               className={`relative transition-all duration-300 ${
                 isHomePage
-                  ? 'backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:scale-105'
-                  : 'bg-gradient-to-br from-gray-50 to-white rounded-xl p-3 shadow-md hover:shadow-lg hover:ring-2 hover:ring-accent transition-all'
+                  ? 'md:backdrop-blur-sm md:rounded-2xl md:p-4 md:shadow-lg md:hover:scale-105'
+                  : 'md:bg-gradient-to-br md:from-gray-50 md:to-white md:rounded-xl md:p-3 md:shadow-md md:hover:shadow-lg md:hover:ring-2 md:hover:ring-accent md:transition-all'
               }`}
             >
               {isHomePage && (
                 <>
-                  {/* Main background - solid white */}
-                  <div className="absolute inset-0 rounded-2xl bg-white/95"></div>
-                  {/* Subtle border */}
-                  <div className="absolute inset-0 rounded-2xl border border-white/30"></div>
-                  {/* Hover accent overlay */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  {/* Main background - solid white - only on desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-2xl bg-white/95"></div>
+                  {/* Subtle border - only on desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-2xl border border-white/30"></div>
+                  {/* Hover accent overlay - only on desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </>
               )}
               <Image
@@ -84,8 +84,8 @@ export default function HeaderClient() {
                 alt="Stieregg Rentals"
                 width={180}
                 height={60}
-                className={`relative z-10 h-12 md:h-16 w-auto transition-transform duration-300 ${
-                  isHomePage ? 'group-hover:scale-105' : ''
+                className={`relative z-10 h-[38.4px] md:h-16 w-auto transition-transform duration-300 ${
+                  isHomePage ? 'md:group-hover:scale-105' : ''
                 }`}
                 priority
               />

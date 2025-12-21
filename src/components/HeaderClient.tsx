@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams, usePathname } from 'next/navigation'
@@ -11,6 +11,7 @@ export default function HeaderClient() {
   const pathname = usePathname()
   const locale = getLocaleFromSearchParams(searchParams)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const toggleLocale = () => {
     if (typeof window === 'undefined') return
@@ -49,19 +50,35 @@ export default function HeaderClient() {
   const season = getSeason()
   const isActive = (href: string) => pathname === href
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [mobileMenuOpen])
+
   return (
     <header
       className={`
         ${isHomePage
-          ? 'absolute top-0 left-0 right-0 bg-transparent z-[1000]'
+          ? 'bg-white shadow-md sticky top-0 z-[1000] md:absolute md:bg-transparent md:shadow-none md:left-0 md:right-0 md:w-full'
           : 'bg-white shadow-md sticky top-0 z-[1000]'
         }
         season-${season}
       `}
     >
-      <nav className="container mx-auto px-4 py-2 md:py-4">
-        <div className="flex items-center justify-between">
-          <Link href={getLocalizedPath('/')} className="flex items-center group">
+      <nav className="container mx-auto px-4 py-2 md:py-4" ref={menuRef}>
+        <div className="flex items-center justify-between w-full">
+          <Link href={getLocalizedPath('/')} className="flex items-center group flex-shrink-0">
             <div
               className={`relative transition-all duration-300 ${
                 isHomePage
@@ -93,7 +110,7 @@ export default function HeaderClient() {
           </Link>
 
           {/* Desktop Navigation + Language Switcher - Top Right */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
             {/* Navigation Links */}
             {navLinks.map((link) => (
               <Link
@@ -130,7 +147,11 @@ export default function HeaderClient() {
               }`}
             >
               <button
-                onClick={toggleLocale}
+                onClick={() => {
+                  if (locale !== 'de') {
+                    toggleLocale()
+                  }
+                }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                   locale === 'de'
                     ? isHomePage
@@ -140,7 +161,7 @@ export default function HeaderClient() {
                     ? 'text-white/80 hover:text-white hover:bg-white/10'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
-                aria-label="Toggle to English"
+                aria-label="Switch to German"
               >
                 <Image
                   src="/icons/de.png"
@@ -152,7 +173,11 @@ export default function HeaderClient() {
                 <span>DE</span>
               </button>
               <button
-                onClick={toggleLocale}
+                onClick={() => {
+                  if (locale !== 'en') {
+                    toggleLocale()
+                  }
+                }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                   locale === 'en'
                     ? isHomePage
@@ -162,7 +187,7 @@ export default function HeaderClient() {
                     ? 'text-white/80 hover:text-white hover:bg-white/10'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
-                aria-label="Toggle to Deutsch"
+                aria-label="Switch to English"
               >
                 <Image
                   src="/icons/en.png"
@@ -179,10 +204,10 @@ export default function HeaderClient() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg transition-all ${
+            className={`lg:hidden p-2 rounded-lg transition-all flex-shrink-0 ${
               isHomePage
-                ? 'text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20'
-                : 'hover:bg-gray-100'
+                ? 'text-gray-700 hover:bg-gray-100 md:text-white md:bg-white/10 md:backdrop-blur-sm md:hover:bg-white/20 md:border md:border-white/20'
+                : 'text-gray-700 hover:bg-gray-100'
             }`}
             aria-label="Toggle menu"
           >
@@ -242,7 +267,11 @@ export default function HeaderClient() {
               }`}
             >
               <button
-                onClick={toggleLocale}
+                onClick={() => {
+                  if (locale !== 'de') {
+                    toggleLocale()
+                  }
+                }}
                 className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 flex-1 justify-center ${
                   locale === 'de'
                     ? isHomePage
@@ -250,7 +279,7 @@ export default function HeaderClient() {
                       : 'bg-white text-gray-900 shadow-sm'
                     : 'bg-transparent text-gray-600 hover:text-gray-900'
                 }`}
-                aria-label="Toggle to English"
+                aria-label="Switch to German"
               >
                 <Image
                   src="/icons/de.png"
@@ -261,7 +290,11 @@ export default function HeaderClient() {
                 <span className="text-sm font-medium">DE</span>
               </button>
               <button
-                onClick={toggleLocale}
+                onClick={() => {
+                  if (locale !== 'en') {
+                    toggleLocale()
+                  }
+                }}
                 className={`flex items-center gap-1 px-3 py-2 rounded-md transition-all duration-200 flex-1 justify-center ${
                   locale === 'en'
                     ? isHomePage
@@ -269,7 +302,7 @@ export default function HeaderClient() {
                       : 'bg-white text-gray-900 shadow-sm'
                     : 'bg-transparent text-gray-600 hover:text-gray-900'
                 }`}
-                aria-label="Toggle to Deutsch"
+                aria-label="Switch to English"
               >
                 <Image
                   src="/icons/en.png"

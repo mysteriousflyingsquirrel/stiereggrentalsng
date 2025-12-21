@@ -3,7 +3,6 @@
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { getLocaleFromSearchParams } from '@/lib/locale'
-import SectionTitle from '@/components/SectionTitle'
 
 // Force dynamic rendering since we use useSearchParams
 export const dynamic = 'force-dynamic'
@@ -61,11 +60,11 @@ function ImpressumPageContent() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <SectionTitle>{pageContent.title}</SectionTitle>
       <div className="max-w-3xl space-y-8">
         {/* Company Information */}
         <div className="bg-white rounded-2xl p-8 shadow-lg">
           <div className="space-y-2 text-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">{pageContent.title}</h2>
             <p className="font-bold text-gray-900">{pageContent.company.name}</p>
             <p>{pageContent.company.address}</p>
             <p>{pageContent.company.city}</p>
@@ -75,13 +74,7 @@ function ImpressumPageContent() {
                 {pageContent.company.email}
               </a>
             </p>
-          </div>
-        </div>
-
-        {/* Company Details */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <div className="space-y-3 text-gray-700">
-            <p>
+            <p className="mt-3">
               <span className="font-medium">{pageContent.details.director}</span>{' '}
               {pageContent.details.directorName}
             </p>
@@ -98,7 +91,7 @@ function ImpressumPageContent() {
 
         {/* Disclaimer */}
         <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">{pageContent.disclaimer.title}</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{pageContent.disclaimer.title}</h2>
           <p className="text-gray-700 leading-relaxed">{pageContent.disclaimer.text}</p>
         </div>
       </div>

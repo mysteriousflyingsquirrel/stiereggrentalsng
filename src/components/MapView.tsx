@@ -99,7 +99,7 @@ export default function MapView({ apartments, locale, className = '', focusedSlu
     <div className={`w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg ${className}`}>
       <MapContainer
         center={center}
-        zoom={16}
+        zoom={15}
         scrollWheelZoom={false} // Disable mouse wheel zoom for desktop users
         dragging={!isTouchDevice} // On touch devices, disable one-finger drag; use controls/pinch instead
         style={{ height: '100%', width: '100%' }}

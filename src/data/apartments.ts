@@ -7,7 +7,8 @@ export type Apartment = {
   facts: {
     guests: number
     bedrooms: number
-    beds: number
+    doubleBeds?: number
+    singleBeds?: number
     bathrooms: number
     sqm?: number
   }
@@ -58,7 +59,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 4,
       bedrooms: 2,
-      beds: 4,
+      doubleBeds: 2,
+      singleBeds: 0,
       bathrooms: 2,
       sqm: 96,
     },
@@ -152,7 +154,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 5,
       bedrooms: 2,
-      beds: 5,
+      doubleBeds: 2,
+      singleBeds: 1,
       bathrooms: 2,
       sqm: 111,
     },
@@ -244,7 +247,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 4,
       bedrooms: 2,
-      beds: 4,
+      doubleBeds: 2,
+      singleBeds: 0,
       bathrooms: 2,
       sqm: 85,
     },
@@ -341,7 +345,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 2,
       bedrooms: 1,
-      beds: 2,
+      doubleBeds: 1,
+      singleBeds: 0,
       bathrooms: 1,
       sqm: 44,
     },
@@ -426,7 +431,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 2,
       bedrooms: 1,
-      beds: 2,
+      doubleBeds: 1,
+      singleBeds: 0,
       bathrooms: 1,
       sqm: 44,
     },
@@ -506,7 +512,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 2,
       bedrooms: 1,
-      beds: 2,
+      doubleBeds: 1,
+      singleBeds: 0,
       bathrooms: 1,
       sqm: 28,
     },
@@ -590,7 +597,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 1,
       bedrooms: 1,
-      beds: 1,
+      doubleBeds: 0,
+      singleBeds: 1,
       bathrooms: 1,
       sqm: 28,
     },

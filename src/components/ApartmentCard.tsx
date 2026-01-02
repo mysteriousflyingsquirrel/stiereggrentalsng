@@ -87,16 +87,33 @@ export default function ApartmentCard({
             </Badge>
           )}
           <Badge variant="accent">
-            {apartment.facts.guests} {locale === 'de' ? 'Gäste' : 'Guests'}
+            {apartment.facts.guests} {locale === 'de' 
+              ? apartment.facts.guests === 1 ? 'Gast' : 'Gäste'
+              : apartment.facts.guests === 1 ? 'Guest' : 'Guests'}
           </Badge>
           <Badge>
-            {apartment.facts.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}
+            {apartment.facts.bedrooms} {locale === 'de' 
+              ? 'Schlafzimmer'
+              : apartment.facts.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}
           </Badge>
+          {typeof apartment.facts.doubleBeds === 'number' && apartment.facts.doubleBeds > 0 && (
+            <Badge>
+              {apartment.facts.doubleBeds} {locale === 'de' 
+                ? apartment.facts.doubleBeds === 1 ? 'Doppelbett' : 'Doppelbetten'
+                : apartment.facts.doubleBeds === 1 ? 'Double Bed' : 'Double Beds'}
+            </Badge>
+          )}
+          {typeof apartment.facts.singleBeds === 'number' && apartment.facts.singleBeds > 0 && (
+            <Badge>
+              {apartment.facts.singleBeds} {locale === 'de' 
+                ? apartment.facts.singleBeds === 1 ? 'Einzelbett' : 'Einzelbetten'
+                : apartment.facts.singleBeds === 1 ? 'Single Bed' : 'Single Beds'}
+            </Badge>
+          )}
           <Badge>
-            {apartment.facts.beds} {locale === 'de' ? 'Betten' : 'Beds'}
-          </Badge>
-          <Badge>
-            {apartment.facts.bathrooms} {locale === 'de' ? 'Badezimmer' : 'Bathrooms'}
+            {apartment.facts.bathrooms} {locale === 'de' 
+              ? 'Badezimmer'
+              : apartment.facts.bathrooms === 1 ? 'Bathroom' : 'Bathrooms'}
           </Badge>
           {apartment.facts.sqm && (
             <Badge>{apartment.facts.sqm} m²</Badge>

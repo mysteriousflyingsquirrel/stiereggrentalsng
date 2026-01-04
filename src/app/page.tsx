@@ -70,7 +70,7 @@ function HomePageContent() {
   return (
     <div>
       {/* Hero Section with Gradient Fade */}
-      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24 pb-0">
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24 pb-32 md:pb-40">
         {/* Banner Image with Gradient Fade */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -88,17 +88,30 @@ function HomePageContent() {
         </div>
         
         {/* Centered Title and Subtitle */}
-        <div className="relative z-10 text-center text-white px-4 pt-20 pb-32 md:pb-40">
+        <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
             {locale === 'de'
               ? 'Stieregg Rentals'
               : 'Stieregg Rentals'}
           </h1>
-          <p className="text-xl md:text-2xl lg:text-3xl mb-8 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl lg:text-3xl mb-6 max-w-2xl mx-auto">
             {locale === 'de'
               ? 'Ihre perfekte Ferienwohnung in Grindelwald'
               : 'Your perfect holiday apartment in Grindelwald'}
           </p>
+          {/* Best Price Sticker */}
+          <div className="flex justify-center mt-4">
+            <div className="inline-flex items-center gap-2 bg-gold/10 border-2 border-gold/30 rounded-lg px-4 py-2 md:px-5 md:py-2.5 backdrop-blur-sm">
+              <svg className="w-5 h-5 md:w-6 md:h-6 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="font-semibold text-white text-sm md:text-base">
+                {locale === 'de'
+                  ? 'Bester Preis garantiert bei Buchungsanfrage'
+                  : 'Best price guaranteed by booking request'}
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 

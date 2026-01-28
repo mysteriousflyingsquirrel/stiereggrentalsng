@@ -214,7 +214,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/1698310/ical.ics?securitytoken=f02e669e24f6412a8165dc95132d4298',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.604.1/ical?hmac=YLgRDw5WPh7H9Ru28JOk6Fo0Bz3yt3cPSGcRdeRIpMQ=&ob=true',
     ],
     priceFrom: 360,
     minNights: { high: 7, mid: 5, low: 4 },

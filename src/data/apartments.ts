@@ -113,13 +113,13 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/21a740265d7e1b7b04637fc8bcfb7b59?location=5460aeb2be103&id=21a740265d7e1b7b04637fc8bcfb7b59&pricetype=totalPrice&dp=0&clickId=RFSGHQ1TX624ZQWP&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/21a740265d7e1b7b04637fc8bcfb7b59?location=5460aeb2be103&boostedId=21a740265d7e1b7b04637fc8bcfb7b59&pricetype=totalPrice&dp=0&clickId=WXM1ZQYR0S3KHQDH&sT=dateless&prodName=JM&prodSource=Search&searchId=30877af427314db1&screen=search&priceRate=nonRefund',
       },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/3432395/ical.ics?securitytoken=8c88c7d4d9d1479699045ff359ad00b5',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.605.1/ical?hmac=Du4SoPNbRhp0u+M+qvUJTidYHc2+3Flp/v8gUvl2T2Y=&ob=true',
     ],
     priceFrom: 380,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -208,8 +208,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/081632dcc3499a06e5ea3c930293c618?location=5460aeb2be103&id=081632dcc3499a06e5ea3c930293c618&pricetype=totalPrice&dp=0&clickId=SDBHRJRDLTZH7YZ5&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/081632dcc3499a06e5ea3c930293c618?location=5460aeb2be103&boostedId=081632dcc3499a06e5ea3c930293c618&pricetype=totalPrice&dp=0&clickId=2JVPMK2P2F9LPDHY&sT=dateless&prodName=JM&prodSource=Search&searchId=a2bec12dc5674962&screen=search&priceRate=nonRefund',
       },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
@@ -307,8 +307,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/30975be1327d577d24cf7670806ae75a?location=5460aeb2be103&id=30975be1327d577d24cf7670806ae75a&pricetype=totalPrice&dp=0&clickId=D00GKSD8CW5L62H7&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/30975be1327d577d24cf7670806ae75a?location=5460aeb2be103&boostedId=30975be1327d577d24cf7670806ae75a&pricetype=totalPrice&dp=0&clickId=KCH859PJPF5DZZW1&sT=dateless&prodName=JM&prodSource=Search&searchId=6769d637f9e54196&screen=search&priceRate=nonRefund',
       },
       {
         label: 'Airbnb',
@@ -317,7 +317,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/1698298/ical.ics?securitytoken=46a7f7bcf6664193bb78ee92571d30dd',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.608.1/ical?hmac=MOZYG3nUlzerDdtkNCtj8qtrytRVzCfpyciMTkRUxM8=&ob=true',
     ],
     priceFrom: 340,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -393,8 +393,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/dd6f3056e061ea7b565811ec1c00ca63?location=5460aeb2be103&boostedId=dd6f3056e061ea7b565811ec1c00ca63%40u%40a&pricetype=totalPrice&dp=0&clickId=53YYZ4J6ZJ15V3JR&sT=dateless&prodName=JM&prodSource=Search&searchId=6fccc8689be57ef3&screen=search&searchRequestId=c7560621c2614f6f&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/dd6f3056e061ea7b565811ec1c00ca63?location=5460aeb2be103&boostedId=dd6f3056e061ea7b565811ec1c00ca63&pricetype=totalPrice&dp=0&clickId=L1YFF75WPNY6CL0Q&sT=dateless&prodName=JM&prodSource=Search&searchId=5e8c5640430a47c3&screen=search&priceRate=nonRefund',
       },
       {
         label: 'Airbnb',
@@ -403,7 +403,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/1698287/ical.ics?securitytoken=50eb0f69cf0e49f1bd9295b5bdf6252d',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.849.1/ical?hmac=kK+7zZCDFavvhT6ts8sCUk6vgTvAYkHv0YA/wcQ9Cd8=&ob=true',
     ],
     priceFrom: 140,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -475,8 +475,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/349b4cc552a019d03c5e02d2a424a574?location=5460aeb2be103&id=349b4cc552a019d03c5e02d2a424a574&pricetype=totalPrice&dp=0&clickId=N6X7W9MR6F7GTSSN&sT=dateless&prodName=JM&prodSource=Search&searchId=1369310444497488&screen=search&searchRequestId=63eb1515c7674e83&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/349b4cc552a019d03c5e02d2a424a574?location=5460aeb2be103&boostedId=349b4cc552a019d03c5e02d2a424a574&pricetype=totalPrice&dp=0&clickId=S7ZRFZPB9X1L4D21&sT=dateless&prodName=JM&prodSource=Search&searchId=01e17c7dad3f4182&screen=search&priceRate=nonRefund',
       },
       {
         label: 'Airbnb',
@@ -485,7 +485,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/1698294/ical.ics?securitytoken=ed0bda36efb04fd7acbcc4925b90e757',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.848.1/ical?hmac=LgStGVoT1RHE5ljEbMgqxxP4Gb7dK+Z0hJLwqmGYzf4=&ob=true',
     ],
     priceFrom: 140,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -560,8 +560,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/16266dd76336147d95957ab4d4b11979?location=5460aeb2be103&boostedId=16266dd76336147d95957ab4d4b11979%40u%40a&pricetype=totalPrice&dp=0&clickId=RYFR4FWLTSFRGXP7&sT=dateless&prodName=JM&prodSource=Search&searchId=31de121849d4b5d9&screen=search&searchRequestId=58e6f79a4ae84dd8&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/16266dd76336147d95957ab4d4b11979?location=5460aeb2be103&boostedId=16266dd76336147d95957ab4d4b11979&pricetype=totalPrice&dp=0&clickId=1HHMWXBRZ10PWJKR&sT=dateless&prodName=JM&prodSource=Search&searchId=5532303d86094e69&screen=search&priceRate=nonRefund',
       },
       {
         label: 'Airbnb',
@@ -570,7 +570,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/1840472/ical.ics?securitytoken=bb82dda052c544d3a0cb9ca7d08a54e6',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.845.1/ical?hmac=DMRO/5sxGOLLsMqmEh9I9KVXbUPXJ5BVjOKINFxSxms=&ob=true',
     ],
     priceFrom: 105,
     minNights: { high: 5, mid: 4, low: 3 },
@@ -639,8 +639,8 @@ export const apartments: Apartment[] = [
     },
     bookingLinks: [
       {
-        label: 'e-domizil',
-        url: 'https://www.e-domizil.ch/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee%40u%40a&pricetype=totalPrice&dp=0&clickId=HP23NT783YGCKPXP&sT=dateless&prodName=JM&prodSource=Search&searchId=e805caf64bbd725c&screen=search&searchRequestId=df1c64ec716e4c6a&priceRate=nonRefund',
+        label: 'Interhome',
+        url: 'https://www.interhome.com/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee&pricetype=totalPrice&dp=0&clickId=3Y1NBL9QC63XHMV4&sT=dateless&prodName=JM&prodSource=Search&searchId=d2819441240f47de&screen=search&priceRate=nonRefund',
       },
       {
         label: 'Airbnb',
@@ -649,7 +649,7 @@ export const apartments: Apartment[] = [
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://inventory.atraveo.com/ical/export/3283084/ical.ics?securitytoken=7375a411421841288d1cb74187f444d2',
+      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.850.1/ical?hmac=ouy1Mb+yJgmjTYl4elWsLjTsCdeF/bhgh2M5Zk2BSEI=&ob=true',
     ],
     priceFrom: 95,
     minNights: { high: 5, mid: 4, low: 3 },

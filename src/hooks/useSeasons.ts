@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react'
-import type { SeasonId } from '@/data/seasons'
 import type { SeasonDateRanges } from '@/data/seasons'
-import { DEFAULT_SEASON_DATE_RANGES } from '@/data/seasons'
 import { fetchSeasons, SeasonDocument } from '@/lib/seasonService'
 
 /**
- * Hook to fetch season configuration (labels + date ranges) from Firestore.
- * Falls back to the hardcoded defaults if Firestore is not yet seeded.
+ * Hook to fetch season configuration (labels + date ranges + colors) from Firestore.
+ * Returns an empty record if no seasons are configured.
  */
 export function useSeasons() {
-  const [seasons, setSeasons] = useState<Record<SeasonId, SeasonDocument> | null>(null)
-  const [seasonDateRanges, setSeasonDateRanges] = useState<SeasonDateRanges>(DEFAULT_SEASON_DATE_RANGES)
+  const [seasons, setSeasons] = useState<Record<string, SeasonDocument>>({})
+  const [seasonDateRanges, setSeasonDateRanges] = useState<SeasonDateRanges>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
@@ -23,11 +21,10 @@ export function useSeasons() {
 
         setSeasons(data)
 
-        // Build the SeasonDateRanges record from the fetched documents
-        const ranges: SeasonDateRanges = {
-          high: data.high?.dateRanges ?? DEFAULT_SEASON_DATE_RANGES.high,
-          mid: data.mid?.dateRanges ?? DEFAULT_SEASON_DATE_RANGES.mid,
-          low: data.low?.dateRanges ?? DEFAULT_SEASON_DATE_RANGES.low,
+        // Build the SeasonDateRanges record from fetched documents
+        const ranges: SeasonDateRanges = {}
+        for (const [id, season] of Object.entries(data)) {
+          ranges[id] = season.dateRanges
         }
         setSeasonDateRanges(ranges)
       })

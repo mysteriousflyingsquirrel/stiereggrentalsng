@@ -18,14 +18,14 @@ export type Apartment = {
   icalUrls: string[]
   priceFrom?: number // Starting price in CHF
   /**
-   * Seasonal minimum stay in nights for this apartment.
-   * 'high', 'mid' and 'low' refer to the seasons defined in src/data/seasons.ts.
+   * Default minimum stay in nights (applies to dates not covered by any season).
    */
-  minNights?: {
-    high?: number
-    mid?: number
-    low?: number
-  }
+  minNightsDefault?: number
+  /**
+   * Seasonal minimum stay overrides.
+   * Keys are season IDs as defined in the seasons Firestore collection.
+   */
+  minNights?: Record<string, number | undefined>
 }
 
 export const apartments: Apartment[] = [

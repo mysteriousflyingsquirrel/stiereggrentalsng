@@ -3,10 +3,10 @@ import {
   getDocs,
   doc,
   setDoc,
-  updateDoc,
+  deleteDoc,
 } from 'firebase/firestore'
 import { db } from './firebase'
-import type { SeasonId, SeasonConfig, SeasonDateRange, MonthDay } from '@/data/seasons'
+import type { SeasonConfig, SeasonDateRange, MonthDay } from '@/data/seasons'
 
 /**
  * Full season document as stored in Firestore.
@@ -19,12 +19,13 @@ const COLLECTION = 'seasons'
 
 /**
  * Fetch all season documents from Firestore.
- * Returns a record keyed by SeasonId.
+ * Returns a record keyed by season ID (arbitrary strings).
+ * Returns an empty record if no seasons exist.
  */
-export async function fetchSeasons(): Promise<Record<SeasonId, SeasonDocument>> {
+export async function fetchSeasons(): Promise<Record<string, SeasonDocument>> {
   const snapshot = await getDocs(collection(db, COLLECTION))
 
-  const result: Partial<Record<SeasonId, SeasonDocument>> = {}
+  const result: Record<string, SeasonDocument> = {}
   snapshot.docs.forEach((d) => {
     const raw = d.data()
     // Firestore returns plain strings; cast them to MonthDay template literals
@@ -34,45 +35,22 @@ export async function fetchSeasons(): Promise<Record<SeasonId, SeasonDocument>> 
         end: r.end as MonthDay,
       })
     )
-    result[d.id as SeasonId] = {
-      id: d.id as SeasonId,
-      label: raw.label,
+    result[d.id] = {
+      id: d.id,
+      label: raw.label ?? { de: d.id, en: d.id },
+      color: raw.color ?? '#6B7280', // default gray if missing
       dateRanges,
     }
   })
 
-  // Ensure all three seasons exist (fallback to sensible defaults)
-  const defaults: Record<SeasonId, SeasonDocument> = {
-    high: {
-      id: 'high',
-      label: { de: 'Hochsaison', en: 'High season' },
-      dateRanges: [],
-    },
-    mid: {
-      id: 'mid',
-      label: { de: 'Zwischensaison', en: 'Mid season' },
-      dateRanges: [],
-    },
-    low: {
-      id: 'low',
-      label: { de: 'Nebensaison', en: 'Low season' },
-      dateRanges: [],
-    },
-  }
-
-  return {
-    high: result.high ?? defaults.high,
-    mid: result.mid ?? defaults.mid,
-    low: result.low ?? defaults.low,
-  }
+  return result
 }
 
 /**
  * Create or overwrite a season document.
- * Document ID equals the season ID (high | mid | low).
  */
 export async function setSeason(
-  seasonId: SeasonId,
+  seasonId: string,
   data: SeasonDocument
 ): Promise<void> {
   const { id: _id, ...rest } = data
@@ -80,11 +58,8 @@ export async function setSeason(
 }
 
 /**
- * Partially update a season document.
+ * Delete a season document by its ID.
  */
-export async function updateSeason(
-  seasonId: SeasonId,
-  data: Partial<SeasonDocument>
-): Promise<void> {
-  await updateDoc(doc(db, COLLECTION, seasonId), data as Record<string, unknown>)
+export async function deleteSeason(seasonId: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION, seasonId))
 }

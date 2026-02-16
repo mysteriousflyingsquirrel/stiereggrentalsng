@@ -1,17 +1,69 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 
 export default function HeaderClient() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  const router = useRouter()
   const locale = getLocaleFromSearchParams(searchParams)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  // ---- Hidden admin easter egg: 5 clicks within 6 s → /admin/login ----
+  const clickCountRef = useRef(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const resetEasterEgg = useCallback(() => {
+    clickCountRef.current = 0
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+  }, [])
+
+  // Reset when clicking anywhere outside the logo
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const logoEl = document.getElementById('stieregg-logo')
+      if (logoEl && !logoEl.contains(e.target as Node)) {
+        resetEasterEgg()
+      }
+    }
+    document.addEventListener('click', handleGlobalClick)
+    return () => document.removeEventListener('click', handleGlobalClick)
+  }, [resetEasterEgg])
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    clickCountRef.current += 1
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[admin] logo click ${clickCountRef.current}/5`)
+    }
+
+    // Start 6-second window on the first click
+    if (clickCountRef.current === 1) {
+      timerRef.current = setTimeout(() => {
+        resetEasterEgg()
+      }, 6000)
+    }
+
+    // From click 2+, prevent <Link> navigation so the counter isn't lost
+    if (clickCountRef.current > 1) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    if (clickCountRef.current >= 5) {
+      resetEasterEgg()
+      router.push('/admin/login')
+    }
+  }
+  // ---- end easter egg ----
 
   const toggleLocale = () => {
     if (typeof window === 'undefined') return
@@ -97,14 +149,16 @@ export default function HeaderClient() {
                 </>
               )}
               <Image
+                id="stieregg-logo"
                 src="/icons/logo_transparent_dark.svg"
                 alt="Stieregg Rentals"
                 width={180}
                 height={60}
-                className={`relative z-10 h-[38.4px] md:h-16 w-auto transition-transform duration-300 ${
+                className={`relative z-10 h-[38.4px] md:h-16 w-auto transition-transform duration-300 cursor-pointer ${
                   isHomePage ? 'md:group-hover:scale-105' : ''
                 }`}
                 priority
+                onClick={handleLogoClick}
               />
             </div>
           </Link>

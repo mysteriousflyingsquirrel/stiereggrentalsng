@@ -2,10 +2,11 @@ import { BookedRange } from './availability'
 import { Apartment } from '@/data/apartments'
 import {
   getActiveSeasonIdsForDateString,
-  SeasonId,
   SeasonDateRanges,
-  DEFAULT_SEASON_DATE_RANGES,
 } from '@/data/seasons'
+
+/** Global fallback when no apartment-level default is set */
+const GLOBAL_DEFAULT_MIN_NIGHTS = 3
 
 /**
  * Checks if an apartment is available for the given date range
@@ -62,40 +63,39 @@ export function getStayNights(checkIn: string, checkOut: string): number {
 
 /**
  * Determine the minimum nights requirement based on season.
- * Uses the global season date definition from src/data/seasons,
- * and the per-apartment minNights values from src/data/apartments.
  *
- * If a date falls into multiple seasons (based on configured ranges),
- * the lowest applicable minimum nights across those seasons is used.
- * If a date is in no explicit season range, "low" season is assumed.
+ * 1. Find which season(s) the check-in date falls into.
+ * 2. For each matching season, look up apartment.minNights[seasonId].
+ * 3. If no season matches, use apartment.minNightsDefault.
+ * 4. Ultimate fallback: GLOBAL_DEFAULT_MIN_NIGHTS (3).
+ *
+ * When multiple seasons match, the *lowest* applicable minimum is used.
  *
  * @param checkIn Check-in date string (YYYY-MM-DD)
  * @param _apartment Optional apartment (for per-apartment minNights)
- * @param seasonDateRanges Season date ranges from Firestore (or defaults)
+ * @param seasonDateRanges Season date ranges from Firestore
  */
 export function getSeasonalMinNights(
   checkIn: string,
   _apartment?: Apartment,
-  seasonDateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+  seasonDateRanges: SeasonDateRanges = {}
 ): number {
+  const defaultMin =
+    _apartment?.minNightsDefault ?? GLOBAL_DEFAULT_MIN_NIGHTS
+
   const activeSeasonIds = getActiveSeasonIdsForDateString(checkIn, seasonDateRanges)
 
-  const defaults: Record<SeasonId, number> = {
-    high: 5,
-    mid: 4,
-    low: 3,
+  // No seasons match → use default
+  if (activeSeasonIds.length === 0) {
+    return defaultMin
   }
 
-  const candidateSeasons: SeasonId[] =
-    activeSeasonIds.length > 0 ? (activeSeasonIds as SeasonId[]) : ['low']
-
-  const candidates = candidateSeasons.map((seasonId) => {
+  // Check each matching season for a per-apartment override
+  const candidates = activeSeasonIds.map((seasonId) => {
     const apartmentMin =
-      _apartment && _apartment.minNights
-        ? _apartment.minNights[seasonId]
-        : undefined
+      _apartment?.minNights?.[seasonId]
 
-    return typeof apartmentMin === 'number' ? apartmentMin : defaults[seasonId]
+    return typeof apartmentMin === 'number' ? apartmentMin : defaultMin
   })
 
   return Math.min(...candidates)
@@ -103,13 +103,12 @@ export function getSeasonalMinNights(
 
 /**
  * Check if a stay meets the apartment's minimum nights requirement.
- * Uses seasonal rules (high/mid/low season) that can be customised per apartment.
  */
 export function meetsMinimumNights(
   apartment: Apartment,
   checkIn: string,
   checkOut: string,
-  seasonDateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+  seasonDateRanges: SeasonDateRanges = {}
 ): boolean {
   const min = getSeasonalMinNights(checkIn, apartment, seasonDateRanges)
   const nights = getStayNights(checkIn, checkOut)

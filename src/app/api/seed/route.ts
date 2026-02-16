@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { apartments } from '@/data/apartments'
-import { DEFAULT_SEASONS, DEFAULT_SEASON_DATE_RANGES, SeasonId } from '@/data/seasons'
 
 /**
  * One-time seed endpoint to populate Firestore with existing static data.
@@ -14,6 +13,36 @@ import { DEFAULT_SEASONS, DEFAULT_SEASON_DATE_RANGES, SeasonId } from '@/data/se
  *
  * ⚠️ Remove or protect this route after initial seeding!
  */
+
+/** Hardcoded seed data for initial seasons (only used by this route). */
+const SEED_SEASONS = [
+  {
+    id: 'high',
+    label: { de: 'Hochsaison', en: 'High season' },
+    color: '#EF4444',
+    dateRanges: [
+      { start: '12-20', end: '01-02' },
+      { start: '01-24', end: '03-30' },
+      { start: '06-06', end: '10-23' },
+    ],
+  },
+  {
+    id: 'mid',
+    label: { de: 'Zwischensaison', en: 'Mid season' },
+    color: '#F59E0B',
+    dateRanges: [
+      { start: '01-03', end: '01-23' },
+      { start: '03-21', end: '06-05' },
+    ],
+  },
+  {
+    id: 'low',
+    label: { de: 'Nebensaison', en: 'Low season' },
+    color: '#22C55E',
+    dateRanges: [],
+  },
+]
+
 export async function GET() {
   try {
     const results: string[] = []
@@ -35,24 +64,18 @@ export async function GET() {
     }
 
     // ---- Seed seasons ----
-    const seasonIds: SeasonId[] = ['high', 'mid', 'low']
-    for (const seasonId of seasonIds) {
-      const docRef = doc(db, 'seasons', seasonId)
+    for (const season of SEED_SEASONS) {
+      const docRef = doc(db, 'seasons', season.id)
       const existing = await getDoc(docRef)
 
       if (existing.exists()) {
-        results.push(`⏭️  seasons/${seasonId} already exists, skipped`)
+        results.push(`⏭️  seasons/${season.id} already exists, skipped`)
         continue
       }
 
-      const seasonConfig = DEFAULT_SEASONS[seasonId]
-      const dateRanges = DEFAULT_SEASON_DATE_RANGES[seasonId]
-
-      await setDoc(docRef, {
-        label: seasonConfig.label,
-        dateRanges,
-      })
-      results.push(`✅  seasons/${seasonId} created`)
+      const { id: _id, ...data } = season
+      await setDoc(docRef, data)
+      results.push(`✅  seasons/${season.id} created`)
     }
 
     return NextResponse.json({

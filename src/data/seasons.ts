@@ -13,7 +13,28 @@ export type SeasonConfig = {
   }
 }
 
-export const seasons: Record<SeasonId, SeasonConfig> = {
+/**
+ * Simple month-day string in the form "MM-DD"
+ * Examples: "06-01" (1st June), "09-30" (30th September)
+ */
+export type MonthDay = `${string}-${string}`
+
+/**
+ * A date range described by start/end MonthDay strings.
+ */
+export type SeasonDateRange = { start: MonthDay; end: MonthDay }
+
+/**
+ * The shape of all season date ranges keyed by SeasonId.
+ */
+export type SeasonDateRanges = Record<SeasonId, SeasonDateRange[]>
+
+// ---------------------------------------------------------------------------
+// Default data — used as fallback when Firestore has not been seeded yet,
+// and by the seed script to populate Firestore initially.
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_SEASONS: Record<SeasonId, SeasonConfig> = {
   high: {
     id: 'high',
     label: {
@@ -38,19 +59,13 @@ export const seasons: Record<SeasonId, SeasonConfig> = {
 }
 
 /**
- * Simple month-day string in the form "MM-DD"
- * Examples: "06-01" (1st June), "09-30" (30th September)
- */
-type MonthDay = `${string}-${string}`
-
-/**
  * Developer-friendly season date ranges.
  *
  * All ranges are interpreted as "every year between these dates".
  * If a range crosses the year boundary (e.g. "12-01" to "02-28"),
  * it is treated as wrapping over New Year.
  */
-const seasonDateRanges: Record<SeasonId, { start: MonthDay; end: MonthDay }[]> = {
+export const DEFAULT_SEASON_DATE_RANGES: SeasonDateRanges = {
   high: [
     // 20 Dec – 2 Jan
     { start: '12-20', end: '01-02' },
@@ -68,6 +83,11 @@ const seasonDateRanges: Record<SeasonId, { start: MonthDay; end: MonthDay }[]> =
   // Everything that is not high or mid season is low season
   low: [],
 }
+
+// ---------------------------------------------------------------------------
+// Pure logic functions — accept date ranges as a parameter so the caller
+// can supply data from Firestore or use the defaults above.
+// ---------------------------------------------------------------------------
 
 function toMonthDayNumber(date: Date): number {
   const month = date.getMonth() + 1 // 1–12
@@ -99,16 +119,16 @@ function isWithinRange(date: Date, start: MonthDay, end: MonthDay): boolean {
 }
 
 /**
- * Determine which season a given date falls into.
- *
- * High season ranges are defined in `seasonDateRanges.high` (using MM-DD strings).
- * Low season is simply any date that is not in a high season range.
- */
-/**
  * Return all season IDs whose date ranges include the given date.
  * Does NOT include "low" explicitly – low is defined as "not in any other season".
+ *
+ * @param date The date to check
+ * @param dateRanges Season date ranges (from Firestore or defaults)
  */
-export function getActiveSeasonIdsForDate(date: Date): SeasonId[] {
+export function getActiveSeasonIdsForDate(
+  date: Date,
+  dateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+): SeasonId[] {
   if (isNaN(date.getTime())) {
     return []
   }
@@ -116,7 +136,7 @@ export function getActiveSeasonIdsForDate(date: Date): SeasonId[] {
   const active: SeasonId[] = []
 
   ;(['high', 'mid'] as SeasonId[]).forEach((seasonId: SeasonId) => {
-    const ranges = seasonDateRanges[seasonId] || []
+    const ranges = dateRanges[seasonId] || []
     if (ranges.some((range) => isWithinRange(date, range.start, range.end))) {
       active.push(seasonId)
     }
@@ -125,25 +145,32 @@ export function getActiveSeasonIdsForDate(date: Date): SeasonId[] {
   return active
 }
 
-export function getActiveSeasonIdsForDateString(dateStr: string): SeasonId[] {
+export function getActiveSeasonIdsForDateString(
+  dateStr: string,
+  dateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+): SeasonId[] {
   const date = new Date(dateStr)
-  return getActiveSeasonIdsForDate(date)
+  return getActiveSeasonIdsForDate(date, dateRanges)
 }
 
 /**
  * Kept for backwards compatibility where only a single season is needed.
  * If multiple seasons match, prefers high, then mid, otherwise low.
  */
-export function getSeasonIdForDate(date: Date): SeasonId {
-  const active = getActiveSeasonIdsForDate(date)
+export function getSeasonIdForDate(
+  date: Date,
+  dateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+): SeasonId {
+  const active = getActiveSeasonIdsForDate(date, dateRanges)
   if (active.includes('high')) return 'high'
   if (active.includes('mid')) return 'mid'
   return 'low'
 }
 
-export function getSeasonIdForDateString(dateStr: string): SeasonId {
+export function getSeasonIdForDateString(
+  dateStr: string,
+  dateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+): SeasonId {
   const date = new Date(dateStr)
-  return getSeasonIdForDate(date)
+  return getSeasonIdForDate(date, dateRanges)
 }
-
-

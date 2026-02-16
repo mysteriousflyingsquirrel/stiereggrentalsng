@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getApartmentBySlug } from '@/data/apartments'
+import { fetchApartmentBySlug } from '@/lib/apartmentService'
 import { getCachedBookedRanges } from '@/lib/availability'
 
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing slug parameter' }, { status: 400 })
   }
 
-  const apartment = getApartmentBySlug(slug)
+  const apartment = await fetchApartmentBySlug(slug)
 
   if (!apartment) {
     return NextResponse.json({ error: 'Apartment not found' }, { status: 404 })
@@ -31,4 +31,3 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-

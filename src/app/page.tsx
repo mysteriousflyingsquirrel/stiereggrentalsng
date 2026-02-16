@@ -2,7 +2,7 @@
 
 import { useState, Suspense, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { apartments } from '@/data/apartments'
+import { useApartments } from '@/hooks/useApartments'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 import SectionTitle from '@/components/SectionTitle'
 import ApartmentCard from '@/components/ApartmentCard'
@@ -31,6 +31,9 @@ function HomePageContent() {
   const guests = guestsParam || '1' // Default to 1 if not specified
   const onlyAvailable = searchParams.get('onlyAvailable') === '1'
   const focusedApartmentSlug = searchParams.get('apartment')
+
+  // Fetch apartments from Firestore
+  const { apartments, loading: apartmentsLoading } = useApartments()
 
   // Fetch availability for all apartments
   const { availabilityMap, loading: availabilityLoading } = useApartmentAvailability(
@@ -65,7 +68,7 @@ function HomePageContent() {
     }
 
     return result
-  }, [availabilityMap, checkIn, checkOut, onlyAvailable, guests])
+  }, [apartments, availabilityMap, checkIn, checkOut, onlyAvailable, guests])
 
   return (
     <div>
@@ -168,7 +171,11 @@ function HomePageContent() {
           </div>
         </div>
 
-        {availabilityLoading && checkIn && checkOut ? (
+        {apartmentsLoading ? (
+          <div className="text-center py-12 text-gray-500">
+            {locale === 'de' ? 'Apartments werden geladen...' : 'Loading apartments...'}
+          </div>
+        ) : availabilityLoading && checkIn && checkOut ? (
           <div className="text-center py-12 text-gray-500">
             {locale === 'de' ? 'Verfügbarkeit wird geladen...' : 'Loading availability...'}
           </div>

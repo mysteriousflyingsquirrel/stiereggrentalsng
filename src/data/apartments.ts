@@ -3,7 +3,7 @@ export type Apartment = {
   slug: string
   name: { de: string; en: string }
   longDescription?: { de: string; en: string }
-  images: { src: string; alt: string }[]
+  images: { src: string; srcBig?: string; alt: string }[]
   facts: {
     guests: number
     bedrooms: number
@@ -656,6 +656,10 @@ export const apartments: Apartment[] = [
   },
 ]
 
+/**
+ * @deprecated Use fetchApartmentBySlug() from '@/lib/apartmentService' instead.
+ * Kept temporarily so the /api/seed route can import the static data.
+ */
 export function getApartmentBySlug(slug: string): Apartment | undefined {
   return apartments.find((apt) => apt.slug === slug)
 }

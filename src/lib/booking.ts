@@ -1,6 +1,11 @@
 import { BookedRange } from './availability'
 import { Apartment } from '@/data/apartments'
-import { getActiveSeasonIdsForDateString, SeasonId } from '@/data/seasons'
+import {
+  getActiveSeasonIdsForDateString,
+  SeasonId,
+  SeasonDateRanges,
+  DEFAULT_SEASON_DATE_RANGES,
+} from '@/data/seasons'
 
 /**
  * Checks if an apartment is available for the given date range
@@ -63,9 +68,17 @@ export function getStayNights(checkIn: string, checkOut: string): number {
  * If a date falls into multiple seasons (based on configured ranges),
  * the lowest applicable minimum nights across those seasons is used.
  * If a date is in no explicit season range, "low" season is assumed.
+ *
+ * @param checkIn Check-in date string (YYYY-MM-DD)
+ * @param _apartment Optional apartment (for per-apartment minNights)
+ * @param seasonDateRanges Season date ranges from Firestore (or defaults)
  */
-export function getSeasonalMinNights(checkIn: string, _apartment?: Apartment): number {
-  const activeSeasonIds = getActiveSeasonIdsForDateString(checkIn)
+export function getSeasonalMinNights(
+  checkIn: string,
+  _apartment?: Apartment,
+  seasonDateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
+): number {
+  const activeSeasonIds = getActiveSeasonIdsForDateString(checkIn, seasonDateRanges)
 
   const defaults: Record<SeasonId, number> = {
     high: 5,
@@ -95,9 +108,10 @@ export function getSeasonalMinNights(checkIn: string, _apartment?: Apartment): n
 export function meetsMinimumNights(
   apartment: Apartment,
   checkIn: string,
-  checkOut: string
+  checkOut: string,
+  seasonDateRanges: SeasonDateRanges = DEFAULT_SEASON_DATE_RANGES
 ): boolean {
-  const min = getSeasonalMinNights(checkIn, apartment)
+  const min = getSeasonalMinNights(checkIn, apartment, seasonDateRanges)
   const nights = getStayNights(checkIn, checkOut)
   if (nights === 0) return false
   return nights >= min
@@ -165,4 +179,3 @@ export function buildMailtoLink(
 
   return `mailto:${email}?subject=${subject}&body=${body}`
 }
-

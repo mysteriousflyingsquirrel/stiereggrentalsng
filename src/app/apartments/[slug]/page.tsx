@@ -11,6 +11,7 @@ import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 import BookingModal from '@/components/BookingModal'
 import Link from 'next/link'
 import { buildMailtoLink, isApartmentAvailable, getStayNights, getSeasonalMinNights, meetsMinimumNights } from '@/lib/booking'
+import { isStayInBookingClosure } from '@/lib/bookingPolicy'
 import { BookedRange } from '@/lib/availability'
 
 // Force dynamic rendering since we use useSearchParams
@@ -73,6 +74,8 @@ function ApartmentDetailPageContent() {
   // Check availability if dates are selected (after apartment is confirmed non-null)
   const hasDates = !!(checkIn && checkOut)
   const nights = hasDates && checkIn && checkOut ? getStayNights(checkIn, checkOut) : 0
+  const isInBookingClosure =
+    hasDates && checkIn && checkOut ? isStayInBookingClosure(checkIn, checkOut) : false
   const isAvailable = hasDates && !availabilityLoading && checkIn && checkOut
     ? isApartmentAvailable(bookedRanges, checkIn, checkOut)
     : true
@@ -580,9 +583,13 @@ function ApartmentDetailPageContent() {
                     {!isAvailable ? (
                       // Show message when dates are selected but apartment is not available
                       <div className="text-sm text-gray-600 py-2 italic w-full">
-                        {locale === 'de'
-                          ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
-                          : 'No availability on these dates. Please choose other dates.'}
+                        {isInBookingClosure
+                          ? locale === 'de'
+                            ? 'Ab dem 19. Dezember 2026 sind keine Buchungen mehr möglich.'
+                            : 'Bookings are not available from 19 December 2026 onward.'
+                          : locale === 'de'
+                            ? 'Keine Verfügbarkeit für diese Daten. Bitte wählen Sie andere Daten.'
+                            : 'No availability on these dates. Please choose other dates.'}
                       </div>
                     ) : !meetsMinNights ? (
                       // Available but stay is shorter than minimum requirement

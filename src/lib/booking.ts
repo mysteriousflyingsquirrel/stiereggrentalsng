@@ -1,4 +1,5 @@
 import { BookedRange } from './availability'
+import { getBookingClosureRange } from './bookingPolicy'
 import { Apartment } from '@/data/apartments'
 import { getActiveSeasonIdsForDateString, SeasonId } from '@/data/seasons'
 
@@ -22,8 +23,10 @@ export function isApartmentAvailable(
   // Validate dates
   if (checkInDate >= checkOutDate) return false
 
-  // Check if any date in the range overlaps with booked ranges
-  for (const range of bookedRanges) {
+  const allRanges = [...bookedRanges, getBookingClosureRange()]
+
+  // Check if any date in the range overlaps with booked or closed ranges
+  for (const range of allRanges) {
     const bookedStart = new Date(range.start)
     const bookedEnd = new Date(range.end)
 

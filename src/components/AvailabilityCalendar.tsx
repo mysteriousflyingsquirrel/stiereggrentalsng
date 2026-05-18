@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { BookedRange } from '@/lib/availability'
 import { isApartmentAvailable } from '@/lib/booking'
+import { isDateClosedForBooking } from '@/lib/bookingPolicy'
 import { getLocaleFromSearchParams } from '@/lib/locale'
 
 type AvailabilityCalendarProps = {
@@ -164,8 +165,13 @@ export default function AvailabilityCalendar({
     })
   }
 
+  const isDateUnavailable = (date: Date): boolean => {
+    const dateStr = formatDateToString(date)
+    return isDateBooked(date) || isDateClosedForBooking(dateStr)
+  }
+
   const handleDateClick = (date: Date) => {
-    if (isDateBooked(date)) return // Don't allow selection of booked dates
+    if (isDateUnavailable(date)) return
     
     const dateStr = formatDateToString(date)
     const today = new Date()
@@ -530,7 +536,7 @@ export default function AvailabilityCalendar({
         <div className="grid grid-cols-7 gap-1">
           {days.map((day, dayIndex) => {
             const isCurrentMonth = day.getMonth() === currentMonth
-            const isBooked = isDateBooked(day)
+            const isBooked = isDateUnavailable(day)
             const isToday = day.toDateString() === new Date().toDateString()
             
             const year = day.getFullYear()

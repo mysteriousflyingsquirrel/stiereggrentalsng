@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Apartment } from '@/data/apartments'
 import Badge from './Badge'
 import { Locale } from '@/lib/locale'
+import { parseApartmentName } from '@/lib/apartmentName'
 
 type ApartmentMiniCardProps = {
   apartment: Apartment
@@ -22,14 +23,7 @@ export default function ApartmentMiniCard({
     alt: apartment.name[locale],
   }
 
-  // Parse title and subtitle from apartment name
-  // Pattern: "Title Apartment/Studio Name"
-  // Example: "Chalet Walt Apartment Wega" -> Title: "Chalet Walt", Subtitle: "Apartment Wega"
-  const fullName = apartment.name[locale]
-  const match = fullName.match(/^(.+?)\s+(Apartment|Studio)\s+(.+)$/)
-  
-  const title = match ? match[1].trim() : fullName
-  const subtitle = match ? `${match[2]} ${match[3]}`.trim() : null
+  const { title, subtitle } = parseApartmentName(apartment.name[locale])
 
   // Build link preserving all URL parameters (checkIn, checkOut, guests, etc.)
   const buildApartmentLink = () => {

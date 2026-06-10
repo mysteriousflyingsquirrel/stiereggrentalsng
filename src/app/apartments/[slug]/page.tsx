@@ -13,6 +13,8 @@ import Link from 'next/link'
 import { buildMailtoLink, isApartmentAvailable, getStayNights, getSeasonalMinNights, meetsMinimumNights } from '@/lib/booking'
 import { isStayInBookingClosure } from '@/lib/bookingPolicy'
 import { BookedRange } from '@/lib/availability'
+import { resolveBigImagePath } from '@/lib/images'
+import { parseApartmentName } from '@/lib/apartmentName'
 
 // Force dynamic rendering since we use useSearchParams
 export const dynamic = 'force-dynamic'
@@ -101,14 +103,7 @@ function ApartmentDetailPageContent() {
     )
   }
 
-  // Parse title and subtitle from apartment name
-  // Pattern: "Title Apartment/Studio Name"
-  // Example: "Chalet Walt Apartment Wega" -> Title: "Chalet Walt", Subtitle: "Apartment Wega"
-  const fullName = apartment.name[locale]
-  const match = fullName.match(/^(.+?)\s+(Apartment|Studio)\s+(.+)$/)
-  
-  const title = match ? match[1].trim() : fullName
-  const subtitle = match ? `${match[2]} ${match[3]}`.trim() : null
+  const { title, subtitle } = parseApartmentName(apartment.name[locale])
 
   const getLocalizedPath = (path: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()))
@@ -247,39 +242,10 @@ function ApartmentDetailPageContent() {
           <ImageCarousel 
             quality={95}
             sizes="100vw"
-            images={apartment.images.map(image => {
-              // Transform image path from /images/ to /images_big/
-              // Remove _768px suffix to match images_big filenames
-              const originalPath = image.src
-              const pathMatch = originalPath.match(/\/images\/([^/]+)\/([^/]+)$/)
-              
-              if (!pathMatch) {
-                // Fallback: simple replacement
-                return {
-                  ...image,
-                  src: originalPath.replace('/images/', '/images_big/').replace(/_768px\./, '.')
-                }
-              }
-              
-              const [, folder, filename] = pathMatch
-              // Remove _768px suffix (e.g., cwaw_wohnzimmer_768px.jpg -> cwaw_wohnzimmer.jpg)
-              let bigFilename = filename.replace(/_768px\.(jpg|jpeg|png|webp)$/i, '.$1')
-              
-              // Special case: cwaw_aussen_768px.jpg -> cwaw_aussen_1.JPG
-              if (bigFilename === 'cwaw_aussen.jpg') {
-                bigFilename = 'cwaw_aussen_1.JPG'
-              } else {
-                // Normalize extension to lowercase for other files
-                bigFilename = bigFilename.replace(/\.(JPG|JPEG|PNG|WEBP)$/i, (match) => match.toLowerCase())
-              }
-              
-              const bigImagePath = `/images_big/${folder}/${bigFilename}`
-              
-              return {
-                ...image,
-                src: bigImagePath
-              }
-            })} 
+            images={apartment.images.map((image) => ({
+              ...image,
+              src: resolveBigImagePath(image.src),
+            }))} 
             className="w-full h-80 md:h-96 lg:h-[500px]" 
           />
         </div>

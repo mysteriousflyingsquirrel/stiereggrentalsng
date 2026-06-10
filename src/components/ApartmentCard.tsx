@@ -8,6 +8,7 @@ import Badge from './Badge'
 import { Locale } from '@/lib/locale'
 import { BookedRange } from '@/lib/availability'
 import { isApartmentAvailable } from '@/lib/booking'
+import { parseApartmentName } from '@/lib/apartmentName'
 
 type ApartmentCardProps = {
   apartment: Apartment
@@ -28,14 +29,7 @@ export default function ApartmentCard({
 }: ApartmentCardProps) {
   const searchParams = useSearchParams()
   
-  // Parse title and subtitle from apartment name
-  // Pattern: "Title Apartment/Studio Name"
-  // Example: "Chalet Walt Apartment Wega" -> Title: "Chalet Walt", Subtitle: "Apartment Wega"
-  const fullName = apartment.name[locale]
-  const match = fullName.match(/^(.+?)\s+(Apartment|Studio)\s+(.+)$/)
-  
-  const title = match ? match[1].trim() : fullName
-  const subtitle = match ? `${match[2]} ${match[3]}`.trim() : null
+  const { title, subtitle } = parseApartmentName(apartment.name[locale])
 
   // Check availability if dates are selected
   const hasDates = !!(checkIn && checkOut)

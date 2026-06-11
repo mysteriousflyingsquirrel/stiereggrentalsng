@@ -348,8 +348,8 @@ export const apartments: Apartment[] = [
     facts: {
       guests: 4,
       bedrooms: 2,
-      doubleBeds: 2,
-      singleBeds: 1,
+      doubleBeds: 1,
+      singleBeds: 2,
       bathrooms: 1,
     },
     amenities: {

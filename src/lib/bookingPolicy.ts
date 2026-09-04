@@ -1,13 +1,20 @@
 import { BookedRange } from './availability'
 
-export const BOOKING_CLOSED_FROM = '2026-12-19' as const
+export function getBookingClosedFrom(): string {
+  const now = new Date()
+  const closed = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate())
+  const year = closed.getFullYear()
+  const month = String(closed.getMonth() + 1).padStart(2, '0')
+  const day = String(closed.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 export function isDateClosedForBooking(dateStr: string): boolean {
-  return dateStr >= BOOKING_CLOSED_FROM
+  return dateStr >= getBookingClosedFrom()
 }
 
 export function getBookingClosureRange(): BookedRange {
-  return { start: BOOKING_CLOSED_FROM, end: '2099-12-31' }
+  return { start: getBookingClosedFrom(), end: '2099-12-31' }
 }
 
 export function isStayInBookingClosure(checkIn: string, checkOut: string): boolean {

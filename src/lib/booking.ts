@@ -42,17 +42,16 @@ export function isApartmentAvailable(
 }
 
 /**
- * Calculate number of nights between two dates
+ * Calculate number of nights between two calendar dates (YYYY-MM-DD).
+ * Uses UTC date parts so DST transitions cannot produce fractional nights.
  */
 export function getStayNights(checkIn: string, checkOut: string): number {
-  const inDate = new Date(checkIn)
-  const outDate = new Date(checkOut)
+  const [inYear, inMonth, inDay] = checkIn.split('-').map(Number)
+  const [outYear, outMonth, outDay] = checkOut.split('-').map(Number)
+  const inUtc = Date.UTC(inYear, inMonth - 1, inDay)
+  const outUtc = Date.UTC(outYear, outMonth - 1, outDay)
 
-  // Normalize to midnight to avoid DST/timezone issues
-  inDate.setHours(0, 0, 0, 0)
-  outDate.setHours(0, 0, 0, 0)
-
-  const diffMs = outDate.getTime() - inDate.getTime()
+  const diffMs = outUtc - inUtc
   if (diffMs <= 0) return 0
 
   return diffMs / (1000 * 60 * 60 * 24)

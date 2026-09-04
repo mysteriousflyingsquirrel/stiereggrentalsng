@@ -112,14 +112,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/21a740265d7e1b7b04637fc8bcfb7b59?location=5460aeb2be103&boostedId=21a740265d7e1b7b04637fc8bcfb7b59&pricetype=totalPrice&dp=0&clickId=WXM1ZQYR0S3KHQDH&sT=dateless&prodName=JM&prodSource=Search&searchId=30877af427314db1&screen=search&priceRate=nonRefund',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.605.1/ical?hmac=Du4SoPNbRhp0u+M+qvUJTidYHc2+3Flp/v8gUvl2T2Y=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/1584738993714204719.ics?t=aec326e1ba0a4f078a2d8adedd4fac13',
+      'https://www.fewo-direkt.de/icalendar/52b4c0545bda42de9e4593141ab40f54.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 380,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -207,14 +204,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/081632dcc3499a06e5ea3c930293c618?location=5460aeb2be103&boostedId=081632dcc3499a06e5ea3c930293c618&pricetype=totalPrice&dp=0&clickId=2JVPMK2P2F9LPDHY&sT=dateless&prodName=JM&prodSource=Search&searchId=a2bec12dc5674962&screen=search&priceRate=nonRefund',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.604.1/ical?hmac=YLgRDw5WPh7H9Ru28JOk6Fo0Bz3yt3cPSGcRdeRIpMQ=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/1708887077215123249.ics?t=1a5061bcf59d4666a289ad5f3b032c57',
+      'https://www.fewo-direkt.de/icalendar/6a6ee39e8c0e428e854d13a7a6dd18c6.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 360,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -306,18 +300,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/30975be1327d577d24cf7670806ae75a?location=5460aeb2be103&boostedId=30975be1327d577d24cf7670806ae75a&pricetype=totalPrice&dp=0&clickId=KCH859PJPF5DZZW1&sT=dateless&prodName=JM&prodSource=Search&searchId=6769d637f9e54196&screen=search&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/20345876?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3CMTVkq1WHCy76b&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.608.1/ical?hmac=MOZYG3nUlzerDdtkNCtj8qtrytRVzCfpyciMTkRUxM8=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/20345876.ics?t=422343af43f843aca7932ac61eacb946',
+      'https://www.fewo-direkt.de/icalendar/51976dcc48074126a1533940875b75a3.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 340,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -394,14 +381,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/1702872078521478696?check_in=2026-07-19&check_out=2026-07-27&search_mode=regular_search&source_impression_id=p3_1781106552_P3-zcsyygC_idv3S&previous_page_section_name=1000&federated_search_id=b1de9b61-6099-4903-8e9f-5b2ef9d872dd',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://www.airbnb.de/calendar/ical/1702872078521478696.ics?t=4a26b57a033e47efa77fd4c415d757c8',
+      'https://www.airbnb.ch/calendar/ical/1702872078521478696.ics?t=4a26b57a033e47efa77fd4c415d757c8',
+      'https://www.fewo-direkt.de/icalendar/a351cabeb93a4a57bf43e6965bfb2537.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 300,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -476,18 +460,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/dd6f3056e061ea7b565811ec1c00ca63?location=5460aeb2be103&boostedId=dd6f3056e061ea7b565811ec1c00ca63&pricetype=totalPrice&dp=0&clickId=L1YFF75WPNY6CL0Q&sT=dateless&prodName=JM&prodSource=Search&searchId=5e8c5640430a47c3&screen=search&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/17104334?search_mode=regular_search&adults=1&check_in=2025-11-12&check_out=2025-11-17&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3UbeL5B4VxZlbv8&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.849.1/ical?hmac=kK+7zZCDFavvhT6ts8sCUk6vgTvAYkHv0YA/wcQ9Cd8=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/17104334.ics?t=76a44035204c41aa8554a0bffd964901',
+      'https://www.fewo-direkt.de/icalendar/4da71471575943ce915985ec0bec5d67.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 140,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -558,18 +535,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/349b4cc552a019d03c5e02d2a424a574?location=5460aeb2be103&boostedId=349b4cc552a019d03c5e02d2a424a574&pricetype=totalPrice&dp=0&clickId=S7ZRFZPB9X1L4D21&sT=dateless&prodName=JM&prodSource=Search&searchId=01e17c7dad3f4182&screen=search&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/3460071?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405875_P3Yq7xw-pWR_7c0h&previous_page_section_name=1000&federated_search_id=035fb640-5b87-45ab-9cb1-91982050329c',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.848.1/ical?hmac=LgStGVoT1RHE5ljEbMgqxxP4Gb7dK+Z0hJLwqmGYzf4=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/3460071.ics?t=882e90e36eb3451189347b25ecfe06e9',
+      'https://www.fewo-direkt.de/icalendar/8031712c1d774b4a92d14226b2548fb0.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 140,
     minNights: { high: 7, mid: 5, low: 4 },
@@ -643,18 +613,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/16266dd76336147d95957ab4d4b11979?location=5460aeb2be103&boostedId=16266dd76336147d95957ab4d4b11979&pricetype=totalPrice&dp=0&clickId=1HHMWXBRZ10PWJKR&sT=dateless&prodName=JM&prodSource=Search&searchId=5532303d86094e69&screen=search&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/3483075?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3LoS6gxsGmjOD4C&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.845.1/ical?hmac=DMRO/5sxGOLLsMqmEh9I9KVXbUPXJ5BVjOKINFxSxms=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/3483075.ics?t=2a306fce0eef4c7dafa8b5eeaf747f2e',
+      'https://www.fewo-direkt.de/icalendar/40aba2a05bfa4d32a08aaf6b5199c39c.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 105,
     minNights: { high: 5, mid: 4, low: 3 },
@@ -722,18 +685,11 @@ export const apartments: Apartment[] = [
       label: 'Grindelwald',
     },
     bookingLinks: [
-      {
-        label: 'Interhome',
-        url: 'https://www.interhome.com/rental/24d7ccdec05b8b3676d0e9011f9575ee?location=5460aeb2be103&boostedId=24d7ccdec05b8b3676d0e9011f9575ee&pricetype=totalPrice&dp=0&clickId=3Y1NBL9QC63XHMV4&sT=dateless&prodName=JM&prodSource=Search&searchId=d2819441240f47de&screen=search&priceRate=nonRefund',
-      },
-      {
-        label: 'Airbnb',
-        url: 'https://www.airbnb.ch/rooms/42685109?search_mode=regular_search&adults=1&check_in=2025-11-01&check_out=2025-11-06&children=0&infants=0&pets=0&source_impression_id=p3_1761405583_P3vTQMuTT8_BXyXO&previous_page_section_name=1000&federated_search_id=376eb290-55a4-4616-a11c-731c3c810f89',
-      },
       { label: 'Booking request', url: 'mailto:info@stieregg.ch' },
     ],
     icalUrls: [
-      'https://ws.interhome.com/ih/b2p/v0100/partners/CH60721/objects/CH3818.850.1/ical?hmac=ouy1Mb+yJgmjTYl4elWsLjTsCdeF/bhgh2M5Zk2BSEI=&ob=true',
+      'https://www.airbnb.ch/calendar/ical/42685109.ics?t=4fd451878602436ab77b606f30acf2db',
+      'https://www.fewo-direkt.de/icalendar/1f935e3fa7e04637b0c7811908281dfd.ics?nonTentative&includeTentative=true',
     ],
     priceFrom: 95,
     minNights: { high: 5, mid: 4, low: 3 },
